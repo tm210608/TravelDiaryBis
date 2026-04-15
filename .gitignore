@@ -1,0 +1,27 @@
+# Android Studio / IntelliJ
+.idea/
+.gradle/
+build/
+*.iml
+
+# Local configuration
+local.properties
+
+# Log files
+*.log
+
+# Android / Mobile
+capture/
+*.apk
+*.ap_
+*.dex
+*.class
+
+# KeyStore / Secrets
+*.jks
+*.keystore
+secrets.xml
+
+# OS related
+.DS_Store
+Thumbs.db

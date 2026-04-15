@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema de la Splash Screen -->
+    <style name="Theme.App.Starting" parent="Theme.SplashScreen">
+        <!-- Icono de la splash (usaremos el que acabamos de generar) -->
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <!-- Color de fondo (nuestro azul marino premium) -->
+        <item name="windowSplashScreenBackground">#0F0F28</item>
+        <!-- Tema al que cambiar después de la splash -->
+        <item name="postSplashScreenTheme">@style/Theme.Material3.DayNight.NoActionBar</item>
+    </style>
+
+    <style name="Theme.Material3.DayNight.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Configuraciones adicionales del tema post-splash -->
+        <item name="android:statusBarColor">#0F0F28</item>
+    </style>
+</resources>
