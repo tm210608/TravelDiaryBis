@@ -25,8 +25,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.example.traveldiary.model.allEntries
-import com.example.traveldiary.model.featuredEntries
+import com.example.traveldiary.domain.model.allEntries
+import com.example.traveldiary.domain.model.featuredEntries
+import com.example.traveldiary.ui.viewmodel.formatToDisplay
 
 @Composable
 fun TravelDetailScreen(
@@ -106,7 +107,7 @@ fun TravelDetailScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    InfoChip(icon = Icons.Default.CalendarToday, text = entry.date)
+                    InfoChip(icon = Icons.Default.CalendarToday, text = entry.date.formatToDisplay())
                     InfoChip(icon = Icons.Default.LocationOn, text = "${entry.location}, ${entry.country}")
                 }
 

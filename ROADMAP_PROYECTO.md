@@ -9,7 +9,7 @@ Este documento define la estrategia de evolución del proyecto para garantizar e
 ### Hito 1: Estabilización de Capa de Datos (Cimientos)
 - [x] Implementar `TypeConverters` para fechas (usando `java.time`) y coordenadas.
 - [x] Migrar el almacenamiento de imágenes de `cacheDir` a `filesDir` (almacenamiento persistente).
-- [ ] Implementar una estrategia de gestión de errores en `Repository`.
+- [x] Implementar una estrategia de gestión de errores en `Repository` (Arquitectura de Interfaz).
 
 ### Hito 2: Arquitectura y Reactividad
 - [ ] Integrar **Hilt** para inyección de dependencias (reemplazando factorías manuales).

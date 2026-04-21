@@ -27,7 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.traveldiary.model.TravelEntry
+import com.example.traveldiary.domain.model.TravelEntry
 
 @Composable
 fun FeaturedEntriesRow(

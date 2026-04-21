@@ -1,34 +1,33 @@
 package com.example.traveldiary.data
 
-import com.example.traveldiary.model.TravelEntry
+import com.example.traveldiary.data.entity.TravelEntryEntity
+import com.example.traveldiary.data.mapper.toDomain
+import com.example.traveldiary.data.mapper.toEntity
+import com.example.traveldiary.domain.model.TravelEntry
+import com.example.traveldiary.domain.repository.TravelRepository
 import kotlinx.coroutines.flow.Flow
-
-/**
- * Interfaz que define las operaciones de datos para los viajes.
- */
-interface TravelRepository {
-    fun getAllEntriesStream(): Flow<List<TravelEntry>>
-    fun getFavouriteEntriesStream(): Flow<List<TravelEntry>>
-    suspend fun getEntryStream(id: Int): TravelEntry?
-    suspend fun insertEntry(entry: TravelEntry)
-    suspend fun deleteEntry(entry: TravelEntry)
-    suspend fun updateEntry(entry: TravelEntry)
-}
+import kotlinx.coroutines.flow.map
 
 /**
  * Implementación de la interfaz [TravelRepository] que utiliza Room como fuente de datos.
  */
 class OfflineTravelRepository(private val travelDao: TravelDao) : TravelRepository {
     
-    override fun getAllEntriesStream(): Flow<List<TravelEntry>> = travelDao.getAllEntries()
+    override fun getAllEntriesStream(): Flow<List<TravelEntry>> = 
+        travelDao.getAllEntries().map { entities -> entities.map { it.toDomain() } }
     
-    override fun getFavouriteEntriesStream(): Flow<List<TravelEntry>> = travelDao.getFavouriteEntries()
+    override fun getFavouriteEntriesStream(): Flow<List<TravelEntry>> = 
+        travelDao.getFavouriteEntries().map { entities -> entities.map { it.toDomain() } }
 
-    override suspend fun getEntryStream(id: Int): TravelEntry? = travelDao.getEntryById(id)
+    override suspend fun getEntryStream(id: Int): TravelEntry? = 
+        travelDao.getEntryById(id)?.toDomain()
 
-    override suspend fun insertEntry(entry: TravelEntry) = travelDao.insertEntry(entry)
+    override suspend fun insertEntry(entry: TravelEntry) = 
+        travelDao.insertEntry(entry.toEntity())
 
-    override suspend fun deleteEntry(entry: TravelEntry) = travelDao.deleteEntry(entry)
+    override suspend fun deleteEntry(entry: TravelEntry) = 
+        travelDao.deleteEntry(entry.toEntity())
 
-    override suspend fun updateEntry(entry: TravelEntry) = travelDao.updateEntry(entry)
+    override suspend fun updateEntry(entry: TravelEntry) = 
+        travelDao.updateEntry(entry.toEntity())
 }

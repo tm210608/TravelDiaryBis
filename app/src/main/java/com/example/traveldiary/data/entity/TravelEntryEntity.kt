@@ -1,12 +1,14 @@
-package com.example.traveldiary.model
+package com.example.traveldiary.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-
 import java.time.Instant
 
+/**
+ * Room Entity for travel entries.
+ */
 @Entity(tableName = "travel_entries")
-data class TravelEntry(
+data class TravelEntryEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val title: String,

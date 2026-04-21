@@ -3,7 +3,7 @@ package com.example.traveldiary
 import android.content.Context
 import com.example.traveldiary.data.OfflineTravelRepository
 import com.example.traveldiary.data.TravelDatabase
-import com.example.traveldiary.data.TravelRepository
+import com.example.traveldiary.domain.repository.TravelRepository
 
 interface AppContainer {
     val repository: TravelRepository

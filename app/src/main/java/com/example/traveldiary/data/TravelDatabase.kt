@@ -5,9 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.traveldiary.model.TravelEntry
+import com.example.traveldiary.data.entity.TravelEntryEntity
 
-@Database(entities = [TravelEntry::class], version = 2, exportSchema = false)
+@Database(entities = [TravelEntryEntity::class], version = 2, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class TravelDatabase : RoomDatabase() {
     

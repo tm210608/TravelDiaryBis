@@ -4,8 +4,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.traveldiary.data.TravelRepository
-import com.example.traveldiary.model.TravelEntry
+import com.example.traveldiary.domain.repository.TravelRepository
+import com.example.traveldiary.domain.model.TravelEntry
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter

@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.traveldiary.data.TravelRepository
-import com.example.traveldiary.model.TravelEntry
+import com.example.traveldiary.domain.repository.TravelRepository
+import com.example.traveldiary.domain.model.TravelEntry
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -22,7 +22,7 @@ class HomeViewModel(private val repository: TravelRepository) : ViewModel() {
     val selectedTab: State<Int> = _selectedTab
 
     // Observar todas las entradas de la DB en tiempo real
-    val entriesList: StateFlow<List<TravelEntry>> = repository.allEntries
+    val entriesList: StateFlow<List<TravelEntry>> = repository.getAllEntriesStream()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
