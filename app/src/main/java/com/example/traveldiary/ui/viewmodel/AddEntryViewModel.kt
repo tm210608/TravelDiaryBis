@@ -1,9 +1,10 @@
 package com.example.traveldiary.ui.viewmodel
 
-import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
 import com.example.traveldiary.domain.repository.TravelRepository
 import com.example.traveldiary.domain.model.TravelEntry
 import java.time.Instant
@@ -11,17 +12,36 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
+
+/**
+ * Representa los estados de la pantalla de añadir entrada.
+ */
+data class AddEntryUiState(
+    val detalleEntrada: EntryDetails = EntryDetails(),
+    val esValido: Boolean = false,
+    val estaGuardando: Boolean = false,
+    val guardadoExitoso: Boolean = false,
+    val error: String? = null
+)
+
 class AddEntryViewModel(private val repository: TravelRepository) : ViewModel() {
 
     var uiState by mutableStateOf(AddEntryUiState())
         private set
 
     fun updateUiState(newDetails: EntryDetails) {
-        uiState = uiState.copy(entryDetails = newDetails, isEntryValid = validateInput(newDetails))
+        uiState = uiState.copy(
+            detalleEntrada = newDetails, 
+            esValido = validateInput(newDetails)
+        )
     }
 
     fun updateImageUrl(uri: String) {
-        uiState = uiState.copy(entryDetails = uiState.entryDetails.copy(imageUrl = uri))
+        uiState = uiState.copy(
+            detalleEntrada = uiState.detalleEntrada.copy(imageUrl = uri)
+        )
     }
 
     private fun validateInput(uiState: EntryDetails): Boolean {
@@ -30,19 +50,25 @@ class AddEntryViewModel(private val repository: TravelRepository) : ViewModel() 
         }
     }
 
-    suspend fun saveEntry(latitude: Double? = null, longitude: Double? = null) {
-        if (validateInput(uiState.entryDetails)) {
-            repository.insertEntry(
-                uiState.entryDetails.copy(latitude = latitude, longitude = longitude).toTravelEntry()
-            )
+    fun saveEntry(latitude: Double? = null, longitude: Double? = null) {
+        if (validateInput(uiState.detalleEntrada)) {
+            uiState = uiState.copy(estaGuardando = true)
+            viewModelScope.launch {
+                try {
+                    repository.insertEntry(
+                        uiState.detalleEntrada.copy(
+                            latitude = latitude, 
+                            longitude = longitude
+                        ).toTravelEntry()
+                    )
+                    uiState = uiState.copy(estaGuardando = false, guardadoExitoso = true)
+                } catch (e: Exception) {
+                    uiState = uiState.copy(estaGuardando = false, error = e.message)
+                }
+            }
         }
     }
 }
-
-data class AddEntryUiState(
-    val entryDetails: EntryDetails = EntryDetails(),
-    val isEntryValid: Boolean = false
-)
 
 data class EntryDetails(
     val id: Int = 0,
