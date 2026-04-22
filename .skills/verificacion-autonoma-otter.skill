@@ -1,0 +1,10 @@
+# Habilidad: Verificación Autónoma Otter
+# Descripción: Uso de Journeys y Logcat para validar flujos de usuario.
+
+## Instrucciones
+- Al desplegar en un dispositivo, abrir Logcat inmediatamente para filtrar errores por el tag de la aplicación.
+- Definir "Journeys" en lenguaje natural para que el Agente valide que los botones y flujos de navegación funcionan.
+- Realizar capturas de pantalla si una prueba visual falla para diagnosticar el problema de UI.
+
+## Reglas
+- No dar por completada una tarea de UI sin haber realizado una inspección visual (Screenshot) o un Journey exitoso.

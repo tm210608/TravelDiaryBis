@@ -1,0 +1,12 @@
+# Habilidad: Persistencia de Datos Robusta
+# Descripción: Estándares para la gestión de Room, Repositorios y Archivos Permanentes.
+
+## Instrucciones
+- Utilizar siempre `Result<T>` o envoltorios similares para capturar excepciones en la capa de datos.
+- Las imágenes de la cámara o galería deben moverse de la caché temporal a `context.filesDir` para garantizar su permanencia.
+- Implementar `TypeConverters` para objetos `java.time.Instant` y coordenadas geográficas.
+- Los repositorios deben inyectarse mediante interfaces usando Hilt (`@Binds`).
+
+## Reglas
+- PROHIBIDO: Pasar entidades de Room directamente a la capa de UI.
+- OBLIGATORIO: Usar Mappers para convertir Entities en Modelos de Dominio.

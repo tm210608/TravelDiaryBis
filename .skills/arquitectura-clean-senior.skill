@@ -1,0 +1,11 @@
+# Habilidad: Arquitectura Clean Senior
+# Descripción: Guía para mantener la separación de capas y la inyección de dependencias.
+
+## Instrucciones
+- Mantener la jerarquía: Data -> Domain -> Presentation.
+- Los ViewModels deben usar `HiltViewModel` y recibir sus dependencias (Casos de Uso o Repositorios) por constructor.
+- Definir Casos de Uso (UseCases) para cada acción de negocio para mantener los ViewModels delgados.
+
+## Reglas
+- Los modelos de Dominio no deben tener dependencias de Android ni de librerías de persistencia.
+- Toda lógica de negocio debe residir en el dominio o en el repositorio.
