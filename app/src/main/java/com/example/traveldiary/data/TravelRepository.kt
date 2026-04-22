@@ -8,10 +8,14 @@ import com.example.traveldiary.domain.repository.TravelRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
+import javax.inject.Inject
+import javax.inject.Singleton
+
 /**
  * Implementación de la interfaz [TravelRepository] que utiliza Room como fuente de datos.
  */
-class OfflineTravelRepository(private val travelDao: TravelDao) : TravelRepository {
+@Singleton
+class OfflineTravelRepository @Inject constructor(private val travelDao: TravelDao) : TravelRepository {
     
     override fun getAllEntriesStream(): Flow<List<TravelEntry>> = 
         travelDao.getAllEntries().map { entities -> entities.map { it.toDomain() } }

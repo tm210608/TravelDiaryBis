@@ -10,6 +10,9 @@ import com.example.traveldiary.ui.theme.TravelDiaryTheme
 import com.example.traveldiary.navigation.TravelDiaryNavGraph
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

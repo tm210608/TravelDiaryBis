@@ -1,6 +1,5 @@
 package com.example.traveldiary.ui.viewmodel
 
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshotFlow
@@ -8,12 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.traveldiary.domain.repository.TravelRepository
 import com.example.traveldiary.domain.model.TravelEntry
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Representa los diferentes estados de la pantalla de inicio.
@@ -28,7 +28,8 @@ sealed interface HomeUiState {
     data class Error(val mensaje: String) : HomeUiState
 }
 
-class HomeViewModel(private val repository: TravelRepository) : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(private val repository: TravelRepository) : ViewModel() {
     
     private val _filtroSeleccionado = mutableStateOf("All")
     private val _pestanaSeleccionada = mutableIntStateOf(0)

@@ -1,19 +1,19 @@
 package com.example.traveldiary.ui.viewmodel
 
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.traveldiary.domain.repository.TravelRepository
 import com.example.traveldiary.domain.model.TravelEntry
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * Representa los estados de la pantalla de añadir entrada.
@@ -26,7 +26,8 @@ data class AddEntryUiState(
     val error: String? = null
 )
 
-class AddEntryViewModel(private val repository: TravelRepository) : ViewModel() {
+@HiltViewModel
+class AddEntryViewModel @Inject constructor(private val repository: TravelRepository) : ViewModel() {
 
     var uiState by mutableStateOf(AddEntryUiState())
         private set
