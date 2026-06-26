@@ -1,0 +1,84 @@
+# Detekt Configuration - TravelDiaryBis
+# https://detekt.dev/docs/gettingstarted/config
+
+build:
+  maxIssues: 50
+
+processors:
+  active: true
+
+console-reports:
+  active: true
+  file: "build/reports/detekt/detekt.txt"
+
+output-reports:
+  active: true
+  file: "build/reports/detekt/"
+  enabled: true
+
+comments:
+  active: true
+  CommentOverPrivateFunction:
+    active: false
+  CommentOverPrivateProperty:
+    active: false
+  UndocumentedPublicClass:
+    active: false
+  UndocumentedPublicFunction:
+    active: false
+
+complexity:
+  active: true
+  ComplexCondition:
+    threshold: 4
+  CyclomaticComplexMethod:
+    threshold: 15
+  LargeClass:
+    threshold: 400
+  LongMethod:
+    threshold: 80
+  TooManyFunctions:
+    thresholdInFiles: 15
+    thresholdInClasses: 15
+
+exceptions:
+  active: true
+  TooGenericExceptionCaught:
+    active: false
+
+naming:
+  active: true
+  ConstructorParameterNaming:
+    parameterPattern: '[a-z][A-Za-z0-9]*'
+  InvalidPackageDeclaration:
+    rootPackage: com.example.traveldiary
+
+performance:
+  active: true
+  SpreadOperator:
+    active: false
+
+potential-bugs:
+  active: true
+  DuplicateCaseInWhenExpression:
+    active: true
+  MissingWhenCase:
+    active: true
+  UnreachableCode:
+    active: true
+
+style:
+  active: true
+  ForbiddenComment:
+    values:
+      - "TODO:"
+      - "FIXME:"
+      - "STOPSHIP:"
+  MagicNumber:
+    active: false
+  MaxLineLength:
+    maxLineLength: 140
+  UnusedPrivateMember:
+    active: true
+  WildcardImport:
+    active: false

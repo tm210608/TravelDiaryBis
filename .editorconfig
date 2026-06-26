@@ -1,0 +1,22 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 140
+
+[*.{kt,kts}]
+ktlint_standard_no-wildcard-imports = disabled
+ktlint_standard_chain-wrapping = disabled
+ktlint_standard_trailing-comma-on-call-site = disabled
+ktlint_standard_trailing-comma-on-declaration-site = disabled
+
+[*.xml]
+indent_size = 4
+
+[*.{yml,yaml}]
+indent_size = 2
