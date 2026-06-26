@@ -1,0 +1,5 @@
+name: "Apply-Clean-Architecture"
+description: "Refactoriza código existente siguiendo principios SOLID y Clean Architecture de Robert C. Martin, separando responsabilidades en capas domain, data y presentation."
+tags: ["refactor", "clean-architecture", "domain-driven-design", "solid"]
+extra:
+  schema: "skill/v1"

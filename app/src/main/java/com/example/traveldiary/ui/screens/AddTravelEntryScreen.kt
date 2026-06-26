@@ -1,5 +1,8 @@
 package com.example.traveldiary.ui.screens
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -11,15 +14,15 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.traveldiary.ui.viewmodel.AddEntryViewModel
-import com.example.traveldiary.ui.viewmodel.AppViewModelProvider
 import com.example.traveldiary.utils.LocationHelper
 import kotlinx.coroutines.launch
 
@@ -28,31 +31,54 @@ import kotlinx.coroutines.launch
 fun AddTravelEntryScreen(
     navigateBack: () -> Unit,
     onCameraClick: () -> Unit,
-    viewModel: AddEntryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: AddEntryViewModel
 ) {
     val coroutineScope = rememberCoroutineScope()
     val uiState = viewModel.uiState
     val context = LocalContext.current
     val locationHelper = remember { LocationHelper(context) }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    var hasLocationPermission by remember {
+        mutableStateOf(LocationHelper.hasLocationPermissions(context))
+    }
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        hasLocationPermission = permissions.values.any { it }
+    }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text("Nuevo Recuerdo") },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Atr\u00e1s")
                     }
                 },
                 actions = {
                     Button(
                         onClick = {
                             coroutineScope.launch {
-                                val location = locationHelper.getCurrentLocation()
+                                if (!hasLocationPermission) {
+                                    locationPermissionLauncher.launch(
+                                        arrayOf(
+                                            Manifest.permission.ACCESS_FINE_LOCATION,
+                                            Manifest.permission.ACCESS_COARSE_LOCATION
+                                        )
+                                    )
+                                }
+                                val location = if (hasLocationPermission) {
+                                    locationHelper.getCurrentLocation()
+                                } else null
                                 viewModel.saveEntry(
                                     latitude = location?.latitude,
                                     longitude = location?.longitude
                                 )
+                                snackbarHostState.showSnackbar("Entrada guardada correctamente")
                                 navigateBack()
                             }
                         },
@@ -75,7 +101,6 @@ fun AddTravelEntryScreen(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Previsualización de Imagen
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -83,17 +108,17 @@ fun AddTravelEntryScreen(
                     .clip(RoundedCornerShape(16.dp))
                     .background(MaterialTheme.colorScheme.surfaceVariant)
                     .clickable { onCameraClick() },
-                contentAlignment = androidx.compose.ui.Alignment.Center
+                contentAlignment = Alignment.Center
             ) {
                 if (uiState.entryDetails.imageUrl.startsWith("http")) {
-                   Icon(Icons.Default.Camera, contentDescription = null, modifier = Modifier.size(48.dp))
-                   Text("Pulsa para tomar una foto", modifier = Modifier.padding(top = 64.dp))
+                    Icon(Icons.Default.Camera, contentDescription = null, modifier = Modifier.size(48.dp))
+                    Text("Pulsa para tomar una foto", modifier = Modifier.padding(top = 64.dp))
                 } else {
-                    coil.compose.AsyncImage(
+                    AsyncImage(
                         model = uiState.entryDetails.imageUrl,
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                        contentScale = ContentScale.Crop
                     )
                 }
             }
@@ -101,7 +126,7 @@ fun AddTravelEntryScreen(
             OutlinedTextField(
                 value = uiState.entryDetails.title,
                 onValueChange = { viewModel.updateUiState(uiState.entryDetails.copy(title = it)) },
-                label = { Text("Título del Viaje") },
+                label = { Text("T\u00edtulo del Viaje") },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -110,14 +135,14 @@ fun AddTravelEntryScreen(
                 OutlinedTextField(
                     value = uiState.entryDetails.location,
                     onValueChange = { viewModel.updateUiState(uiState.entryDetails.copy(location = it)) },
-                    label = { Text("Ubicación") },
+                    label = { Text("Ubicaci\u00f3n") },
                     modifier = Modifier.weight(1f),
                     singleLine = true
                 )
                 OutlinedTextField(
                     value = uiState.entryDetails.country,
                     onValueChange = { viewModel.updateUiState(uiState.entryDetails.copy(country = it)) },
-                    label = { Text("País") },
+                    label = { Text("Pa\u00eds") },
                     modifier = Modifier.weight(1f),
                     singleLine = true
                 )
@@ -133,14 +158,14 @@ fun AddTravelEntryScreen(
             OutlinedTextField(
                 value = uiState.entryDetails.description,
                 onValueChange = { viewModel.updateUiState(uiState.entryDetails.copy(description = it)) },
-                label = { Text("Cuéntanos tu historia...") },
+                label = { Text("Cu\u00e9ntanos tu historia...") },
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 150.dp)
             )
-            
+
             Text(
-                text = "La foto y las coordenadas GPS se añadirán automáticamente.",
+                text = "La foto y las coordenadas GPS se a\u00f1adir\u00e1n autom\u00e1ticamente.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

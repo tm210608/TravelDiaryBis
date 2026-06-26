@@ -1,0 +1,5 @@
+name: "Secure-Data-Flow"
+description: "Implementa persistencia robusta usando Room con TypeConverters, manejo de migraciones, y almacenamiento de imágenes en filesDir en lugar de cacheDir."
+tags: ["room", "persistence", "migrations", "files"]
+extra:
+  schema: "skill/v1"

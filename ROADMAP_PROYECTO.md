@@ -9,15 +9,15 @@ Este documento define la estrategia de evolución del proyecto para garantizar e
 ### Hito 1: Estabilización de Capa de Datos (Cimientos)
 - [x] Implementar `TypeConverters` para fechas (usando `java.time`) y coordenadas.
 - [x] Migrar el almacenamiento de imágenes de `cacheDir` a `filesDir` (almacenamiento persistente).
-- [ ] Implementar una estrategia de gestión de errores en `Repository`.
+- [x] Implementar una estrategia de gestión de errores en `Repository`.
 
 ### Hito 2: Arquitectura y Reactividad
-- [ ] Integrar **Hilt** para inyección de dependencias (reemplazando factorías manuales).
-- [ ] Refactorizar estados de UI a `sealed class` (Manejo de estados: `Loading`, `Success`, `Error`).
+- [x] Integrar **Hilt** para inyección de dependencias (reemplazando factorías manuales).
+- [x] Refactorizar estados de UI a `sealed class` (Manejo de estados: `Loading`, `Success`, `Error`).
 
 ### Hito 3: UX y Resiliencia
-- [ ] Implementar manejo robusto de permisos (Camera/Location/Rationale).
-- [ ] Añadir `Snackbar` para feedback al usuario ante errores o acciones exitosas.
+- [x] Implementar manejo robusto de permisos (Camera/Location/Rationale).
+- [x] Añadir `Snackbar` para feedback al usuario ante errores o acciones exitosas.
 
 ### Hito 4: Calidad (Testing)
 - [ ] Unit Testing para `ViewModel` (usando JUnit 5 y MockK).

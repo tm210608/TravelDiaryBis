@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.traveldiary.model.TravelEntry
+import com.example.traveldiary.ui.viewmodel.formatToDisplay
 
 @Composable
 fun FeaturedEntriesRow(
@@ -135,7 +136,7 @@ fun FeaturedCard(
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
                     Text(
-                        text = entry.date,
+                        text = entry.date.formatToDisplay(),
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.White.copy(alpha = 0.78f),
                     )
@@ -144,7 +145,7 @@ fun FeaturedCard(
                         color = Color.White.copy(alpha = 0.18f),
                     ) {
                         Text(
-                            text = "📍 ${entry.location}, ${entry.country}",
+                            text = "\uD83D\uDCCD ${entry.location}, ${entry.country}",
                             style = MaterialTheme.typography.labelSmall,
                             color = Color.White,
                             modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp),
@@ -238,7 +239,7 @@ fun EntryListCard(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
-                        text = entry.date,
+                        text = entry.date.formatToDisplay(),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

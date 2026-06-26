@@ -1,13 +1,18 @@
 package com.example.traveldiary.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.traveldiary.ui.screens.TravelDiaryHomeScreen
+import com.example.traveldiary.ui.screens.AddTravelEntryScreen
+import com.example.traveldiary.ui.screens.CameraScreen
 import com.example.traveldiary.ui.screens.TravelDetailScreen
+import com.example.traveldiary.ui.screens.TravelDiaryHomeScreen
+import com.example.traveldiary.ui.viewmodel.AddEntryViewModel
 
 @Composable
 fun TravelDiaryNavGraph(navController: NavHostController) {
@@ -25,18 +30,16 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                 }
             )
         }
-        
+
         composable(Screen.AddEntry.route) { backStackEntry ->
             val result = backStackEntry.savedStateHandle.get<String>("capturedImageUri")
-            val viewModel: com.example.traveldiary.ui.viewmodel.AddEntryViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
-                factory = com.example.traveldiary.ui.viewmodel.AppViewModelProvider.Factory
-            )
-            
-            androidx.compose.runtime.LaunchedEffect(result) {
+            val viewModel: AddEntryViewModel = hiltViewModel()
+
+            LaunchedEffect(result) {
                 result?.let { viewModel.updateImageUrl(it) }
             }
 
-            com.example.traveldiary.ui.screens.AddTravelEntryScreen(
+            AddTravelEntryScreen(
                 navigateBack = { navController.popBackStack() },
                 onCameraClick = { navController.navigate(Screen.Camera.route) },
                 viewModel = viewModel
@@ -53,9 +56,9 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                 onBackClick = { navController.popBackStack() }
             )
         }
-        
+
         composable(Screen.Camera.route) {
-            com.example.traveldiary.ui.screens.CameraScreen(
+            CameraScreen(
                 onImageCaptured = { uri ->
                     navController.previousBackStackEntry?.savedStateHandle?.set("capturedImageUri", uri.toString())
                     navController.popBackStack()

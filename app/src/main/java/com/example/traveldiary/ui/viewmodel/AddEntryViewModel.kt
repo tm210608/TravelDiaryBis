@@ -4,14 +4,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.traveldiary.data.TravelRepository
 import com.example.traveldiary.model.TravelEntry
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import javax.inject.Inject
 
-class AddEntryViewModel(private val repository: TravelRepository) : ViewModel() {
+@HiltViewModel
+class AddEntryViewModel @Inject constructor(
+    private val repository: TravelRepository
+) : ViewModel() {
 
     var uiState by mutableStateOf(AddEntryUiState())
         private set
@@ -32,9 +39,11 @@ class AddEntryViewModel(private val repository: TravelRepository) : ViewModel() 
 
     suspend fun saveEntry(latitude: Double? = null, longitude: Double? = null) {
         if (validateInput(uiState.entryDetails)) {
-            repository.insertEntry(
-                uiState.entryDetails.copy(latitude = latitude, longitude = longitude).toTravelEntry()
-            )
+            try {
+                repository.insertEntry(
+                    uiState.entryDetails.copy(latitude = latitude, longitude = longitude).toTravelEntry()
+                )
+            } catch (_: Exception) { }
         }
     }
 }

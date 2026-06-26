@@ -14,22 +14,21 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.traveldiary.model.TravelEntry
-import com.example.traveldiary.model.allEntries
-import com.example.traveldiary.model.featuredEntries
 import com.example.traveldiary.model.filterChips
 import com.example.traveldiary.ui.components.*
+import com.example.traveldiary.ui.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TravelDiaryHomeScreen(
     onEntryClick: (TravelEntry) -> Unit = {},
     onAddClick: () -> Unit = {},
-    viewModel: com.example.traveldiary.ui.viewmodel.HomeViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
-        factory = com.example.traveldiary.ui.viewmodel.AppViewModelProvider.Factory
-    )
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     val entriesList by viewModel.entriesList.collectAsState()
+    val searchQuery by viewModel.searchQuery.collectAsState()
     val selectedChip by viewModel.selectedChip
     val selectedTab by viewModel.selectedTab
 
@@ -62,19 +61,18 @@ fun TravelDiaryHomeScreen(
                 .padding(innerPadding),
             contentPadding = PaddingValues(bottom = 24.dp),
         ) {
-            // Cabecera superior
             item { TopBar() }
 
-            // Barra de búsqueda
             item {
                 SearchBar(
+                    query = searchQuery,
+                    onQueryChanged = { viewModel.onSearchQueryChanged(it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                 )
             }
 
-            // Chips de filtrado
             item {
                 FilterChipsRow(
                     chips = filterChips,
@@ -83,7 +81,6 @@ fun TravelDiaryHomeScreen(
                 )
             }
 
-            // Sección de destacados
             item {
                 SectionHeader(
                     title = "Momentos Destacados",
@@ -99,7 +96,6 @@ fun TravelDiaryHomeScreen(
                 )
             }
 
-            // Lista completa de entradas
             item {
                 SectionHeader(
                     title = "Todos los Viajes",

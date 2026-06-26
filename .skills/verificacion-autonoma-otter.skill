@@ -1,0 +1,5 @@
+name: "Otter-Autonomous-Verification"
+description: "Agente autónomo que verifica la calidad del código: estructura de paquetes, uso correcto de Hilt, Room, y buenas prácticas de Compose."
+tags: ["verification", "code-review", "quality"]
+extra:
+  schema: "skill/v1"

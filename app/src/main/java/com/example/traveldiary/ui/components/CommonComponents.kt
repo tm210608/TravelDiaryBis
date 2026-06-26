@@ -31,7 +31,7 @@ fun TopBar() {
     ) {
         Column {
             Text(
-                text = "Bienvenido de nuevo 👋",
+                text = "Bienvenido de nuevo \uD83D\uDC4B",
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -41,7 +41,6 @@ fun TopBar() {
                 color = MaterialTheme.colorScheme.onSurface,
             )
         }
-        // Avatar
         Box(
             modifier = Modifier
                 .size(42.dp)
@@ -67,12 +66,15 @@ fun TopBar() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(modifier: Modifier = Modifier) {
+fun SearchBar(
+    query: String = "",
+    onQueryChanged: (String) -> Unit = {},
+    modifier: Modifier = Modifier
+) {
     OutlinedTextField(
-        value = "",
-        onValueChange = {},
+        value = query,
+        onValueChange = onQueryChanged,
         modifier = modifier,
-        readOnly = true,
         placeholder = {
             Text(
                 "Buscar destinos, recuerdos...",
@@ -86,6 +88,17 @@ fun SearchBar(modifier: Modifier = Modifier) {
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+        },
+        trailingIcon = {
+            if (query.isNotEmpty()) {
+                IconButton(onClick = { onQueryChanged("") }) {
+                    Icon(
+                        imageVector = Icons.Outlined.Close,
+                        contentDescription = "Limpiar b\u00fasqueda",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
         },
         shape = RoundedCornerShape(28.dp),
         colors = OutlinedTextFieldDefaults.colors(

@@ -1,5 +1,7 @@
 package com.example.traveldiary.ui.screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -20,30 +22,84 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.traveldiary.model.allEntries
-import com.example.traveldiary.model.featuredEntries
+import com.example.traveldiary.ui.viewmodel.DetailUiState
+import com.example.traveldiary.ui.viewmodel.DetailViewModel
+import com.example.traveldiary.ui.viewmodel.formatToDisplay
 
 @Composable
 fun TravelDetailScreen(
     entryId: Int,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    viewModel: DetailViewModel = hiltViewModel()
 ) {
-    val entry = (allEntries + featuredEntries).find { it.id == entryId } ?: return
-    var isFavourite by remember { mutableStateOf(entry.isFavourite) }
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(entryId) {
+        viewModel.loadEntry(entryId)
+    }
+
+    when (val state = uiState) {
+        is DetailUiState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+        is DetailUiState.Error -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(text = state.message, color = MaterialTheme.colorScheme.error)
+                    Spacer(Modifier.height(16.dp))
+                    Button(onClick = { viewModel.loadEntry(entryId) }) {
+                        Text("Reintentar")
+                    }
+                }
+            }
+        }
+        is DetailUiState.Success -> {
+            val entry = state.entry
+            TravelDetailContent(
+                entry = com.example.traveldiary.ui.viewmodel.EntryDetails(
+                    id = entry.id,
+                    title = entry.title,
+                    location = entry.location,
+                    country = entry.country,
+                    date = entry.date,
+                    tag = entry.tag,
+                    description = entry.description,
+                    imageUrl = entry.imageUrl,
+                    latitude = entry.latitude,
+                    longitude = entry.longitude,
+                    isFavourite = entry.isFavourite
+                ),
+                onBackClick = onBackClick,
+                onFavouriteClick = { viewModel.toggleFavourite(entry.id, entry.isFavourite) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun TravelDetailContent(
+    entry: com.example.traveldiary.ui.viewmodel.EntryDetails,
+    onBackClick: () -> Unit,
+    onFavouriteClick: () -> Unit
+) {
+    val context = LocalContext.current
 
     Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-        // Contenido Scrollable
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            // Imagen de Cabecera
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -55,7 +111,6 @@ fun TravelDetailScreen(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
-                // Degradado para que el texto sobre la imagen se lea bien
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -66,8 +121,7 @@ fun TravelDetailScreen(
                             )
                         )
                 )
-                
-                // Título y Ubicación sobre la imagen
+
                 Column(
                     modifier = Modifier
                         .align(Alignment.BottomStart)
@@ -95,18 +149,16 @@ fun TravelDetailScreen(
                 }
             }
 
-            // Cuerpo de la noticia/viaje
             Column(
                 modifier = Modifier
                     .padding(24.dp)
                     .fillMaxWidth()
             ) {
-                // Info rápida (Fecha y Lugar)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    InfoChip(icon = Icons.Default.CalendarToday, text = entry.date)
+                    InfoChip(icon = Icons.Default.CalendarToday, text = entry.date.formatToDisplay())
                     InfoChip(icon = Icons.Default.LocationOn, text = "${entry.location}, ${entry.country}")
                 }
 
@@ -129,13 +181,20 @@ fun TravelDetailScreen(
                 if (entry.latitude != null && entry.longitude != null) {
                     Spacer(modifier = Modifier.height(32.dp))
                     Text(
-                        text = "Ubicación",
+                        text = "Ubicaci\u00f3n",
                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.height(12.dp))
-                    // Placeholder decorativo del mapa
                     Card(
+                        onClick = {
+                            val gmmIntentUri = Uri.parse("geo:${entry.latitude},${entry.longitude}?q=${entry.latitude},${entry.longitude}")
+                            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                            mapIntent.setPackage("com.google.android.apps.maps")
+                            if (mapIntent.resolveActivity(context.packageManager) != null) {
+                                context.startActivity(mapIntent)
+                            }
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(180.dp),
@@ -143,18 +202,17 @@ fun TravelDetailScreen(
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                     ) {
                         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 Icon(Icons.Default.LocationOn, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(32.dp))
-                                Text("Vista de Mapa: ${String.format("%.4f", entry.latitude)}, ${String.format("%.4f", entry.longitude)}")
-                                Text("Google Maps configurado", style = MaterialTheme.typography.labelSmall)
-                             }
+                                Text("${String.format("%.4f", entry.latitude)}, ${String.format("%.4f", entry.longitude)}")
+                                Text("Toca para abrir en Google Maps", style = MaterialTheme.typography.labelSmall)
+                            }
                         }
                     }
                 }
 
                 Spacer(modifier = Modifier.height(40.dp))
-                
-                // Tarjeta de "Estadísticas" o Curiosidad
+
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)),
@@ -165,8 +223,8 @@ fun TravelDetailScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            Icons.Default.Share, 
-                            contentDescription = null, 
+                            Icons.Default.Share,
+                            contentDescription = null,
                             tint = MaterialTheme.colorScheme.primary
                         )
                         Spacer(modifier = Modifier.width(16.dp))
@@ -177,12 +235,11 @@ fun TravelDetailScreen(
                         )
                     }
                 }
-                
-                Spacer(modifier = Modifier.height(100.dp)) // Espacio final
+
+                Spacer(modifier = Modifier.height(100.dp))
             }
         }
 
-        // Botones Flotantes Superiores (Back y Favourite)
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -194,16 +251,16 @@ fun TravelDetailScreen(
                 onClick = onBackClick
             )
             GlassActionButton(
-                icon = if (isFavourite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
-                tint = if (isFavourite) Color(0xFFEF5350) else Color.White,
-                onClick = { isFavourite = !isFavourite }
+                icon = if (entry.isFavourite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
+                tint = if (entry.isFavourite) Color(0xFFEF5350) else Color.White,
+                onClick = onFavouriteClick
             )
         }
     }
 }
 
 @Composable
-fun InfoChip(icon: androidx.compose.ui.graphics.vector.ImageVector, text: String) {
+fun InfoChip(icon: ImageVector, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
             imageVector = icon,
@@ -222,7 +279,7 @@ fun InfoChip(icon: androidx.compose.ui.graphics.vector.ImageVector, text: String
 
 @Composable
 fun GlassActionButton(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: ImageVector,
     tint: Color = Color.White,
     onClick: () -> Unit
 ) {

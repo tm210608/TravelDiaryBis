@@ -1,8 +1,12 @@
 package com.example.traveldiary.ui.screens
 
+import android.Manifest
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -15,7 +19,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -38,12 +41,52 @@ fun CameraScreen(
     onClose: () -> Unit
 ) {
     val context = LocalContext.current
+    var hasCameraPermission by remember { mutableStateOf(checkCameraPermission(context)) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        hasCameraPermission = granted
+        if (!granted) {
+            Toast.makeText(context, "Permiso de c\u00e1mara requerido", Toast.LENGTH_LONG).show()
+            onClose()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (!hasCameraPermission) {
+            permissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    if (hasCameraPermission) {
+        CameraPreview(
+            onImageCaptured = onImageCaptured,
+            onClose = onClose
+        )
+    } else {
+        Box(modifier = Modifier.fillMaxSize().background(Color.Black), contentAlignment = Alignment.Center) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Solicitando permisos de c\u00e1mara...", color = Color.White)
+                Spacer(Modifier.height(16.dp))
+                CircularProgressIndicator(color = Color.White)
+            }
+        }
+    }
+}
+
+@Composable
+private fun CameraPreview(
+    onImageCaptured: (Uri) -> Unit,
+    onClose: () -> Unit
+) {
+    val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    
+
     val previewView = remember { PreviewView(context) }
     val imageCapture = remember { ImageCapture.Builder().build() }
     val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-    
+
     LaunchedEffect(Unit) {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
         cameraProviderFuture.addListener({
@@ -51,17 +94,11 @@ fun CameraScreen(
             val preview = Preview.Builder().build().also {
                 it.setSurfaceProvider(previewView.surfaceProvider)
             }
-            
             try {
                 cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
-                    lifecycleOwner,
-                    cameraSelector,
-                    preview,
-                    imageCapture
-                )
+                cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageCapture)
             } catch (e: Exception) {
-                Log.e("CameraScreen", "Fallo al conectar la cámara", e)
+                Log.e("CameraScreen", "Fallo al conectar la c\u00e1mara", e)
             }
         }, ContextCompat.getMainExecutor(context))
     }
@@ -100,6 +137,11 @@ fun CameraScreen(
                 }
         )
     }
+}
+
+private fun checkCameraPermission(context: Context): Boolean {
+    return ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
+            android.content.pm.PackageManager.PERMISSION_GRANTED
 }
 
 private fun takePhoto(
