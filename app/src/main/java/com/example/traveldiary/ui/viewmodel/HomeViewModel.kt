@@ -22,7 +22,7 @@ class HomeViewModel(private val repository: TravelRepository) : ViewModel() {
     val selectedTab: State<Int> = _selectedTab
 
     // Observar todas las entradas de la DB en tiempo real
-    val entriesList: StateFlow<List<TravelEntry>> = repository.allEntries
+    val entriesList: StateFlow<List<TravelEntry>> = repository.getAllEntriesStream()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

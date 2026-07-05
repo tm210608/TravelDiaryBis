@@ -7,9 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.example.traveldiary.data.TravelRepository
 import com.example.traveldiary.model.TravelEntry
 import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 class AddEntryViewModel(private val repository: TravelRepository) : ViewModel() {
 
@@ -72,9 +69,4 @@ fun EntryDetails.toTravelEntry(): TravelEntry = TravelEntry(
     isFavourite = isFavourite
 )
 
-fun Instant.formatToDisplay(): String {
-    val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
-        .withLocale(Locale.getDefault())
-        .withZone(ZoneId.systemDefault())
-    return formatter.format(this)
-}
+
