@@ -1,17 +1,21 @@
 [versions]
-agp = "8.5.2"
-kotlin = "2.0.20"
-composeBom = "2024.09.00"
+agp = "8.5.0"
+kotlin = "2.0.0"
+composeBom = "2024.06.00"
 room = "2.6.1"
-activityCompose = "1.9.2"
+activityCompose = "1.9.0"
 coreKtx = "1.13.1"
-lifecycleRuntimeKtx = "2.8.5"
-navigationCompose = "2.8.0"
-camerax = "1.3.4"
-coil = "2.7.0"
+lifecycleRuntimeKtx = "2.8.0"
+navigationCompose = "2.7.7"
+camerax = "1.3.1"
+coil = "2.6.0"
 playServicesLocation = "21.3.0"
 coreSplashscreen = "1.0.1"
 coroutines = "1.8.1"
+hilt = "2.51.1"
+hiltNavCompose = "1.2.0"
+serializationJson = "1.7.0"
+ksp = "2.0.0-1.0.21"
 
 [libraries]
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -49,8 +53,16 @@ coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutines" }
 
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavCompose" }
+
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serializationJson" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp", version = "2.0.20-1.0.24" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
