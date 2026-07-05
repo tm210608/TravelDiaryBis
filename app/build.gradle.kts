@@ -80,4 +80,8 @@ dependencies {
     implementation(libs.play.services.location)
 
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
+    implementation(libs.coroutines.play.services)
 }
