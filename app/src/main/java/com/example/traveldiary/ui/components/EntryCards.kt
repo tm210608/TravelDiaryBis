@@ -28,7 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.traveldiary.model.TravelEntry
-import com.example.traveldiary.ui.viewmodel.formatToDisplay
+import com.example.traveldiary.model.formatToDisplay
 
 @Composable
 fun FeaturedEntriesRow(
