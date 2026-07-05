@@ -7,11 +7,10 @@
         <!-- Color de fondo (nuestro azul marino premium) -->
         <item name="windowSplashScreenBackground">#0F0F28</item>
         <!-- Tema al que cambiar después de la splash -->
-        <item name="postSplashScreenTheme">@style/Theme.Material3.DayNight.NoActionBar</item>
+        <item name="postSplashScreenTheme">@style/Theme.App.PostSplash</item>
     </style>
 
-    <style name="Theme.Material3.DayNight.NoActionBar" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Configuraciones adicionales del tema post-splash -->
+    <style name="Theme.App.PostSplash" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:statusBarColor">#0F0F28</item>
     </style>
 </resources>
