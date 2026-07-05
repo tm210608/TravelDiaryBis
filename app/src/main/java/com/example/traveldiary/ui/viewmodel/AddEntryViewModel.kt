@@ -10,9 +10,6 @@ import com.example.traveldiary.model.TravelEntry
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -81,9 +78,4 @@ fun EntryDetails.toTravelEntry(): TravelEntry = TravelEntry(
     isFavourite = isFavourite
 )
 
-fun Instant.formatToDisplay(): String {
-    val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
-        .withLocale(Locale.getDefault())
-        .withZone(ZoneId.systemDefault())
-    return formatter.format(this)
-}
+
