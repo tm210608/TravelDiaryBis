@@ -1,6 +1,7 @@
 package com.example.traveldiary.utils
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -13,6 +14,7 @@ class LocationHelper(context: Context) {
     private val fusedLocationClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
 
+    @SuppressLint("MissingPermission")
     suspend fun getCurrentLocation(): Location? {
         return try {
             fusedLocationClient.lastLocation.await()
