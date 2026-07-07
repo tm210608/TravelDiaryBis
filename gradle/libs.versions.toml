@@ -13,6 +13,9 @@ coil = "2.6.0"
 playServicesLocation = "21.3.0"
 coreSplashscreen = "1.0.1"
 coroutines = "1.8.1"
+mockk = "1.13.12"
+turbine = "1.1.0"
+junit = "4.13.2"
 hilt = "2.51.1"
 hiltNavCompose = "1.2.0"
 serializationJson = "1.7.0"
@@ -61,6 +64,12 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serializationJson" }
 
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+# Test
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
