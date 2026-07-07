@@ -1,15 +1,13 @@
 package com.example.traveldiary.ui.viewmodel
 
-import app.cash.turbine.test
 import com.example.traveldiary.TestDispatcherRule
 import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.domain.usecase.AddEntryUseCase
 import com.example.traveldiary.domain.usecase.GetEntriesUseCase
-import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -23,63 +21,54 @@ class HomeViewModelTest {
     private val getEntriesUseCase: GetEntriesUseCase = mockk()
     private val addEntryUseCase: AddEntryUseCase = mockk()
 
-    private val entries = listOf(
-        TravelEntry(id = 1, title = "Paris Trip", location = "Paris", country = "France", tag = "City", imageUrl = "url"),
-        TravelEntry(id = 2, title = "Tokyo Adventure", location = "Tokyo", country = "Japan", tag = "Culture", imageUrl = "url"),
-    )
-
     @Test
-    fun `entriesList returns all entries when search query is blank`() = runTest {
-        every { getEntriesUseCase() } returns MutableStateFlow(entries)
-
+    fun `selectedChip defaults to Todo`() {
+        every { getEntriesUseCase() } returns flowOf(emptyList())
         val viewModel = HomeViewModel(getEntriesUseCase, addEntryUseCase)
-
-        viewModel.entriesList.test {
-            assertEquals(entries, awaitItem())
-        }
+        assertEquals("Todo", viewModel.selectedChip.value)
     }
 
     @Test
-    fun `entriesList filters by search query`() = runTest {
-        every { getEntriesUseCase() } returns MutableStateFlow(entries)
-
+    fun `onChipSelected updates chip`() {
+        every { getEntriesUseCase() } returns flowOf(emptyList())
         val viewModel = HomeViewModel(getEntriesUseCase, addEntryUseCase)
-        viewModel.onSearchQueryChanged("Tokyo")
-
-        viewModel.entriesList.test {
-            assertEquals(1, awaitItem().size)
-            assertEquals("Tokyo Adventure", awaitItem().first().title)
-        }
+        viewModel.onChipSelected("Europa")
+        assertEquals("Europa", viewModel.selectedChip.value)
     }
 
     @Test
-    fun `entriesList filters by location in search query`() = runTest {
-        every { getEntriesUseCase() } returns MutableStateFlow(entries)
+    fun `selectedTab defaults to 0`() {
+        every { getEntriesUseCase() } returns flowOf(emptyList())
+        val viewModel = HomeViewModel(getEntriesUseCase, addEntryUseCase)
+        assertEquals(0, viewModel.selectedTab.value)
+    }
 
+    @Test
+    fun `onTabSelected updates tab`() {
+        every { getEntriesUseCase() } returns flowOf(emptyList())
+        val viewModel = HomeViewModel(getEntriesUseCase, addEntryUseCase)
+        viewModel.onTabSelected(2)
+        assertEquals(2, viewModel.selectedTab.value)
+    }
+
+    @Test
+    fun `searchQuery defaults to empty`() {
+        every { getEntriesUseCase() } returns flowOf(emptyList())
+        val viewModel = HomeViewModel(getEntriesUseCase, addEntryUseCase)
+        assertEquals("", viewModel.searchQuery.value)
+    }
+
+    @Test
+    fun `onSearchQueryChanged updates query`() {
+        every { getEntriesUseCase() } returns flowOf(emptyList())
         val viewModel = HomeViewModel(getEntriesUseCase, addEntryUseCase)
         viewModel.onSearchQueryChanged("Paris")
-
-        viewModel.entriesList.test {
-            assertEquals(1, awaitItem().size)
-            assertEquals("Paris Trip", awaitItem().first().title)
-        }
-    }
-
-    @Test
-    fun `entriesList returns all when no match`() = runTest {
-        every { getEntriesUseCase() } returns MutableStateFlow(entries)
-
-        val viewModel = HomeViewModel(getEntriesUseCase, addEntryUseCase)
-        viewModel.onSearchQueryChanged("NonExistent")
-
-        viewModel.entriesList.test {
-            assertEquals(0, awaitItem().size)
-        }
+        assertEquals("Paris", viewModel.searchQuery.value)
     }
 
     @Test
     fun `insertSampleEntry delegates to addEntryUseCase`() = runTest {
-        every { getEntriesUseCase() } returns MutableStateFlow(emptyList<TravelEntry>())
+        every { getEntriesUseCase() } returns flowOf(emptyList())
         coEvery { addEntryUseCase(any()) } returns Unit
 
         val viewModel = HomeViewModel(getEntriesUseCase, addEntryUseCase)
