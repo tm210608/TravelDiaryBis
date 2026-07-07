@@ -1,7 +1,5 @@
-package com.example.traveldiary.model
+package com.example.traveldiary.domain.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -14,9 +12,7 @@ fun Instant.formatToDisplay(): String {
     return formatter.format(this)
 }
 
-@Entity(tableName = "travel_entries")
 data class TravelEntry(
-    @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val title: String,
     val location: String,

@@ -1,4 +1,4 @@
-package com.example.traveldiary.data
+package com.example.traveldiary.data.local
 
 import androidx.room.TypeConverter
 import java.time.Instant

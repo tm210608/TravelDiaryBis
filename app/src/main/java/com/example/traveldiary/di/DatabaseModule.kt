@@ -1,10 +1,10 @@
 package com.example.traveldiary.di
 
 import android.content.Context
-import com.example.traveldiary.data.OfflineTravelRepository
-import com.example.traveldiary.data.TravelDao
-import com.example.traveldiary.data.TravelDatabase
-import com.example.traveldiary.data.TravelRepository
+import com.example.traveldiary.data.local.TravelDao
+import com.example.traveldiary.data.local.TravelDatabase
+import com.example.traveldiary.data.repository.TravelRepositoryImpl
+import com.example.traveldiary.domain.repository.TravelRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,5 +26,5 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideTravelRepository(dao: TravelDao): TravelRepository = OfflineTravelRepository(dao)
+    fun provideTravelRepository(dao: TravelDao): TravelRepository = TravelRepositoryImpl(dao)
 }

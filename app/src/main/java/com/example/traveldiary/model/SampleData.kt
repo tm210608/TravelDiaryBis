@@ -1,5 +1,6 @@
 package com.example.traveldiary.model
 
+import com.example.traveldiary.domain.model.TravelEntry
 import java.time.Instant
 
 val featuredEntries = listOf(

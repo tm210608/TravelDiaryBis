@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.traveldiary.model.formatToDisplay
+import com.example.traveldiary.domain.model.formatToDisplay
 import com.example.traveldiary.ui.viewmodel.DetailUiState
 import com.example.traveldiary.ui.viewmodel.DetailViewModel
 
