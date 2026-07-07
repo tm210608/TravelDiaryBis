@@ -2,9 +2,9 @@ package com.example.traveldiary.ui.viewmodel
 
 import com.example.traveldiary.TestDispatcherRule
 import com.example.traveldiary.domain.usecase.AddEntryUseCase
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -45,7 +45,7 @@ class AddEntryViewModelTest {
 
     @Test
     fun `saveEntry calls use case when valid`() = runTest {
-        every { addEntryUseCase(any()) } returns Unit
+        coEvery { addEntryUseCase(any()) } returns Unit
 
         viewModel.updateUiState(EntryDetails(
             title = "Trip",
@@ -56,7 +56,7 @@ class AddEntryViewModelTest {
         ))
         viewModel.saveEntry()
 
-        verify(atLeast = 1) { addEntryUseCase(any()) }
+        coVerify(atLeast = 1) { addEntryUseCase(any()) }
     }
 
     @Test
@@ -64,7 +64,7 @@ class AddEntryViewModelTest {
         val viewModel = AddEntryViewModel(addEntryUseCase)
         viewModel.saveEntry()
 
-        verify(exactly = 0) { addEntryUseCase(any()) }
+        coVerify(exactly = 0) { addEntryUseCase(any()) }
     }
 
     @Test
