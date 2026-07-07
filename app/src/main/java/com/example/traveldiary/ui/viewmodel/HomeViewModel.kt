@@ -5,8 +5,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.traveldiary.data.TravelRepository
-import com.example.traveldiary.model.TravelEntry
+import com.example.traveldiary.domain.model.TravelEntry
+import com.example.traveldiary.domain.usecase.AddEntryUseCase
+import com.example.traveldiary.domain.usecase.GetEntriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val repository: TravelRepository
+    private val getEntriesUseCase: GetEntriesUseCase,
+    private val addEntryUseCase: AddEntryUseCase,
 ) : ViewModel() {
 
     private val _selectedChip = mutableStateOf("Todo")
@@ -30,7 +32,7 @@ class HomeViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
 
-    private val _allEntries: StateFlow<List<TravelEntry>> = repository.getAllEntriesStream()
+    private val _allEntries: StateFlow<List<TravelEntry>> = getEntriesUseCase()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val entriesList: StateFlow<List<TravelEntry>> = combine(
@@ -58,7 +60,7 @@ class HomeViewModel @Inject constructor(
 
     fun insertSampleEntry(entry: TravelEntry) {
         viewModelScope.launch {
-            repository.insertEntry(entry)
+            addEntryUseCase(entry)
         }
     }
 }

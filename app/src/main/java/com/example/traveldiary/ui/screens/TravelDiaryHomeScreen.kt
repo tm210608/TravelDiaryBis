@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.traveldiary.model.TravelEntry
+import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.model.filterChips
 import com.example.traveldiary.ui.components.*
 import com.example.traveldiary.ui.viewmodel.HomeViewModel

@@ -2,8 +2,9 @@ package com.example.traveldiary.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.traveldiary.data.TravelRepository
-import com.example.traveldiary.model.TravelEntry
+import com.example.traveldiary.domain.model.TravelEntry
+import com.example.traveldiary.domain.usecase.GetEntryByIdUseCase
+import com.example.traveldiary.domain.usecase.ToggleFavouriteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +20,8 @@ sealed interface DetailUiState {
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val repository: TravelRepository
+    private val getEntryByIdUseCase: GetEntryByIdUseCase,
+    private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<DetailUiState>(DetailUiState.Loading)
@@ -29,7 +31,7 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = DetailUiState.Loading
             try {
-                val entry = repository.getEntryStream(id)
+                val entry = getEntryByIdUseCase(id)
                 _uiState.value = if (entry != null) {
                     DetailUiState.Success(entry)
                 } else {
@@ -44,8 +46,7 @@ class DetailViewModel @Inject constructor(
     fun toggleFavourite(id: Int, current: Boolean) {
         viewModelScope.launch {
             try {
-                val entry = repository.getEntryStream(id) ?: return@launch
-                repository.updateEntry(entry.copy(isFavourite = !current))
+                toggleFavouriteUseCase(id, current)
                 loadEntry(id)
             } catch (_: Exception) { }
         }

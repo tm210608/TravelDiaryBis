@@ -1,16 +1,15 @@
-package com.example.traveldiary.data
+package com.example.traveldiary.data.local
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.traveldiary.model.TravelEntry
 
-@Database(entities = [TravelEntry::class], version = 2, exportSchema = false)
+@Database(entities = [TravelEntryEntity::class], version = 2, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class TravelDatabase : RoomDatabase() {
-    
+
     abstract fun travelDao(): TravelDao
 
     companion object {
