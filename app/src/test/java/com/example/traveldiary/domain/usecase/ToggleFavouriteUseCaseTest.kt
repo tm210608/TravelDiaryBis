@@ -4,6 +4,7 @@ import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.domain.repository.TravelRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.match
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
