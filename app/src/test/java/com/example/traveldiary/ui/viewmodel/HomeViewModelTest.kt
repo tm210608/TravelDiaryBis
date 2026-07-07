@@ -5,9 +5,10 @@ import com.example.traveldiary.TestDispatcherRule
 import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.domain.usecase.AddEntryUseCase
 import com.example.traveldiary.domain.usecase.GetEntriesUseCase
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
@@ -29,8 +30,7 @@ class HomeViewModelTest {
 
     @Test
     fun `entriesList returns all entries when search query is blank`() = runTest {
-        val flow = MutableStateFlow(entries)
-        every { getEntriesUseCase() } returns flow
+        every { getEntriesUseCase() } returns MutableStateFlow(entries)
 
         val viewModel = HomeViewModel(getEntriesUseCase, addEntryUseCase)
 
@@ -41,8 +41,7 @@ class HomeViewModelTest {
 
     @Test
     fun `entriesList filters by search query`() = runTest {
-        val flow = MutableStateFlow(entries)
-        every { getEntriesUseCase() } returns flow
+        every { getEntriesUseCase() } returns MutableStateFlow(entries)
 
         val viewModel = HomeViewModel(getEntriesUseCase, addEntryUseCase)
         viewModel.onSearchQueryChanged("Tokyo")
@@ -55,8 +54,7 @@ class HomeViewModelTest {
 
     @Test
     fun `entriesList filters by location in search query`() = runTest {
-        val flow = MutableStateFlow(entries)
-        every { getEntriesUseCase() } returns flow
+        every { getEntriesUseCase() } returns MutableStateFlow(entries)
 
         val viewModel = HomeViewModel(getEntriesUseCase, addEntryUseCase)
         viewModel.onSearchQueryChanged("Paris")
@@ -69,8 +67,7 @@ class HomeViewModelTest {
 
     @Test
     fun `entriesList returns all when no match`() = runTest {
-        val flow = MutableStateFlow(entries)
-        every { getEntriesUseCase() } returns flow
+        every { getEntriesUseCase() } returns MutableStateFlow(entries)
 
         val viewModel = HomeViewModel(getEntriesUseCase, addEntryUseCase)
         viewModel.onSearchQueryChanged("NonExistent")
@@ -82,14 +79,13 @@ class HomeViewModelTest {
 
     @Test
     fun `insertSampleEntry delegates to addEntryUseCase`() = runTest {
-        val flow = MutableStateFlow(emptyList<TravelEntry>())
-        every { getEntriesUseCase() } returns flow
-        every { addEntryUseCase(any()) } returns Unit
+        every { getEntriesUseCase() } returns MutableStateFlow(emptyList<TravelEntry>())
+        coEvery { addEntryUseCase(any()) } returns Unit
 
         val viewModel = HomeViewModel(getEntriesUseCase, addEntryUseCase)
         val entry = TravelEntry(title = "New", location = "X", country = "Y", tag = "Z", imageUrl = "url")
         viewModel.insertSampleEntry(entry)
 
-        verify { addEntryUseCase(entry) }
+        coVerify { addEntryUseCase(entry) }
     }
 }

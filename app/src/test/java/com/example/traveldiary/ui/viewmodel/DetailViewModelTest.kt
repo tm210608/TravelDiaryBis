@@ -5,9 +5,9 @@ import com.example.traveldiary.TestDispatcherRule
 import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.domain.usecase.GetEntryByIdUseCase
 import com.example.traveldiary.domain.usecase.ToggleFavouriteUseCase
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -26,7 +26,7 @@ class DetailViewModelTest {
     @Test
     fun `loadEntry with valid id returns Success state`() = runTest {
         val entry = TravelEntry(id = 1, title = "A", location = "X", country = "Y", tag = "Z", imageUrl = "url")
-        every { getEntryByIdUseCase(1) } returns entry
+        coEvery { getEntryByIdUseCase(1) } returns entry
 
         viewModel.loadEntry(1)
 
@@ -39,7 +39,7 @@ class DetailViewModelTest {
 
     @Test
     fun `loadEntry with invalid id returns Error state`() = runTest {
-        every { getEntryByIdUseCase(999) } returns null
+        coEvery { getEntryByIdUseCase(999) } returns null
 
         viewModel.loadEntry(999)
 
@@ -51,14 +51,14 @@ class DetailViewModelTest {
 
     @Test
     fun `toggleFavourite delegates to use case`() = runTest {
-        every { getEntryByIdUseCase(1) } returns TravelEntry(
+        coEvery { getEntryByIdUseCase(1) } returns TravelEntry(
             id = 1, title = "A", location = "X", country = "Y", tag = "Z", imageUrl = "url",
         )
-        every { toggleFavouriteUseCase(1, false) } returns Unit
+        coEvery { toggleFavouriteUseCase(1, false) } returns Unit
 
         viewModel.loadEntry(1)
         viewModel.toggleFavourite(1, false)
 
-        verify { toggleFavouriteUseCase(1, false) }
+        coVerify { toggleFavouriteUseCase(1, false) }
     }
 }
