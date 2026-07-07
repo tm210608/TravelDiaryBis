@@ -19,7 +19,7 @@ class HomeViewModelTest {
     val rule = TestDispatcherRule()
 
     private val getEntriesUseCase: GetEntriesUseCase = mockk()
-    private val addEntryUseCase: AddEntryUseCase = mockk()
+    private val addEntryUseCase: AddEntryUseCase = mockk(relaxed = true)
 
     @Test
     fun `selectedChip defaults to Todo`() {
@@ -69,7 +69,6 @@ class HomeViewModelTest {
     @Test
     fun `insertSampleEntry delegates to addEntryUseCase`() = runTest {
         every { getEntriesUseCase() } returns flowOf(emptyList())
-        coEvery { addEntryUseCase(any()) } returns Unit
 
         val viewModel = HomeViewModel(getEntriesUseCase, addEntryUseCase)
         val entry = TravelEntry(title = "New", location = "X", country = "Y", tag = "Z", imageUrl = "url")
