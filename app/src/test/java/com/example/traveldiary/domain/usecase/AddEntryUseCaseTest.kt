@@ -2,9 +2,9 @@ package com.example.traveldiary.domain.usecase
 
 import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.domain.repository.TravelRepository
-import io.mockk.every
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
@@ -16,10 +16,10 @@ class AddEntryUseCaseTest {
     @Test
     fun `invoke inserts entry via repository`() = runTest {
         val entry = TravelEntry(title = "A", location = "X", country = "Y", tag = "Z", imageUrl = "url")
-        every { repository.insertEntry(entry) } returns Unit
+        coEvery { repository.insertEntry(entry) } returns Unit
 
         useCase(entry)
 
-        verify(exactly = 1) { repository.insertEntry(entry) }
+        coVerify(exactly = 1) { repository.insertEntry(entry) }
     }
 }
