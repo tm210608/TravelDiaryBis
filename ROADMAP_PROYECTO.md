@@ -20,7 +20,9 @@ Este documento define la estrategia de evolución del proyecto para garantizar e
 - [x] Añadir `Snackbar` para feedback al usuario ante errores o acciones exitosas.
 
 ### Hito 4: Calidad (Testing)
-- [ ] Unit Testing para `ViewModel` (usando JUnit 5 y MockK).
+- [x] Unit Testing para `ViewModel` (usando JUnit 4 y MockK).
+- [x] Unit Testing para Use Cases (6/6 completados).
+- [x] Unit Testing para Mapper.
 - [ ] UI Testing para flujos críticos (Camera -> AddEntry).
 
 ---
