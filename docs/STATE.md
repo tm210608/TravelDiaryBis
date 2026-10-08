@@ -1,38 +1,38 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-10-08 | **Rama:** `develop` | **Commit:** `3164671` mergeado — Atlas nocturno
+**Fecha:** 2026-10-08 | **Rama:** `feature/m3-expressive` | **Commit:** `9bb5b68` evidencia reskin
 
 ## Hecho
-- Filter chips y tabs Recuerdos/Perfil implementados y mergeados; 66 tests antes de las features siguientes.
-- Editar entrada existente: `Detail → Edit`, formulario precargado compartido con creación,
-  fecha/favorito editables, foto conservar/reemplazar/quitar, confirmación GPS y actualización
-  por id existente (Room reporta filas afectadas). Capturas en `docs/specs/edit-entry/`.
-- Tema oscuro global Atlas nocturno: paleta semántica, sigue Android, sincroniza barras del
-  sistema. Home/Añadir/Detalle/Mapa/Recuerdos/Perfil y cambio de tema conservando formulario
-  verificados en Xiaomi. Evidencias principales en `docs/specs/dark-mode/`.
-- Build y tests: `scripts/verify.sh` = 79 tests, 0 fallos; `scripts/verify.sh --device`
-  instala y lanza sin crash.
-- Pendiente en dispositivo: CameraScreen, actualización GPS/permiso denegado y cobertura clara total;
-  tabs: estado vacío de Recuerdos y refresco de estadísticas. No se concedió permiso ni se alteraron coordenadas.
+- Rediseño Material 3 Expressive implementado en `feature/m3-expressive` (5 commits desde `develop`):
+  toolchain subido (Gradle 8.14.3, AGP 8.13.2, Kotlin 2.2.21, KSP 2.2.21-2.0.4, compileSdk 36,
+  BOM 2026.06.01, **material3 1.5.0-alpha18**, Room 2.7.2, Hilt 2.57.2) en `3e6dfe0`.
+- Sistema de diseño nuevo: `ui/theme/` con tokens Stitch (navy/ámbar, 35 roles), tipografía
+  Epilogue/Manrope (`res/font/` TTF variables), `Shape.kt`, `MaterialExpressiveTheme` +
+  `MotionScheme.expressive()`, `enableEdgeToEdge()` en MainActivity.
+- Reskin de las 7 pantallas: home (eyebrow, FAB squircle 64dp, `animateItem()`), detalle
+  (tag ámbar, ArrowBack AutoMirrored), formulario (campos filled, drop zone dashed), recuerdos
+  (header + contador), perfil (anillo dorado, stat cards), mapa (pill flotante, pins ámbar).
+- Verificado: `verify.sh` = 79 tests 0 fallos; instalado en Xiaomi; capturas en
+  `docs/specs/m3-expressive-redesign/evidencia-*.png` (home/detail/mapa/recuerdos/perfil/add dark).
+- Stitch MCP conectado (`.devin/mcp_config.local.json`, gitignored); proyecto `17835720265042941367`
+  con design system `assets/1b4a895e3dd24c3bae45c12074b3825a`. Referencias en `stitch/`.
 
 ## Siguiente paso
-1. Nueva feature SDMD desde `develop`: candidatas navegación type-safe o exportar viaje a PDF/imagen.
-   Flujo: `/spec` → aprobación → `/implement-spec` → `/verify` → `/handoff`.
-2. Antes de limpiar, revisar los artefactos aún sin seguimiento: `docs/specs/m3-expressive-redesign/`
-   y capturas auxiliares no añadidas bajo `docs/specs/dark-mode/`; no borrar sin confirmación.
-3. Ramas de features mergeadas pueden borrarse solo con confirmación (`feature/map-view`,
-   `feature/filter-chips`, `feature/bottom-tabs`, `feature/edit-entry`, `feature/dark-mode`).
+1. Merge `feature/m3-expressive` a `develop` tras revisión del usuario (no se ha hecho aún).
+2. Verificación pendiente en dispositivo: modo claro dinámico, editar entrada, empty states,
+   transiciones con springs. CameraScreen y editar conservan lógica previa.
+3. PNG sin seguimiento bajo `docs/specs/dark-mode/` (evidencias previas del usuario).
 
 ## Decisiones vigentes
-- `maps-compose` 4.4.2; no subir a 9.x sin pedirlo (requiere compileSdk 37/AGP 9.1).
-- Chips de continente derivados de `country` con tabla offline; país desconocido solo en Todo.
-- Recuerdos muestra entradas con foto; Perfil solo lectura; edición de perfil futura.
-- Dark mode sigue al sistema; paleta oscura Atlas nocturno; sin selector propio.
-- `local.properties` con `MAPS_API_KEY` no se commitea. Commits feature atómicos y merge `--no-ff`.
+- material3 **1.5.0-alpha18**: la más nueva compatible con SDK 36/AGP 8.13 (1.5.0-beta01 exige SDK 37).
+- Dark = paleta de marca siempre; light = color dinámico en API 31+ (fallback dark en <31).
+- Acentos en primer plano usan `primary`; `primaryContainer` solo para fondos rellenos.
+- `maps-compose` 4.4.2 sin cambios; no subir versiones sin pedirlo.
+- `local.properties` no se commitea. Sin `git push`. Commits `feat|fix|test|docs|chore:`.
 
 ## Bloqueos
 - Ninguno.
 
 ## Deuda técnica
-UI tests Compose, nav type-safe, exportar viaje, verificación Camera/GPS/pantallas claras/tabs, edición foto/cámara,
-fixes de cámara, chips África/Oceanía, clustering, subir AGP/compileSdk, detekt/ktlint, iconos ArrowBack deprecados.
+Sin esquema light de marca (solo dinámico), UI tests Compose, nav type-safe, exportar viaje,
+CameraScreen (`LocalLifecycleOwner` deprecado), clustering, detekt/ktlint.
