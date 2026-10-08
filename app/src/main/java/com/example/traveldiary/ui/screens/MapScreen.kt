@@ -1,10 +1,13 @@
 package com.example.traveldiary.ui.screens
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
@@ -26,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.traveldiary.R
 import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.ui.viewmodel.MapUiState
 import com.example.traveldiary.ui.viewmodel.MapViewModel
@@ -33,8 +37,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
@@ -116,6 +122,20 @@ private fun MapContent(
     onEntryClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
+    val isDarkTheme = isSystemInDarkTheme()
+    val density = LocalDensity.current
+    val paddingPx = with(density) { 100.dp.roundToPx() }
+    val mapProperties = remember(isDarkTheme) {
+        MapProperties(
+            mapStyleOptions = if (isDarkTheme) {
+                MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style_dark)
+            } else {
+                null
+            },
+        )
+    }
+
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(
             LatLng(
@@ -142,7 +162,7 @@ private fun MapContent(
                 }
             }.build()
             cameraPositionState.animate(
-                CameraUpdateFactory.newLatLngBounds(bounds, 100),
+                CameraUpdateFactory.newLatLngBounds(bounds, paddingPx),
             )
         }
     }
@@ -150,6 +170,7 @@ private fun MapContent(
     GoogleMap(
         modifier = modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
+        properties = mapProperties,
     ) {
         entries.forEach { entry ->
             key(entry.id) {
