@@ -1,18 +1,16 @@
 package com.example.traveldiary.ui.components
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -51,7 +49,7 @@ fun FeaturedEntriesRow(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun FeaturedCard(
     entry: TravelEntry,
@@ -61,14 +59,14 @@ fun FeaturedCard(
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.96f else 1f,
-        animationSpec = tween(durationMillis = 100)
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
     )
 
     Card(
         onClick = onClick,
         modifier = Modifier
-            .width(220.dp)
-            .height(160.dp)
+            .width(240.dp)
+            .height(180.dp)
             .graphicsLayer(scaleX = scale, scaleY = scale)
             .pointerInput(Unit) {
                 detectTapGestures(
@@ -79,8 +77,8 @@ fun FeaturedCard(
                     }
                 )
             },
-        shape = RoundedCornerShape(20.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             AsyncImage(
@@ -95,8 +93,11 @@ fun FeaturedCard(
                     .fillMaxSize()
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(Color.Transparent, Color(0xCC0F0F28)),
-                            startY = 80f,
+                            colors = listOf(
+                                Color.Transparent,
+                                MaterialTheme.colorScheme.scrim.copy(alpha = 0.82f),
+                            ),
+                            startY = 100f,
                         )
                     )
             )
@@ -105,7 +106,7 @@ fun FeaturedCard(
                 onClick = { favourite = !favourite },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(6.dp)
+                    .padding(8.dp)
                     .size(32.dp)
                     .clip(CircleShape)
                     .background(Color.White.copy(alpha = 0.20f)),
@@ -113,7 +114,7 @@ fun FeaturedCard(
                 Icon(
                     imageVector = if (favourite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                     contentDescription = "Favourite",
-                    tint = if (favourite) Color(0xFFEF5350) else Color.White,
+                    tint = if (favourite) MaterialTheme.colorScheme.error else Color.White,
                     modifier = Modifier.size(16.dp),
                 )
             }
@@ -121,7 +122,7 @@ fun FeaturedCard(
             Column(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(12.dp),
+                    .padding(14.dp),
             ) {
                 Text(
                     text = entry.title,
@@ -130,7 +131,7 @@ fun FeaturedCard(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(5.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -141,15 +142,26 @@ fun FeaturedCard(
                         color = Color.White.copy(alpha = 0.78f),
                     )
                     Surface(
-                        shape = RoundedCornerShape(20.dp),
+                        shape = CircleShape,
                         color = Color.White.copy(alpha = 0.18f),
                     ) {
-                        Text(
-                            text = "\uD83D\uDCCD ${entry.location}, ${entry.country}",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Color.White,
-                            modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp),
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.LocationOn,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primaryContainer,
+                                modifier = Modifier.size(11.dp),
+                            )
+                            Spacer(Modifier.width(3.dp))
+                            Text(
+                                text = "${entry.location}, ${entry.country}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = Color.White,
+                            )
+                        }
                     }
                 }
             }
@@ -157,7 +169,7 @@ fun FeaturedCard(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun EntryListCard(
     entry: TravelEntry,
@@ -167,7 +179,7 @@ fun EntryListCard(
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.98f else 1f,
-        animationSpec = tween(durationMillis = 100)
+        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
     )
 
     Card(
@@ -183,26 +195,25 @@ fun EntryListCard(
                     }
                 )
             },
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = CardDefaults.outlinedCardBorder(),
+        shape = MaterialTheme.shapes.medium,
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
-        Row(modifier = Modifier.height(88.dp)) {
+        Row(modifier = Modifier.height(92.dp)) {
             AsyncImage(
                 model = entry.imageUrl,
                 contentDescription = entry.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .width(82.dp)
+                    .width(88.dp)
                     .fillMaxHeight()
-                    .clip(RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)),
+                    .clip(MaterialTheme.shapes.medium),
             )
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 12.dp, vertical = 11.dp),
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Column {
@@ -244,14 +255,14 @@ fun EntryListCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Surface(
-                        shape = RoundedCornerShape(20.dp),
-                        color = MaterialTheme.colorScheme.primaryContainer,
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.18f),
                     ) {
                         Text(
                             text = entry.tag,
                             style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
                             color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+                            modifier = Modifier.padding(horizontal = 9.dp, vertical = 3.dp),
                         )
                     }
                 }

@@ -1,9 +1,10 @@
 [versions]
-agp = "8.5.0"
-kotlin = "2.0.0"
+agp = "8.13.2"
+kotlin = "2.2.21"
 material = "1.12.0"
-composeBom = "2024.06.00"
-room = "2.6.1"
+composeBom = "2026.06.01"
+material3 = "1.5.0-alpha18"
+room = "2.7.2"
 activityCompose = "1.9.0"
 coreKtx = "1.13.1"
 lifecycleRuntimeKtx = "2.8.0"
@@ -16,10 +17,10 @@ coroutines = "1.8.1"
 mockk = "1.13.12"
 turbine = "1.1.0"
 junit = "4.13.2"
-hilt = "2.51.1"
+hilt = "2.57.2"
 hiltNavCompose = "1.2.0"
 serializationJson = "1.7.0"
-ksp = "2.0.0-1.0.21"
+ksp = "2.2.21-2.0.4"
 mapsCompose = "4.4.2"
 
 [libraries]
@@ -28,7 +29,7 @@ compose-ui = { group = "androidx.compose.ui", name = "ui" }
 compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }

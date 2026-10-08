@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mi Diario de Viaje</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Editorial Google Fonts: Epilogue & Manrope -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration with Design Tokens -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-error-container": "#ffdad6",
+            "on-tertiary": "#432c00",
+            "secondary": "#b4c9df",
+            "on-tertiary-fixed-variant": "#604100",
+            "inverse-surface": "#e4e1f0",
+            "on-primary": "#412d00",
+            "on-primary-container": "#6b4c00",
+            "on-surface-variant": "#d5c4ab",
+            "on-secondary": "#1f3243",
+            "on-tertiary-fixed": "#281900",
+            "on-tertiary-container": "#6e4b00",
+            "inverse-primary": "#7c5800",
+            "surface": "#12121d",
+            "secondary-fixed": "#d0e5fb",
+            "surface-container-lowest": "#0d0d17",
+            "tertiary-fixed": "#ffdead",
+            "surface-tint": "#ffba20",
+            "surface-variant": "#34343f",
+            "surface-container-high": "#292934",
+            "surface-container": "#1f1f29",
+            "secondary-fixed-dim": "#b4c9df",
+            "inverse-on-surface": "#302f3b",
+            "on-secondary-fixed": "#081d2e",
+            "on-error": "#690005",
+            "outline": "#9e8f78",
+            "outline-variant": "#514532",
+            "error": "#ffb4ab",
+            "tertiary": "#ffdca7",
+            "on-surface": "#e4e1f0",
+            "surface-container-highest": "#34343f",
+            "background": "#12121d",
+            "primary": "#ffdca1",
+            "primary-container": "#ffb800",
+            "primary-fixed-dim": "#ffba20",
+            "on-background": "#e4e1f0",
+            "surface-bright": "#393844",
+            "surface-dim": "#12121d",
+            "secondary-container": "#35495b",
+            "primary-fixed": "#ffdea8",
+            "error-container": "#93000a",
+            "on-primary-fixed": "#271900",
+            "surface-container-low": "#1b1b25",
+            "on-secondary-container": "#a3b7cd",
+            "on-secondary-fixed-variant": "#35495b",
+            "on-primary-fixed-variant": "#5e4200",
+            "tertiary-container": "#ffb82f",
+            "tertiary-fixed-dim": "#ffba39"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "1rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "margin": "1.25rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Epilogue"],
+            "label-md": ["Manrope"],
+            "label-sm": ["Manrope"],
+            "headline-lg": ["Epilogue"],
+            "title-lg": ["Epilogue"],
+            "display-lg": ["Epilogue"],
+            "headline-lg-mobile": ["Epilogue"],
+            "label-lg": ["Manrope"],
+            "display-md": ["Epilogue"],
+            "title-md": ["Manrope"],
+            "body-lg": ["Manrope"],
+            "headline-sm": ["Epilogue"],
+            "body-md": ["Manrope"]
+          },
+          "fontSize": {
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "title-lg": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "display-md": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Smooth no-scrollbar utility for horizontal carousels */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-lowest text-on-surface antialiased min-h-screen selection:bg-primary-container selection:text-on-primary">
+<div class="relative max-w-md mx-auto min-h-screen flex flex-col bg-surface-container-lowest pb-32">
+<!-- 1. Header (Shared Component: TopAppBar compliant) -->
+<header class="w-full px-5 pt-8 pb-3 flex justify-between items-center bg-surface-container-lowest">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-secondary tracking-wide uppercase">Bienvenido de nuevo</span>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface tracking-tight mt-0.5">Mi Diario de Viaje</h1>
+</div>
+<!-- Leading Avatar with warm gold-to-soft-blue gradient ring -->
+<div class="relative p-[2px] rounded-full bg-gradient-to-tr from-primary-container via-tertiary to-secondary shadow-md active:scale-95 transition-transform duration-150">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container border-2 border-surface-container-lowest">
+<img class="w-full h-full object-cover" data-alt="Intimate portrait of an introspective traveler looking outward into the twilight horizon, bathed in cinematic soft golden light and gentle cool dusk tones, refined editorial aesthetic, captured in 35mm film grain." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIiwx23RX0xE2BhOpgQfcGuQs9jlYObMVy8KRLa9MxxJXW2TCWs9JujA1qLQEG6dba7oxCdZhplf37aPyW0rrDHEQ0t3PlA3VxWzGeoMTJLPB1hitWGD_dEUsMJKUwAg0nPQpkxdUtbTrQOaO-cuVgyQzjbMHHFwVKe9kdmphylwJNydc9A86zcXtSYSszhVdEXoFjIsMLw8kiyoK3Id9H3rkptRdT4RM-YQ2BZrFy-pPdqOmHSi9_cUlXMvnwCir58nujjr2lPUbV"/>
+</div>
+</div>
+</header>
+<!-- Main Scrollable Canvas -->
+<main class="flex-1 flex flex-col gap-6 px-5 pt-2">
+<!-- 2. Search Bar -->
+<section class="w-full">
+<div class="relative flex items-center w-full h-14 bg-surface-container-low rounded-full px-5 border border-outline-variant/30 focus-within:border-primary-container transition-all shadow-sm">
+<span class="material-symbols-outlined text-secondary mr-3 text-xl select-none" data-icon="search">search</span>
+<input class="w-full bg-transparent border-0 p-0 font-body-md text-body-md text-on-surface placeholder:text-secondary/60 focus:ring-0 focus:outline-none" placeholder="Buscar destinos, recuerdos..." type="text"/>
+</div>
+</section>
+<!-- 3. Filter Chips Horizontal Scrollable Row -->
+<section class="w-full -mx-5 px-5 overflow-x-auto no-scrollbar flex items-center gap-2.5 py-1">
+<!-- Selected Chip: Todo -->
+<button class="shrink-0 flex items-center justify-center h-9 px-5 rounded-full bg-primary-container text-on-primary font-label-md text-label-md shadow-sm active:scale-95 transition-transform">
+          Todo
+        </button>
+<!-- Unselected Chip: Europa -->
+<button class="shrink-0 flex items-center justify-center h-9 px-4 rounded-full bg-surface-container text-secondary font-label-md text-label-md border border-outline-variant/20 hover:bg-surface-container-high transition-colors active:scale-95">
+          Europa
+        </button>
+<!-- Unselected Chip: Asia -->
+<button class="shrink-0 flex items-center justify-center h-9 px-4 rounded-full bg-surface-container text-secondary font-label-md text-label-md border border-outline-variant/20 hover:bg-surface-container-high transition-colors active:scale-95">
+          Asia
+        </button>
+<!-- Unselected Chip: América -->
+<button class="shrink-0 flex items-center justify-center h-9 px-4 rounded-full bg-surface-container text-secondary font-label-md text-label-md border border-outline-variant/20 hover:bg-surface-container-high transition-colors active:scale-95">
+          América
+        </button>
+<!-- Unselected Chip: África -->
+<button class="shrink-0 flex items-center justify-center h-9 px-4 rounded-full bg-surface-container text-secondary font-label-md text-label-md border border-outline-variant/20 hover:bg-surface-container-high transition-colors active:scale-95">
+          África
+        </button>
+<!-- Unselected Chip: Oceanía -->
+<button class="shrink-0 flex items-center justify-center h-9 px-4 rounded-full bg-surface-container text-secondary font-label-md text-label-md border border-outline-variant/20 hover:bg-surface-container-high transition-colors active:scale-95">
+          Oceanía
+        </button>
+</section>
+<!-- 4. Section: Momentos Destacados -->
+<section class="flex flex-col gap-3.5">
+<div class="flex items-center justify-between">
+<h2 class="font-title-lg text-title-lg text-on-surface">Momentos Destacados</h2>
+<a class="font-label-md text-label-md text-primary-container hover:underline select-none" href="#">Ver todo</a>
+</div>
+<!-- Horizontal Carousel -->
+<div class="flex gap-4 overflow-x-auto no-scrollbar -mx-5 px-5 snap-x snap-mandatory pt-1 pb-2">
+<!-- Card 1: Kyoto -->
+<article class="shrink-0 snap-start relative w-64 h-80 rounded-[24px] overflow-hidden bg-surface-container-low border border-outline-variant/20 shadow-lg group">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Majestic golden pagoda temple of Kinkaku-ji in Kyoto reflecting on peaceful pond water during dusk, warm incandescent golden hour sunlight illuminating autumn foliage, peaceful nocturnal Japanese travel photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDApfYArDwl4Gy_Nasq75EZRUvSMdtuctudu-FRFvhvS51yJvNISo0WdHS_xhD9R8eb1a9R11vdCNRxt-9UHO019trKS_z_DLTEh0eMR3K_qISEBgC_jWqkdb58-u2KXCQmNzdVNenA2fpBZjloHxG0Rk8HaAz7aidcKjgp2ROe4FTtOagnp1tqAwIJFaleLvmMx4I3iZvl_SEyNgXT8QUtH7IEdYzRK6XnvyNqqxnpCOp2MlTowtmGIX34fdQyAnHTRF0Plm6rmEs9"/>
+<!-- Gradient Overlay Scrim -->
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/40 to-transparent"></div>
+<!-- Favorite Action Button -->
+<button aria-label="Guardar momento" class="absolute top-3.5 right-3.5 w-10 h-10 rounded-full bg-surface-container-lowest/60 backdrop-blur-md flex items-center justify-center text-primary-container hover:bg-surface-container-lowest/80 active:scale-90 transition-all border border-white/10">
+<span class="material-symbols-outlined text-lg" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+<!-- Metadata Overlay -->
+<div class="absolute bottom-4 left-4 right-4 flex flex-col gap-1.5">
+<div class="flex items-center gap-1.5 self-start px-2.5 py-1 rounded-full bg-surface-container-highest/80 backdrop-blur-md border border-outline-variant/30 text-secondary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-xs text-primary-container" data-icon="location_on">location_on</span>
+<span>Kioto, Japón</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-tight mt-0.5">Templo de Kinkaku-ji</h3>
+<p class="font-label-md text-label-md text-secondary/80">14 Oct 2024</p>
+</div>
+</article>
+<!-- Card 2: Santorini -->
+<article class="shrink-0 snap-start relative w-64 h-80 rounded-[24px] overflow-hidden bg-surface-container-low border border-outline-variant/20 shadow-lg group">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Pristine white cliffside architecture and iconic blue domes overlooking deep azure Aegean Sea in Oia Santorini during a warm golden sunset, quiet evening atmosphere, editorial travel documentation aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCB_f1JxKmV_QsDA72F6nkgkUIcsnUxEbJMNOvfUZLthwJDNFhdEFedWJADWi6ejaZNxrJJE7uU125xyowQ1U09RL3AsVMGjwE3umZQji4SgTzdIASVOXiH563mB_9nJzUTQltl0lyLSZKLQuJfhpDT7cFv_U0tEh2BLszw7Y6qpjpMOMifvJWY1bpTVBcD0IlQn2r5QVZ5Z6rhvRFMBsubPYoNznmqfv7t3QoNfwLR_PDxLfyB7gbQL0ADex6frYWUhqdvR-GPTQ52"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/40 to-transparent"></div>
+<button aria-label="Guardar momento" class="absolute top-3.5 right-3.5 w-10 h-10 rounded-full bg-surface-container-lowest/60 backdrop-blur-md flex items-center justify-center text-on-surface hover:bg-surface-container-lowest/80 active:scale-90 transition-all border border-white/10">
+<span class="material-symbols-outlined text-lg" data-icon="favorite">favorite</span>
+</button>
+<div class="absolute bottom-4 left-4 right-4 flex flex-col gap-1.5">
+<div class="flex items-center gap-1.5 self-start px-2.5 py-1 rounded-full bg-surface-container-highest/80 backdrop-blur-md border border-outline-variant/30 text-secondary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-xs text-primary-container" data-icon="location_on">location_on</span>
+<span>Santorini, Grecia</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-tight mt-0.5">Atardecer en Oia</h3>
+<p class="font-label-md text-label-md text-secondary/80">02 Sep 2024</p>
+</div>
+</article>
+<!-- Card 3: Patagonia -->
+<article class="shrink-0 snap-start relative w-64 h-80 rounded-[24px] overflow-hidden bg-surface-container-low border border-outline-variant/20 shadow-lg group">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Dramatic rugged mountain peaks of Torres del Paine reflected in pale glacial water with deep cyan icebergs under a twilight sky, moody Chilean Patagonia expedition photography, tranquil and timeless tone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAt8tRxNYoOHG0p_bqHy_ppG5SmCG_M008Tyr80yTrEwgwEgRt3oZXv9eO-jYRE9UtOmfECw0c9QpnoK0XWib_2K4OVytR9aZakbd_ymhLtF6EbexrNt49cEeDeMsQrXjLAzbMsHrcGViYhU5hoszBdS5swHM5hSEwOmcfKvQrQKlP_EpPFPhL-azOIdyvIvaFgogWwoZgXaKb7XMHDdPcqRptJiBUDrn8XV9aL1dx3l7zx4kv2pOkcBDaSMPI7BDYtxc9HPZni3f4C"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/40 to-transparent"></div>
+<button aria-label="Guardar momento" class="absolute top-3.5 right-3.5 w-10 h-10 rounded-full bg-surface-container-lowest/60 backdrop-blur-md flex items-center justify-center text-on-surface hover:bg-surface-container-lowest/80 active:scale-90 transition-all border border-white/10">
+<span class="material-symbols-outlined text-lg" data-icon="favorite">favorite</span>
+</button>
+<div class="absolute bottom-4 left-4 right-4 flex flex-col gap-1.5">
+<div class="flex items-center gap-1.5 self-start px-2.5 py-1 rounded-full bg-surface-container-highest/80 backdrop-blur-md border border-outline-variant/30 text-secondary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-xs text-primary-container" data-icon="location_on">location_on</span>
+<span>Torres del Paine</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface leading-tight mt-0.5">Glaciar Grey</h3>
+<p class="font-label-md text-label-md text-secondary/80">18 Ene 2024</p>
+</div>
+</article>
+</div>
+</section>
+<!-- 5. Section: Todos los Viajes -->
+<section class="flex flex-col gap-3.5 mt-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<h2 class="font-title-lg text-title-lg text-on-surface">Todos los Viajes</h2>
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-secondary font-label-sm text-label-sm">
+              12 viajes
+            </span>
+</div>
+</div>
+<!-- Vertical List of Diary Entries -->
+<div class="flex flex-col gap-3">
+<!-- Entry 1: Toscana -->
+<article class="flex items-center gap-3.5 p-3 rounded-2xl bg-surface-container-low border border-outline-variant/20 hover:border-outline-variant/40 active:scale-[0.99] transition-all">
+<div class="w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Close up architectural detail of the iconic Santa Maria del Fiore cathedral dome in Florence Italy against a deep nocturnal twilight sky, warm ambient city lights glowing on terracotta textures." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9ZTIqdu6JBc_UcuVkMNBk_i5QYrOxG1uD0ZxFNKxe-wR2LTgidr0GlVCvsGMGkwTnqb9edBRTssxn7acsZotyx6iJW2bxaznvQRScu9i-bBjBvbtp7Hpckf7RiIwx2pWmAnLoTS_gIY-anspeZR_QOQn-IljiT8XIwOC4exCqCi3-S17YMashS8b72pywEz93Lj-Uc1lEJHUDjHpKyKptEs_rHntGynDVd1V_kBmkCLgEpqiocnPomBHRSqUDoSvORlHgyK2I5wFz"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1 mb-1">
+<span class="font-label-sm text-label-sm text-secondary/70">Hace 2 semanas</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container/40 text-secondary font-label-sm text-label-sm">Senderismo</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface truncate">Caminata por la Toscana</h4>
+<p class="font-body-md text-body-md text-secondary truncate flex items-center gap-1.5 mt-0.5">
+<span>Florencia</span>
+<span class="w-1 h-1 rounded-full bg-primary-container"></span>
+<span>Italia</span>
+</p>
+</div>
+</article>
+<!-- Entry 2: Shinjuku -->
+<article class="flex items-center gap-3.5 p-3 rounded-2xl bg-surface-container-low border border-outline-variant/20 hover:border-outline-variant/40 active:scale-[0.99] transition-all">
+<div class="w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Vibrant rain-slicked alleyway in Shinjuku Tokyo illuminated by cinematic neon signage in warm amber and cool sapphire blue, night travel mood, quiet urban exploration aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3laAny_JIh-jAkXc26RNreHHFEnnXdj9ShjsCVanwkd4Wa9_lhLAOVbgU2g4IvqGwA66JJm3SSt0mX7QceBf89NJl4T1KKb_75cwDKMkh73HvdOHVXfunIarDOMDHKiCRMN_1Zuk-KW5n-pr9eIQdhxapZM7XHvIDLbvVqCbNP4PF5wiYGa7zOtshZQWL4VCDPIsphm0ULmAKtDRodXne3ufOBr8dbN5h5p5nCBl2uixYM9ug5OONnOFCBzERaW9IylzFo6Q7YqdN"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1 mb-1">
+<span class="font-label-sm text-label-sm text-secondary/70">15 Nov 2024</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container/40 text-secondary font-label-sm text-label-sm">Ciudad</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface truncate">Luces de Shinjuku</h4>
+<p class="font-body-md text-body-md text-secondary truncate flex items-center gap-1.5 mt-0.5">
+<span>Tokio</span>
+<span class="w-1 h-1 rounded-full bg-primary-container"></span>
+<span>Japón</span>
+</p>
+</div>
+</article>
+<!-- Entry 3: Zermatt -->
+<article class="flex items-center gap-3.5 p-3 rounded-2xl bg-surface-container-low border border-outline-variant/20 hover:border-outline-variant/40 active:scale-[0.99] transition-all">
+<div class="w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Iconic majestic peak of the Matterhorn in Zermatt Switzerland bathed in alpine morning glow, pine forest slopes framing snow covered ridges under crisp sky, archival travel tone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIzxpKDLnvEZZE3Y4KVFxU3kpWvgM4cWxX-ItJJiT4V0upQrBrW7KhjHHZ1n2rAo8Y7Bo6vjk5zfW3wE2h2VORGX1L-mGPCn-SVMzLM01GI3GLxMckQpQTesVFPzmEZSRvbtPczLkBExosWZoJAJDESCWc-nva_gLGSVOOEsHoSFwXoo-PbPNwarFCzy20xmn71BV0x9NxMppv1RE46mfrfoheRAH94NcP5xir9tjn9S10HT8eouxog5zR3MgMC4g67Wm3DXwcOR4c"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1 mb-1">
+<span class="font-label-sm text-label-sm text-secondary/70">08 Ago 2024</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container/40 text-secondary font-label-sm text-label-sm">Naturaleza</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface truncate">Aventura en Zermatt</h4>
+<p class="font-body-md text-body-md text-secondary truncate flex items-center gap-1.5 mt-0.5">
+<span>Valais</span>
+<span class="w-1 h-1 rounded-full bg-primary-container"></span>
+<span>Suiza</span>
+</p>
+</div>
+</article>
+<!-- Entry 4: Marrakech -->
+<article class="flex items-center gap-3.5 p-3 rounded-2xl bg-surface-container-low border border-outline-variant/20 hover:border-outline-variant/40 active:scale-[0.99] transition-all">
+<div class="w-20 h-20 shrink-0 rounded-xl overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Intricate spice market bazaar in Marrakech medina with cones of vibrant saffron and paprika spices, lantern shadows, warm earthen walls, editorial documentary aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuATomeqXdkgvGQ45hmBS_2rq192zduNJ02QjK1bz-W8-C8hEaRbzFZdcYLg34y0aVS7Wp7-FNL_QEaDcSCpxC7Vx05zWzxlWp1DkDApON257PiIAdA31eH00RjSvhtW776NamTvVUOGJtqDT6WEFliD8QkXdWPR-IIsQ78fNrzb7vkpwjV_AzVcHmvLM50N93wBH2zj-5OYI6DDcOAHJIOEMuVIS2Gf1hSFyfKWskJKS5K8e2N-iBENmuvL2ZhHVNOWQintO6bqJChZ"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1 mb-1">
+<span class="font-label-sm text-label-sm text-secondary/70">22 May 2024</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container/40 text-secondary font-label-sm text-label-sm">Cultura</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface truncate">Zocos y Especias</h4>
+<p class="font-body-md text-body-md text-secondary truncate flex items-center gap-1.5 mt-0.5">
+<span>Marrakech</span>
+<span class="w-1 h-1 rounded-full bg-primary-container"></span>
+<span>Marruecos</span>
+</p>
+</div>
+</article>
+</div>
+</section>
+</main>
+<!-- 6. Floating Action Button (FAB) -->
+<div class="fixed bottom-24 right-5 z-40">
+<button aria-label="Añadir entrada de viaje" class="w-16 h-16 rounded-[24px] bg-primary-container text-on-primary flex items-center justify-center shadow-[0_12px_32px_-4px_rgba(255,184,0,0.35)] active:scale-95 transition-transform duration-150 group">
+<span class="material-symbols-outlined text-3xl font-bold select-none group-hover:rotate-90 transition-transform duration-300" data-icon="add">add</span>
+</button>
+</div>
+<!-- 7. Shared Component: BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface-container-low shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
+<!-- Tab 1: Diario / Inicio (Active Destination) -->
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary rounded-full px-5 py-1.5 active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined text-xl" data-icon="book_2" style="font-variation-settings: 'FILL' 1;">book_2</span>
+<span class="font-label-sm text-label-sm font-bold">Diario</span>
+</button>
+<!-- Tab 2: Rutas -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1.5 hover:text-primary transition-colors duration-150 active:scale-95">
+<span class="material-symbols-outlined text-xl" data-icon="explore">explore</span>
+<span class="font-label-sm text-label-sm font-bold">Rutas</span>
+</button>
+<!-- Tab 3: Recuerdos -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1.5 hover:text-primary transition-colors duration-150 active:scale-95">
+<span class="material-symbols-outlined text-xl" data-icon="photo_library">photo_library</span>
+<span class="font-label-sm text-label-sm font-bold">Recuerdos</span>
+</button>
+<!-- Tab 4: Perfil -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-5 py-1.5 hover:text-primary transition-colors duration-150 active:scale-95">
+<span class="material-symbols-outlined text-xl" data-icon="account_circle">account_circle</span>
+<span class="font-label-sm text-label-sm font-bold">Perfil</span>
+</button>
+</nav>
+</div>
+</body></html>

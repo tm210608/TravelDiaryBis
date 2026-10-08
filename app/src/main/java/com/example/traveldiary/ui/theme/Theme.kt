@@ -1,51 +1,82 @@
 package com.example.traveldiary.ui.theme
 
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.MaterialExpressiveTheme
+import androidx.compose.material3.MotionScheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = AtlasTurquoise,
-    onPrimary = AtlasBackground,
-    primaryContainer = AtlasElevated,
-    onPrimaryContainer = AtlasPaper,
-    secondary = AtlasAmber,
-    onSecondary = AtlasBackground,
-    secondaryContainer = AtlasElevated,
-    onSecondaryContainer = AtlasPaper,
-    tertiary = AtlasAmber,
-    onTertiary = AtlasBackground,
-    background = AtlasBackground,
-    surface = AtlasSurface,
-    surfaceVariant = AtlasElevated,
-    onSurface = AtlasPaper,
-    onSurfaceVariant = AtlasPaper.copy(alpha = 0.72f),
-    outline = AtlasPaper.copy(alpha = 0.38f),
-    outlineVariant = AtlasPaper.copy(alpha = 0.18f),
-    error = ErrorRed,
-    onError = AtlasBackground,
-    surfaceTint = AtlasTurquoise,
+    primary = DiaryPrimary,
+    onPrimary = DiaryOnPrimary,
+    primaryContainer = DiaryPrimaryContainer,
+    onPrimaryContainer = DiaryOnPrimaryContainer,
+    inversePrimary = DiaryInversePrimary,
+    secondary = DiarySecondary,
+    onSecondary = DiaryOnSecondary,
+    secondaryContainer = DiarySecondaryContainer,
+    onSecondaryContainer = DiaryOnSecondaryContainer,
+    tertiary = DiaryTertiary,
+    onTertiary = DiaryOnTertiary,
+    tertiaryContainer = DiaryTertiaryContainer,
+    onTertiaryContainer = DiaryOnTertiaryContainer,
+    error = DiaryError,
+    onError = DiaryOnError,
+    errorContainer = DiaryErrorContainer,
+    onErrorContainer = DiaryOnErrorContainer,
+    background = DiarySurfaceDim,
+    onBackground = DiaryOnSurface,
+    surface = DiarySurfaceDim,
+    onSurface = DiaryOnSurface,
+    surfaceVariant = DiarySurfaceContainerHighest,
+    onSurfaceVariant = DiaryOnSurfaceVariant,
+    surfaceTint = DiarySurfaceTint,
+    surfaceDim = DiarySurfaceDim,
+    surfaceBright = DiarySurfaceBright,
+    surfaceContainerLowest = DiarySurfaceContainerLowest,
+    surfaceContainerLow = DiarySurfaceContainerLow,
+    surfaceContainer = DiarySurfaceContainer,
+    surfaceContainerHigh = DiarySurfaceContainerHigh,
+    surfaceContainerHighest = DiarySurfaceContainerHighest,
+    inverseSurface = DiaryInverseSurface,
+    inverseOnSurface = DiaryInverseOnSurface,
+    outline = DiaryOutline,
+    outlineVariant = DiaryOutlineVariant,
+    primaryFixed = DiaryPrimaryFixed,
+    primaryFixedDim = DiaryPrimaryFixedDim,
+    onPrimaryFixed = DiaryOnPrimaryFixed,
+    onPrimaryFixedVariant = DiaryOnPrimaryFixedVariant,
+    secondaryFixed = DiarySecondaryFixed,
+    secondaryFixedDim = DiarySecondaryFixedDim,
+    onSecondaryFixed = DiaryOnSecondaryFixed,
+    onSecondaryFixedVariant = DiaryOnSecondaryFixedVariant,
+    tertiaryFixed = DiaryTertiaryFixed,
+    tertiaryFixedDim = DiaryTertiaryFixedDim,
+    onTertiaryFixed = DiaryOnTertiaryFixed,
+    onTertiaryFixedVariant = DiaryOnTertiaryFixedVariant,
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF2D5AF0), // Azul vibrante para el día
-    secondary = Color(0xFF00BFA5),
-    background = Color(0xFFF8F9FA),
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSurface = Color.Black
-)
-
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun TravelDiaryTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val colorScheme = when {
+        darkTheme -> DarkColorScheme
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> dynamicLightColorScheme(LocalContext.current)
+        else -> DarkColorScheme
+    }
 
-    MaterialTheme(
+    MaterialExpressiveTheme(
         colorScheme = colorScheme,
+        motionScheme = MotionScheme.expressive(),
+        typography = DiaryTypography,
+        shapes = DiaryShapes,
         content = content
     )
 }
