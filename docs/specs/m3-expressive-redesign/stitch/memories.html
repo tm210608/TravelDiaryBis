@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mi Diario de Viaje - Recuerdos</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Epilogue & Manrope -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,500;0,600;0,700;0,800;1,600&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "error-container": "#93000a",
+            "background": "#12121d",
+            "on-secondary-fixed": "#081d2e",
+            "on-primary": "#412d00",
+            "on-surface-variant": "#d5c4ab",
+            "on-primary-fixed": "#271900",
+            "tertiary-fixed-dim": "#ffba39",
+            "surface-bright": "#393844",
+            "primary-fixed": "#ffdea8",
+            "tertiary-fixed": "#ffdead",
+            "surface-variant": "#34343f",
+            "on-primary-container": "#6b4c00",
+            "surface-dim": "#12121d",
+            "on-tertiary": "#432c00",
+            "surface-container-lowest": "#0d0d17",
+            "surface": "#12121d",
+            "surface-container": "#1f1f29",
+            "primary": "#ffdca1",
+            "primary-fixed-dim": "#ffba20",
+            "on-tertiary-fixed": "#281900",
+            "on-tertiary-fixed-variant": "#604100",
+            "surface-container-high": "#292934",
+            "secondary-fixed": "#d0e5fb",
+            "outline": "#9e8f78",
+            "on-surface": "#e4e1f0",
+            "inverse-surface": "#e4e1f0",
+            "secondary-fixed-dim": "#b4c9df",
+            "tertiary": "#ffdca7",
+            "on-primary-fixed-variant": "#5e4200",
+            "on-secondary-container": "#a3b7cd",
+            "secondary": "#b4c9df",
+            "surface-tint": "#ffba20",
+            "tertiary-container": "#ffb82f",
+            "on-secondary-fixed-variant": "#35495b",
+            "on-background": "#e4e1f0",
+            "on-error-container": "#ffdad6",
+            "inverse-primary": "#7c5800",
+            "error": "#ffb4ab",
+            "surface-container-low": "#1b1b25",
+            "outline-variant": "#514532",
+            "inverse-on-surface": "#302f3b",
+            "surface-container-highest": "#34343f",
+            "on-error": "#690005",
+            "primary-container": "#ffb800",
+            "secondary-container": "#35495b",
+            "on-secondary": "#1f3243",
+            "on-tertiary-container": "#6e4b00"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xl": "2rem",
+            "margin": "1.25rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "gutter": "1rem",
+            "space-sm": "0.5rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Epilogue"],
+            "title-md": ["Manrope"],
+            "label-lg": ["Manrope"],
+            "body-lg": ["Manrope"],
+            "headline-lg-mobile": ["Epilogue"],
+            "label-sm": ["Manrope"],
+            "headline-sm": ["Epilogue"],
+            "headline-md": ["Epilogue"],
+            "display-md": ["Epilogue"],
+            "display-lg": ["Epilogue"],
+            "label-md": ["Manrope"],
+            "body-md": ["Manrope"],
+            "title-lg": ["Epilogue"]
+          },
+          "fontSize": {
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "title-md": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+            "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "body-lg": ["16px", {"lineHeight": "26px", "fontWeight": "400"}],
+            "headline-lg-mobile": ["26px", {"lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "label-sm": ["10px", {"lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+            "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+            "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+            "display-md": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+            "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+            "body-md": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+            "title-lg": ["18px", {"lineHeight": "26px", "fontWeight": "600"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      display: none;
+    }
+    .custom-scroll {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen selection:bg-primary-container selection:text-on-primary">
+<!-- Mobile Wrapper / App Shell Structure -->
+<div class="max-w-md mx-auto min-h-screen relative flex flex-col bg-surface pb-28">
+<!-- Shared Component: TopAppBar -->
+<header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-md">
+<div class="flex justify-between items-center w-full px-5 py-3">
+<!-- Traveler Avatar with Gold Ring -->
+<div class="flex items-center space-x-3">
+<div class="relative w-9 h-9 rounded-full p-[1.5px] bg-gradient-to-tr from-primary-container via-primary to-surface-container">
+<div class="w-full h-full rounded-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Introspective traveler portrait profile in ambient twilight with warm directional illumination and leather journal details, dark navy moody background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8mt7mWGLvPFtpjWwkITIzIA-Hah5HUupbjeiAKTDFZhd1wzPGtbEBUbjXbA9gW1GfL_npauXpOkLhENiM3A7qWvy1qWevOEUhtKiaxy7tN67rIVYBLrtIIh9lWArDDOwKy_hLbsN0qdaxrHn1ekYFcWxu3pn6ga3cfhYHGkuzOUZVcVGgsQIYncdkIPfxJ1XsTcjHdjdOMIi1IFnQQDwWmHkHbuDneWfw059MdLQ4MIeqwTH2rmxogLXyxfJwsFMAypjwnkhs-qwr"/>
+</div>
+</div>
+<span class="font-headline-sm text-headline-sm text-primary font-semibold tracking-tight">Mi Diario de Viaje</span>
+</div>
+<!-- Trailing Search Icon -->
+<button aria-label="Buscar" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 active:scale-95" type="button">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="search">search</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-3 sm:px-4 pt-2">
+<!-- Section Title & Atmospheric Counter -->
+<section class="px-2 pt-2 pb-4">
+<div class="flex items-baseline justify-between">
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface tracking-tight">Recuerdos</h1>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">12 momentos capturados</span>
+</div>
+<p class="font-body-md text-body-md text-secondary mt-1">Crónicas visuales y fragmentos de expediciones nocturnas</p>
+<!-- Material 3 Filter Chips (Vector glyphs only, no emojis) -->
+<div class="flex items-center space-x-2 mt-4 overflow-x-auto custom-scroll pb-1">
+<button class="h-9 px-4 rounded-full bg-primary-container text-on-primary flex items-center space-x-1.5 text-label-sm font-label-sm tracking-wide shadow-sm active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined text-sm font-bold" data-icon="check" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check</span>
+<span>Todos</span>
+</button>
+<button class="h-9 px-4 rounded-full bg-surface-container text-secondary flex items-center space-x-1.5 text-label-sm font-label-sm hover:text-primary active:scale-95 transition-all duration-150 border border-outline-variant/30">
+<span class="material-symbols-outlined text-sm" data-icon="star">star</span>
+<span>Favoritos</span>
+</button>
+<button class="h-9 px-4 rounded-full bg-surface-container text-secondary flex items-center space-x-1.5 text-label-sm font-label-sm hover:text-primary active:scale-95 transition-all duration-150 border border-outline-variant/30">
+<span class="material-symbols-outlined text-sm" data-icon="calendar_today">calendar_today</span>
+<span>Por año</span>
+</button>
+<button class="h-9 px-4 rounded-full bg-surface-container text-secondary flex items-center space-x-1.5 text-label-sm font-label-sm hover:text-primary active:scale-95 transition-all duration-150 border border-outline-variant/30">
+<span class="material-symbols-outlined text-sm" data-icon="place">place</span>
+<span>Ubicación</span>
+</button>
+</div>
+</section>
+<!-- 3-Column Photo Grid -->
+<section class="grid grid-cols-3 gap-2 px-1">
+<!-- 1. Kioto (Using https://lh3.googleusercontent.com/aida/AEtjO1XvBEGN8IPOzxtRdQ6YAHNzjmrZNE-6RRAwuhY1srPbCD-fNoxtwdj_hV2CMKTOeamHQ_q_-U5zm5mEV302T78JLZ3gn1Jn5lTkCK5RHMHQ1HWHcFJkxCv1AqNGC3SW7w_JYLFVyKIQtKh6YtiyozeXMPyiHWQqy7PNVZMQKrAqMJMTEO0M13K_6SWdIuuC_FdGALj00NgWJQyvErpJDa4_iCVG-6gd_lmVKfBtpK5pT-nm0dkzRAwzuMUB) -->
+<div class="group relative aspect-square rounded-2xl overflow-hidden bg-surface-container border border-outline-variant/20 shadow-sm cursor-pointer transition-transform duration-200 active:scale-95">
+<img alt="Templo Kinkaku-ji de Kioto" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida/AEtjO1XvBEGN8IPOzxtRdQ6YAHNzjmrZNE-6RRAwuhY1srPbCD-fNoxtwdj_hV2CMKTOeamHQ_q_-U5zm5mEV302T78JLZ3gn1Jn5lTkCK5RHMHQ1HWHcFJkxCv1AqNGC3SW7w_JYLFVyKIQtKh6YtiyozeXMPyiHWQqy7PNVZMQKrAqMJMTEO0M13K_6SWdIuuC_FdGALj00NgWJQyvErpJDa4_iCVG-6gd_lmVKfBtpK5pT-nm0dkzRAwzuMUB"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-2 pointer-events-none">
+<span class="font-label-sm text-label-sm text-white font-bold tracking-tight drop-shadow-md truncate">Kioto</span>
+</div>
+</div>
+<!-- 2. Santorini -->
+<div class="group relative aspect-square rounded-2xl overflow-hidden bg-surface-container border border-outline-variant/20 shadow-sm cursor-pointer transition-transform duration-200 active:scale-95">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Santorini sunset over whitewashed cliffside villas and blue domed churches, illuminated by radiant golden-hour light reflecting on the Aegean Sea, dramatic twilight sky with deep amber and nocturnal indigo tones, cinematic travel photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeQi1Ko0Mt5WKEBCaOzDkenR7Jd3TggNgAi0bfwgRQq01JZGoxyKbAXrg5WbwRI7yZ4RQqSKZMjGLk-Osehz9JjqN_ZyssLoTCg-JMriMOAVCPbe6iRZ_flIiTZOIw-Tzchg8Rg1_VAOd5m_bNXi20RUVxyYwGPOfkJsyhT8fyL3jLK0w9WENAoLoPOmd5danL-Qs-W_zczG1hxa9RK3_TDsKkFPq5Usr4Z96dR_xwLsDkY5dtRaEl_A1lLIOgZXxYBd8nIFrHWMbs"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-2 pointer-events-none">
+<span class="font-label-sm text-label-sm text-white font-bold tracking-tight drop-shadow-md truncate">Santorini</span>
+</div>
+</div>
+<!-- 3. Patagonia -->
+<div class="group relative aspect-square rounded-2xl overflow-hidden bg-surface-container border border-outline-variant/20 shadow-sm cursor-pointer transition-transform duration-200 active:scale-95">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Majestic granite peaks of Patagonia piercing stormy evening clouds, pristine glacial lake reflecting jagged mountain ridges, soft ambient twilight with warm incandescent amber highlights on mountain tips and deep midnight slate blues." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIRhmGvyg0x1OeMpIrRkPD3xrOsVbUC_y3pa6TkZtuc0y8nqMutXKYpknuf60jedlQOBHtzr7kANBbj2RDtLwK1oqndNHI55ws4ptk4piJ52jKt27EKpOhKnXuVOoUJXJcHMlvnY7J71LLXDvFfBUWHM8-zt3h-l0x_Fo4PFxcV7ByolOgT-3mjeWSOn_iGNQ_lu6tOHZNrChAY_iwSA9gARHtuud97oOUClyIabWYGyeegkm0L8HfDCcWjfH5AU4tP26IQiRFuDzp"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-2 pointer-events-none">
+<span class="font-label-sm text-label-sm text-white font-bold tracking-tight drop-shadow-md truncate">Patagonia</span>
+</div>
+</div>
+<!-- 4. Barcelona -->
+<div class="group relative aspect-square rounded-2xl overflow-hidden bg-surface-container border border-outline-variant/20 shadow-sm cursor-pointer transition-transform duration-200 active:scale-95">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Historic cobblestone alley in Barcelona Gothic Quarter illuminated by vintage iron lantern sconces casting golden amber glow against medieval stone facades, atmospheric damp pavement reflections at dusk with deep navy shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0q1dpnih1SyJ8ogsA5fpS2lhSd6Ij1PnnrSspH2HPzJ64Szq58sbwJ0H46JQaGy_akSdPwC0yHOhFxuqJKup87cmlr280UNvh3L7t5dRlc1aWolae_MC_i_4L9nGKK-at8V8A1xShwbmcbqXbUNrvZNYYQIAHP8Wqr3sz1imKh3xi-r17vJoFGwp2gBF_V_15_xd8ZIgEj7dSmQGck5aMakxslLWrboWLBF2HKPWDpKouzvgzQy683Os_ESq81sp9va4v6mqvLhsr"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-2 pointer-events-none">
+<span class="font-label-sm text-label-sm text-white font-bold tracking-tight drop-shadow-md truncate">Barcelona</span>
+</div>
+</div>
+<!-- 5. Alpes -->
+<div class="group relative aspect-square rounded-2xl overflow-hidden bg-surface-container border border-outline-variant/20 shadow-sm cursor-pointer transition-transform duration-200 active:scale-95">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Serene alpine lake nestled high in the Swiss Alps, crystal-clear emerald water reflecting dramatic snow-capped peaks under evening starlight, warm campfire glow in the foreground with deep nocturnal atmospheric palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6pke1sp_fHCS8jshVHe8BZ5MOJL5A6LEDUKoz2_4ZT8TTjKNzvoFG7sTv4WsvdmoX3_xQlShzbgBN2JI6Ayi9_-xqmlGG24K0OK8o7PL3fPXgjTp2pooD4rBXowN16jFjU21N9XdKRA-mW33Iz6EECZygrwk5MbnuR9VohiOWv7oqMLlrymZvlLPa3eCx0Vj2Ta1aKHOn8sFl_njD77fWMiq6DBquFV9J5ZcnBatXAA696E5kIAhZ1w3WWDDsmNhl-25cJ7vRRhWH"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-2 pointer-events-none">
+<span class="font-label-sm text-label-sm text-white font-bold tracking-tight drop-shadow-md truncate">Alpes</span>
+</div>
+</div>
+<!-- 6. Sahara -->
+<div class="group relative aspect-square rounded-2xl overflow-hidden bg-surface-container border border-outline-variant/20 shadow-sm cursor-pointer transition-transform duration-200 active:scale-95">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Endless wind-swept Sahara sand dunes at dusk, sculpted ridges casting dramatic deep purple shadows while crests glow with intense amber and golden light under a serene celestial night sky, artistic fine art photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDXkMW2jKDnCsOw2-oC_P7ItjP-MoIcNh3MRJDWa-2MQ69vpozEXBOn0I-45a-W8FSrzpBIy_tQisHI9_lxzfSb7N3RyoCScL_70ans8a7O1OsYz56me2_DEeAVpt-WKgmnd23Ujp11XBcuxktXwT7dlEqG1i3KtTLwlFF-lQ_11SnWT08xVu7QM2GuUPVrcRFsmf3tYK2sqzR59bAcDD2C4kjQxUzhdq5BLFU793-xHTQ9HWZOiF9pclEaXcV0szIiIkes5Pnfw4xz"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-2 pointer-events-none">
+<span class="font-label-sm text-label-sm text-white font-bold tracking-tight drop-shadow-md truncate">Sahara</span>
+</div>
+</div>
+<!-- 7. Shinjuku -->
+<div class="group relative aspect-square rounded-2xl overflow-hidden bg-surface-container border border-outline-variant/20 shadow-sm cursor-pointer transition-transform duration-200 active:scale-95">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Bustling neon-drenched night street in Shinjuku Tokyo during light rain, wet asphalt reflecting luminous amber and cyan signs, silhouettes of night travelers beneath umbrellas with moody nocturnal cinematic ambiance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6ST8XKAMgfgbD72mVzYXk3bXEzBNNafJaWo7kKSEEm29CeG7WNnOm3zjk2dnzIvL4hz4qcF9R8Gwqujcpty-5_gOm1IyAzgMImqbuen0EKVNshsOF7sM4PLn4vVeyhbfARk3EH2XXRrFBDaU-dc1oK4cvgEmvaSQMAh_66X3s8Vsy1F_-cqpBqXs2BS4AV1Hb6Gvs5AwbboEFjjNS7DI6NF9JParL8L_TCYZnW4hei0qwN9hkd0k1-Fv_pEZcDaQYEpBt-REBb7a8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-2 pointer-events-none">
+<span class="font-label-sm text-label-sm text-white font-bold tracking-tight drop-shadow-md truncate">Shinjuku</span>
+</div>
+</div>
+<!-- 8. Costa -->
+<div class="group relative aspect-square rounded-2xl overflow-hidden bg-surface-container border border-outline-variant/20 shadow-sm cursor-pointer transition-transform duration-200 active:scale-95">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Secluded tropical cove with turquoise water gently breaking on pristine shoreline at twilight, silhouette of coconut palms against warm golden horizon with deep starry indigo sky, calm meditative coastal voyage." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCu3nXs1gZalOavILx6ek3CBmn8CDUnwtjwFcLrcK0P12-GnPKwBah_1TtcGWgJlF_kI6aEfooNMVl0Vk5x1oCnyR3PclblbquF5_8II_ZclV7R_NOP4MmLIZpnUoPdx4tGdeLx9bucw4ARyO1TkX9u1Z5emck4MGPjFyopHyuyIJIVfo_zWnmblhgWq1_ybtqIuHx897hDs2Cc4sYACEH5CN4XfBzKXhRnenSyMcU0Jg1p_nVgA5Xj_FweCrqrke_i5VyxumBV31VM"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-2 pointer-events-none">
+<span class="font-label-sm text-label-sm text-white font-bold tracking-tight drop-shadow-md truncate">Costa</span>
+</div>
+</div>
+<!-- 9. Bosque -->
+<div class="group relative aspect-square rounded-2xl overflow-hidden bg-surface-container border border-outline-variant/20 shadow-sm cursor-pointer transition-transform duration-200 active:scale-95">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Ethereal misty trail weaving through towering ancient redwood pines at dawn, golden sunbeams piercing through dense fog creating incandescent amber rays against deep green and slate shadows, contemplative wilderness journey." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6VCVXrLn5F80pmrfue5u_xtB5q0arzuVPEIuzyQ_LkuLBaacENVMR0KOfsephIFtI6tIVOT7LbaN05G75bemtMzxlv8cVi0lkw1Ud4WVumTKAVS9VbrST3u6avk8Vmd_lmYy7GsBslJTSK6gMa0RFH-uoJHws14WVXBxMmebyKZWRc1VHG2jcy2E85QHSbG353HayXgwzuT_5ywzKm2JOtcUV0w3-lRUzZFDCK10qym53-RCYA1qTs5sxnz7vj20QreXWJmEztgZp"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-2 pointer-events-none">
+<span class="font-label-sm text-label-sm text-white font-bold tracking-tight drop-shadow-md truncate">Bosque</span>
+</div>
+</div>
+<!-- 10. Capadocia -->
+<div class="group relative aspect-square rounded-2xl overflow-hidden bg-surface-container border border-outline-variant/20 shadow-sm cursor-pointer transition-transform duration-200 active:scale-95">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Dozens of hot air balloons floating over Cappadocia fairy chimneys at early dawn, illuminated from within with glowing amber burners against pastel lavender and nocturnal dark navy horizon, fairy tale atmospheric landscape." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvDmVZJtE5cMD29yNo_Sj4apmkjWV2FYIuWMb4PuRrlnHXLcTKx2pr0lqdCddDBvfanODB3Uo2UwIVrHN37Lt3j5-GOaIGoxJvKvEj4qIV8X_5n0Nk_KARTR9FGvl9eZd4ieQmkVdRHKyzsRGqDbA9_tEn7teSjsCV6Gm3SJ43mFUMIPq7Qfjlz4gxYBvrfWIKs5Csxk9nUMkaoGzUSq43F_cnvVgh-9x7cmGrDIViSU058ywWsqiq88s7hd4mlH4q0TdO9T-qGYGH"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-2 pointer-events-none">
+<span class="font-label-sm text-label-sm text-white font-bold tracking-tight drop-shadow-md truncate">Capadocia</span>
+</div>
+</div>
+<!-- 11. Amalfi -->
+<div class="group relative aspect-square rounded-2xl overflow-hidden bg-surface-container border border-outline-variant/20 shadow-sm cursor-pointer transition-transform duration-200 active:scale-95">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Dramatic Amalfi Coast cliffs studded with pastel villas clinging to rocks above dark blue Mediterranean waters at blue hour, warm amber window lights glowing softly in coastal dusk, elegant travel photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAHymxYZK-dE-yWREMKje0tapYJ54z3PU93_Zx-omk2XhiaFh2p91eKFiZjDqQrSdSK5_B1XJ-FdmK2iTce8sPwB9N5vwnGFPKlzWHWrWHkJ5MSgEH8YfwZCWAzW5vVjSGLmrSlfUSAC2Oh_ZHmmRjThwftePvCP1hEIlT3_1k2fQQTiuhlzErXTQiOjHkOKn7QoX2eUDTzKU2jlVS8o3CBzAbE3zdXIr3bJXer5lN9ronBTVz7Lhslb2cKTNhYNZt3iu_dfyNULe-"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-2 pointer-events-none">
+<span class="font-label-sm text-label-sm text-white font-bold tracking-tight drop-shadow-md truncate">Amalfi</span>
+</div>
+</div>
+<!-- 12. Toscana -->
+<div class="group relative aspect-square rounded-2xl overflow-hidden bg-surface-container border border-outline-variant/20 shadow-sm cursor-pointer transition-transform duration-200 active:scale-95">
+<img class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-alt="Rolling cypress-lined Tuscan hills overlooking Florence distant cathedral dome in hazy evening light, warm amber sunset glow kissing rustic stone villas under a twilight velvet sky, timeless peaceful expedition." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiAjjIphnrJ9pYsdfBNWmdH1t8bEHxfsyJENGEeGicyUY4BuaapsYU1SiOx288U37NobYotOxRWwj8LvwmHTuQ1RHi6xuzt6Phiiuz3cJe3FfKpPCMqqFfLuiWZfrNRDT4t5dPIUZK3m-U_6nRrHFNU5fJj7n6aMRUhXyJ5_hiFEdzTS2v_urV5O7ntc1GKJdVa9L0IofEGDRIRA_zxlN2VV5xMonMsfJ1abR3oRZaLhk_i7jaxkprEhHUmPoKj8jA4BWYHhvtusSY"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent flex items-end p-2 pointer-events-none">
+<span class="font-label-sm text-label-sm text-white font-bold tracking-tight drop-shadow-md truncate">Toscana</span>
+</div>
+</div>
+</section>
+<!-- Subdued Chronicle Quote / Micro Footer in Canvas -->
+<div class="my-6 p-4 rounded-2xl bg-surface-container-low border border-outline-variant/10 text-center">
+<span class="material-symbols-outlined text-primary-container text-xl mb-1" data-icon="auto_awesome">auto_awesome</span>
+<p class="font-body-md text-body-md text-on-surface-variant italic">"El mundo no está en los mapas, sino en los pasos que guardamos en la memoria."</p>
+</div>
+</main>
+<!-- Shared Component: BottomNavBar -->
+<!-- Executing style_shell_layout & style_separation_logic without borders -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 bg-surface-container-low/95 backdrop-blur-md shadow-[0_-4px_20px_rgba(0,0,0,0.6)]">
+<!-- 1. Diario (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors duration-150 active:scale-95 px-5 py-1.5" type="button">
+<span class="material-symbols-outlined text-2xl" data-icon="book_2">book_2</span>
+<span class="font-label-sm text-label-sm font-bold mt-0.5">Diario</span>
+</button>
+<!-- 2. Rutas (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors duration-150 active:scale-95 px-5 py-1.5" type="button">
+<span class="material-symbols-outlined text-2xl" data-icon="explore">explore</span>
+<span class="font-label-sm text-label-sm font-bold mt-0.5">Rutas</span>
+</button>
+<!-- 3. Recuerdos (Active - Matched to current page intent) -->
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary rounded-full px-5 py-1.5 active:scale-95 transition-transform duration-150 shadow-[0_4px_16px_rgba(255,184,0,0.25)]" type="button">
+<span class="material-symbols-outlined text-2xl" data-icon="photo_library" data-weight="fill" style="font-variation-settings: 'FILL' 1;">photo_library</span>
+<span class="font-label-sm text-label-sm font-bold mt-0.5">Recuerdos</span>
+</button>
+<!-- 4. Perfil (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-colors duration-150 active:scale-95 px-5 py-1.5" type="button">
+<span class="material-symbols-outlined text-2xl" data-icon="account_circle">account_circle</span>
+<span class="font-label-sm text-label-sm font-bold mt-0.5">Perfil</span>
+</button>
+</nav>
+</div>
+</body></html>

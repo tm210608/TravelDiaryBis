@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mi Diario de Viaje - Mapa de Viajes</title>
+<!-- Google Fonts: Epilogue & Manrope -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-fixed-variant": "#604100",
+            "on-secondary-fixed": "#081d2e",
+            "on-surface-variant": "#d5c4ab",
+            "surface-container": "#1f1f29",
+            "on-tertiary-fixed": "#281900",
+            "on-secondary-container": "#a3b7cd",
+            "tertiary-container": "#ffb82f",
+            "on-background": "#e4e1f0",
+            "secondary-fixed-dim": "#b4c9df",
+            "on-secondary-fixed-variant": "#35495b",
+            "surface-container-low": "#1b1b25",
+            "background": "#12121d",
+            "outline-variant": "#514532",
+            "on-tertiary-container": "#6e4b00",
+            "on-primary": "#412d00",
+            "primary": "#ffdca1",
+            "surface-bright": "#393844",
+            "inverse-on-surface": "#302f3b",
+            "on-primary-fixed": "#271900",
+            "surface-container-highest": "#34343f",
+            "surface-container-lowest": "#0d0d17",
+            "surface-tint": "#ffba20",
+            "surface-variant": "#34343f",
+            "primary-fixed": "#ffdea8",
+            "surface-dim": "#12121d",
+            "inverse-surface": "#e4e1f0",
+            "tertiary-fixed-dim": "#ffba39",
+            "secondary-fixed": "#d0e5fb",
+            "primary-fixed-dim": "#ffba20",
+            "on-tertiary": "#432c00",
+            "tertiary-fixed": "#ffdead",
+            "on-primary-fixed-variant": "#5e4200",
+            "secondary-container": "#35495b",
+            "error-container": "#93000a",
+            "secondary": "#b4c9df",
+            "surface-container-high": "#292934",
+            "on-primary-container": "#6b4c00",
+            "error": "#ffb4ab",
+            "inverse-primary": "#7c5800",
+            "on-secondary": "#1f3243",
+            "on-error-container": "#ffdad6",
+            "outline": "#9e8f78",
+            "on-surface": "#e4e1f0",
+            "tertiary": "#ffdca7",
+            "on-error": "#690005",
+            "surface": "#12121d",
+            "primary-container": "#ffb800"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "margin": "1.25rem",
+            "space-xl": "2rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "space-sm": "0.5rem",
+            "gutter": "1rem"
+          },
+          "fontFamily": {
+            "label-md": ["Manrope"],
+            "headline-lg-mobile": ["Epilogue"],
+            "display-md": ["Epilogue"],
+            "body-lg": ["Manrope"],
+            "title-lg": ["Epilogue"],
+            "headline-sm": ["Epilogue"],
+            "title-md": ["Manrope"],
+            "headline-md": ["Epilogue"],
+            "body-md": ["Manrope"],
+            "label-sm": ["Manrope"],
+            "display-lg": ["Epilogue"],
+            "label-lg": ["Manrope"],
+            "headline-lg": ["Epilogue"]
+          },
+          "fontSize": {
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "display-md": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "title-lg": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+            "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1;
+    }
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(0.85);
+        opacity: 0.8;
+      }
+      50% {
+        transform: scale(1.6);
+        opacity: 0.25;
+      }
+      100% {
+        transform: scale(2.2);
+        opacity: 0;
+      }
+    }
+    @keyframes pulse-ring-inner {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.9;
+      }
+      100% {
+        transform: scale(1.35);
+        opacity: 0.15;
+      }
+    }
+    .pulse-ring-outer {
+      animation: pulse-ring 2.8s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+    }
+    .pulse-ring-mid {
+      animation: pulse-ring-inner 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite alternate;
+    }
+  </style>
+</head>
+<body class="bg-[#0A0A14] text-on-surface antialiased overflow-hidden select-none w-screen h-screen relative font-body-md">
+<!-- =========================================================================
+       1. IMMERSIVE NIGHT CARTOGRAPHY CANVAS (Full-bleed Map Layer)
+       ========================================================================= -->
+<div class="absolute inset-0 w-full h-full overflow-hidden bg-[#0A0A14]" id="map-viewport">
+<!-- Map image layer using nocturnal cartography style reference -->
+<img alt="Cartografía nocturna global" class="absolute inset-0 w-full h-full object-cover object-center opacity-75 scale-105 pointer-events-none filter contrast-125 brightness-90" src="https://lh3.googleusercontent.com/aida/AEtjO1U6oxQpdxINwOuul9Jhj2tqHVeKKFnIr4X78e0SkqiJKbc-0SHVoxkUVujtgrzEbVnGlJRqpIpppPB-uw4t-Cr0UAWliKsCDBOEqJf-12F8lqH05u42YaOkzvCJBnDPM0UATLWt_AGrt1AzZLt3es4y0Z0wwQulVCLRdU59ymEsIrseDfm-nCXCgHVCrYJga1FNZmWeJQUhpwxIxPGEWbKaOXNtM1_fVFL2llrTInBJEeC5nLm_LdX9LVPH"/>
+<!-- Deep celestial dark gradients & vignettes -->
+<div class="absolute inset-0 bg-radial-gradient from-transparent via-[#0A0A14]/30 to-[#0A0A14]/85 pointer-events-none"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-[#0A0A14]/70 via-transparent to-[#0A0A14]/90 pointer-events-none"></div>
+<!-- Nocturnal geodesic grid & flight route arcs (SVG overlay) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none z-10" preserveaspectratio="none" viewbox="0 0 1000 1000">
+<defs>
+<lineargradient id="route-kyoto-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#FFB800" stop-opacity="0.8"></stop>
+<stop offset="60%" stop-color="#FFB800" stop-opacity="0.3"></stop>
+<stop offset="100%" stop-color="#8FA3B8" stop-opacity="0.1"></stop>
+</lineargradient>
+<filter height="140%" id="glow-gold" width="140%" x="-20%" y="-20%">
+<fegaussianblur result="blur" stddeviation="3"></fegaussianblur>
+<fecomposite in="SourceGraphic" in2="blur" operator="over"></fecomposite>
+</filter>
+</defs>
+<!-- Geodesic flight route lines connecting destinations -->
+<!-- Route 1: Madrid/Sevilla (Spain) to Zurich (Switzerland) -->
+<path d="M 470 380 Q 490 350 515 340" fill="none" stroke="#FFB800" stroke-dasharray="4 4" stroke-opacity="0.35" stroke-width="1.5"></path>
+<!-- Route 2: Zurich (Switzerland) to Rome (Italy) -->
+<path d="M 515 340 Q 525 365 532 385" fill="none" stroke="#FFB800" stroke-dasharray="4 4" stroke-opacity="0.4" stroke-width="1.5"></path>
+<!-- Route 3: Rome (Italy) to Marrakech (Morocco) -->
+<path d="M 532 385 Q 480 430 455 435" fill="none" stroke="#FFB800" stroke-dasharray="4 4" stroke-opacity="0.25" stroke-width="1.5"></path>
+<!-- Route 4: Grand Trans-Eurasian Journey from Rome (Italy) to Kyoto (Japan) -->
+<path d="M 532 385 Q 680 270 825 385" fill="none" filter="url(#glow-gold)" stroke="url(#route-kyoto-gradient)" stroke-dasharray="6 5" stroke-width="2.2"></path>
+</svg>
+<!-- =========================================================================
+         GEOGRAPHICAL PINS (Material 3 Expressive Nocturnal Tokens)
+         ========================================================================= -->
+<!-- Pin 1: España (Madrid / Sevilla) -->
+<div class="absolute left-[47%] top-[38%] -translate-x-1/2 -translate-y-1/2 z-20 group cursor-pointer" onclick="selectDestination('espana')">
+<div class="relative flex items-center justify-center">
+<div class="w-8 h-8 rounded-full bg-primary-container/10 flex items-center justify-center transition-transform group-hover:scale-125">
+<div class="w-3.5 h-3.5 rounded-full bg-primary-container ring-2 ring-[#0A0A14] shadow-[0_0_12px_rgba(255,184,0,0.6)]"></div>
+</div>
+<span class="absolute top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#131422]/90 border border-white/5 text-[10px] font-label-sm text-secondary-fixed opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md">
+          España
+        </span>
+</div>
+</div>
+<!-- Pin 2: Suiza (Alpes Suizos) -->
+<div class="absolute left-[51.5%] top-[34%] -translate-x-1/2 -translate-y-1/2 z-20 group cursor-pointer" onclick="selectDestination('suiza')">
+<div class="relative flex items-center justify-center">
+<div class="w-8 h-8 rounded-full bg-primary-container/10 flex items-center justify-center transition-transform group-hover:scale-125">
+<div class="w-3.5 h-3.5 rounded-full bg-primary-container ring-2 ring-[#0A0A14] shadow-[0_0_12px_rgba(255,184,0,0.6)]"></div>
+</div>
+<span class="absolute top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#131422]/90 border border-white/5 text-[10px] font-label-sm text-secondary-fixed opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md">
+          Suiza
+        </span>
+</div>
+</div>
+<!-- Pin 3: Italia (Roma & Florencia) -->
+<div class="absolute left-[53.2%] top-[38.5%] -translate-x-1/2 -translate-y-1/2 z-20 group cursor-pointer" onclick="selectDestination('italia')">
+<div class="relative flex items-center justify-center">
+<div class="w-8 h-8 rounded-full bg-primary-container/10 flex items-center justify-center transition-transform group-hover:scale-125">
+<div class="w-3.5 h-3.5 rounded-full bg-primary-container ring-2 ring-[#0A0A14] shadow-[0_0_12px_rgba(255,184,0,0.6)]"></div>
+</div>
+<span class="absolute top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#131422]/90 border border-white/5 text-[10px] font-label-sm text-secondary-fixed opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md">
+          Italia
+        </span>
+</div>
+</div>
+<!-- Pin 4: Marruecos (Medina de Marrakech) -->
+<div class="absolute left-[45.5%] top-[43.5%] -translate-x-1/2 -translate-y-1/2 z-20 group cursor-pointer" onclick="selectDestination('marruecos')">
+<div class="relative flex items-center justify-center">
+<div class="w-8 h-8 rounded-full bg-primary-container/10 flex items-center justify-center transition-transform group-hover:scale-125">
+<div class="w-3.5 h-3.5 rounded-full bg-primary-container ring-2 ring-[#0A0A14] shadow-[0_0_12px_rgba(255,184,0,0.6)]"></div>
+</div>
+<span class="absolute top-7 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#131422]/90 border border-white/5 text-[10px] font-label-sm text-secondary-fixed opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-md">
+          Marruecos
+        </span>
+</div>
+</div>
+<!-- Pin 5: SELECTED PIN (Kioto, Japón) -> Vibrant Concentric Glow & Pill Tag -->
+<div class="absolute left-[82.5%] top-[38.5%] -translate-x-1/2 -translate-y-1/2 z-30 cursor-pointer">
+<div class="relative flex flex-col items-center">
+<!-- Floating Label Pill Tag -->
+<div class="mb-2 px-3 py-1 rounded-full bg-[#131422]/95 border border-[#FFB800]/40 backdrop-blur-md shadow-[0_4px_16px_rgba(0,0,0,0.7)] flex items-center space-x-1.5 transform hover:scale-105 transition-all">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container animate-ping"></span>
+<span class="font-label-md text-label-md font-bold text-primary tracking-wide">Kioto</span>
+<span class="material-symbols-outlined text-[13px] text-primary" data-icon="travel_explore">travel_explore</span>
+</div>
+<!-- Concentric Pulsating Rings -->
+<div class="relative w-14 h-14 flex items-center justify-center">
+<!-- External pulse aura -->
+<div class="absolute inset-0 rounded-full border border-primary-container/40 bg-primary-container/15 pulse-ring-outer pointer-events-none"></div>
+<!-- Mid pulse aura -->
+<div class="absolute w-10 h-10 rounded-full border border-primary-container/60 bg-primary-container/20 pulse-ring-mid pointer-events-none"></div>
+<!-- Central Beacon Marker (Gold Squircle Pin) -->
+<div class="relative w-7 h-7 rounded-full bg-primary-container flex items-center justify-center shadow-[0_0_24px_rgba(255,184,0,0.9),0_2px_8px_rgba(0,0,0,0.8)] ring-4 ring-[#0A0A14] z-10 active:scale-95 transition-transform">
+<span class="w-2.5 h-2.5 rounded-full bg-[#0A0A14]"></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- =========================================================================
+       2. FLOATING TOP APP BAR (Frosted Capsule Pill)
+       ========================================================================= -->
+<header class="fixed top-0 left-0 right-0 z-40 px-margin pt-5 pb-2 pointer-events-none">
+<div class="max-w-md mx-auto flex items-center justify-between px-3.5 py-2.5 rounded-full bg-[#131422]/85 backdrop-blur-xl border border-white/[0.07] shadow-[0_12px_32px_rgba(0,0,0,0.65)] pointer-events-auto">
+<!-- Back Action Button -->
+<button aria-label="Regresar" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface hover:text-primary hover:bg-[#1A1C2E] active:scale-95 transition-all duration-150" type="button">
+<span class="material-symbols-outlined text-[22px]" data-icon="arrow_back">arrow_back</span>
+</button>
+<!-- Centered Expressive Title Anchor -->
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-[20px] fill-icon" data-icon="public">public</span>
+<h1 class="font-headline-sm text-title-md font-bold tracking-tight text-on-surface">
+          Mapa de Viajes
+        </h1>
+</div>
+<!-- Layers / Filter Icon Button -->
+<button aria-label="Capas y Filtros" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-[#1A1C2E] active:scale-95 transition-all duration-150 relative" type="button">
+<span class="material-symbols-outlined text-[22px]" data-icon="layers">layers</span>
+<!-- Notification Dot for Active Filters -->
+<span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-primary-container ring-2 ring-[#131422]"></span>
+</button>
+</div>
+</header>
+<!-- =========================================================================
+       3. FLOATING MAP ACTION CONTROLS (Right Lateral Bar)
+       ========================================================================= -->
+<aside class="fixed right-margin top-28 z-40 flex flex-col space-y-3 pointer-events-auto">
+<!-- Re-center / Compass Button -->
+<button aria-label="Re-centrar mapa" class="w-12 h-12 rounded-2xl bg-[#131422]/90 backdrop-blur-md border border-white/[0.08] shadow-[0_8px_20px_rgba(0,0,0,0.55)] flex items-center justify-center text-secondary hover:text-primary hover:bg-[#1A1C2E] active:scale-90 transition-all duration-150" type="button">
+<span class="material-symbols-outlined text-[24px]" data-icon="explore">explore</span>
+</button>
+<!-- Zoom Control Pill (+ / -) -->
+<div class="rounded-2xl bg-[#131422]/90 backdrop-blur-md border border-white/[0.08] shadow-[0_8px_20px_rgba(0,0,0,0.55)] flex flex-col divide-y divide-white/[0.06] overflow-hidden">
+<button aria-label="Acercar mapa" class="w-12 h-11 flex items-center justify-center text-secondary hover:text-primary hover:bg-[#1A1C2E] active:scale-95 transition-all duration-150" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+</button>
+<button aria-label="Alejar mapa" class="w-12 h-11 flex items-center justify-center text-secondary hover:text-primary hover:bg-[#1A1C2E] active:scale-95 transition-all duration-150" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="remove">remove</span>
+</button>
+</div>
+<!-- GPS Current Location Button -->
+<button aria-label="Mi ubicación" class="w-12 h-12 rounded-2xl bg-[#131422]/90 backdrop-blur-md border border-white/[0.08] shadow-[0_8px_20px_rgba(0,0,0,0.55)] flex items-center justify-center text-secondary hover:text-primary hover:bg-[#1A1C2E] active:scale-90 transition-all duration-150" type="button">
+<span class="material-symbols-outlined text-[22px]" data-icon="my_location">my_location</span>
+</button>
+</aside>
+<!-- =========================================================================
+       4. BOTTOM NARRATIVE CANVAS: CARD INDICATOR & PREVIEW ENTRY
+       ========================================================================= -->
+<section class="fixed bottom-0 left-0 right-0 z-40 pb-6 pt-4 px-margin pointer-events-none">
+<div class="max-w-md mx-auto flex flex-col pointer-events-auto">
+<!-- Carousel Pagination Indicator & Meta Counter -->
+<div class="flex items-center justify-between px-3 mb-2.5">
+<div class="flex items-center space-x-1.5">
+<!-- Active dot (gold capsule) -->
+<span class="w-6 h-1.5 rounded-full bg-primary-container shadow-[0_0_8px_rgba(255,184,0,0.8)]"></span>
+<!-- Inactive dots -->
+<span class="w-2 h-1.5 rounded-full bg-white/20 hover:bg-white/40 transition-colors"></span>
+<span class="w-2 h-1.5 rounded-full bg-white/20 hover:bg-white/40 transition-colors"></span>
+<span class="w-2 h-1.5 rounded-full bg-white/20 hover:bg-white/40 transition-colors"></span>
+</div>
+<div class="flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-[#131422]/90 border border-white/5 backdrop-blur-sm">
+<span class="font-label-sm text-label-sm font-bold text-primary tracking-widest">3</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">de</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">12</span>
+</div>
+</div>
+<!-- Floating Preview Card (Level 2 Tonal Elevation, 28px radius) -->
+<article class="relative bg-[#1A1C2E]/95 backdrop-blur-2xl rounded-[28px] p-3.5 border border-[#FFB800]/25 shadow-[0_16px_36px_-6px_rgba(0,0,0,0.7),0_0_24px_-2px_rgba(255,184,0,0.18)] flex items-center space-x-3.5 transform transition-all duration-200 hover:border-[#FFB800]/50">
+<!-- Left: Image Thumbnail (Kinkaku-ji Golden Pavilion at Twilight) -->
+<div class="relative w-24 h-24 sm:w-28 sm:h-28 rounded-[20px] overflow-hidden flex-shrink-0 border border-white/10 shadow-inner group">
+<img alt="Pabellón Dorado Kinkaku-ji reflejado en el estanque al anochecer" class="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-500 ease-out" src="https://lh3.googleusercontent.com/aida/AEtjO1XvBEGN8IPOzxtRdQ6YAHNzjmrZNE-6RRAwuhY1srPbCD-fNoxtwdj_hV2CMKTOeamHQ_q_-U5zm5mEV302T78JLZ3gn1Jn5lTkCK5RHMHQ1HWHcFJkxCv1AqNGC3SW7w_JYLFVyKIQtKh6YtiyozeXMPyiHWQqy7PNVZMQKrAqMJMTEO0M13K_6SWdIuuC_FdGALj00NgWJQyvErpJDa4_iCVG-6gd_lmVKfBtpK5pT-nm0dkzRAwzuMUB"/>
+<!-- Subtle corner gradient over thumbnail -->
+<div class="absolute inset-0 bg-gradient-to-t from-[#0A0A14]/60 via-transparent to-transparent pointer-events-none"></div>
+<!-- Miniature camera badge -->
+<div class="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded-md bg-[#0A0A14]/70 backdrop-blur-sm flex items-center space-x-0.5">
+<span class="material-symbols-outlined text-[11px] text-primary" data-icon="photo_camera">photo_camera</span>
+<span class="text-[9px] font-label-sm font-bold text-on-surface">8</span>
+</div>
+</div>
+<!-- Middle: Diary Narrative Content -->
+<div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+<div>
+<!-- Category / Subhead Pill -->
+<div class="inline-flex items-center space-x-1.5 mb-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span class="font-label-sm text-label-sm font-bold text-primary tracking-wider uppercase truncate">
+                JAPÓN • SANTUARIO
+              </span>
+</div>
+<!-- Entry Title -->
+<h2 class="font-headline-sm text-title-lg font-bold text-on-surface leading-snug truncate hover:text-primary transition-colors">
+              Templo de Kinkaku-ji
+            </h2>
+</div>
+<!-- Metadata Cluster (Location & Date) -->
+<div class="flex flex-col space-y-1 mt-1.5">
+<!-- Location Line -->
+<div class="flex items-center space-x-1 text-on-surface-variant truncate">
+<span class="material-symbols-outlined text-[15px] text-primary flex-shrink-0 fill-icon" data-icon="location_on">location_on</span>
+<span class="font-label-md text-label-md font-medium text-secondary truncate">
+                Kioto, Japón
+              </span>
+</div>
+<!-- Date & Temperature Line -->
+<div class="flex items-center space-x-3 text-on-surface-variant">
+<div class="flex items-center space-x-1">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant flex-shrink-0" data-icon="calendar_today">calendar_today</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">
+                  15 May 2024
+                </span>
+</div>
+<div class="flex items-center space-x-1">
+<span class="material-symbols-outlined text-[14px] text-primary-container flex-shrink-0" data-icon="routine">routine</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">
+                  Atardecer
+                </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: Primary Expressive Action Button (Gold Circular Touch Target) -->
+<div class="flex-shrink-0 pl-1">
+<button aria-label="Abrir memoria de Kioto" class="w-13 h-13 p-3.5 rounded-full bg-primary-container text-on-primary hover:bg-tertiary-fixed-dim active:scale-90 shadow-[0_8px_20px_rgba(255,184,0,0.35)] flex items-center justify-center transition-all duration-200 group" onclick="abrirDetalleEntrada()" type="button">
+<span class="material-symbols-outlined text-[26px] font-bold group-hover:translate-x-0.5 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</article>
+</div>
+</section>
+<!-- =========================================================================
+       5. LIGHTWEIGHT CLIENT-SIDE INTERACTION SCRIPT
+       ========================================================================= -->
+<script>
+    function abrirDetalleEntrada() {
+      // Micro-feedback ripple simulation
+      const btn = event.currentTarget;
+      btn.classList.add('ring-4', 'ring-primary-container/40');
+      setTimeout(() => {
+        btn.classList.remove('ring-4', 'ring-primary-container/40');
+        console.log('Navegando a la memoria completa: Templo de Kinkaku-ji, Kioto');
+      }, 200);
+    }
+
+    function selectDestination(dest) {
+      console.log('Destino seleccionado:', dest);
+    }
+  </script>
+</body></html>

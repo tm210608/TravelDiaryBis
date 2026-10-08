@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nuevo Recuerdo - Mi Diario de Viaje</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Epilogue & Manrope -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,400;0,600;0,700;0,800;1,400&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Exact Tailwind Configuration -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-tint": "#ffba20",
+            "on-secondary": "#1f3243",
+            "on-error-container": "#ffdad6",
+            "surface-container-highest": "#34343f",
+            "secondary-fixed-dim": "#b4c9df",
+            "on-primary": "#412d00",
+            "tertiary-fixed-dim": "#ffba39",
+            "primary-fixed": "#ffdea8",
+            "on-surface-variant": "#d5c4ab",
+            "outline": "#9e8f78",
+            "error": "#ffb4ab",
+            "tertiary-container": "#ffb82f",
+            "inverse-surface": "#e4e1f0",
+            "surface-container-lowest": "#0d0d17",
+            "primary": "#ffdca1",
+            "on-tertiary-fixed": "#281900",
+            "on-tertiary-container": "#6e4b00",
+            "surface-container-low": "#1b1b25",
+            "surface-variant": "#34343f",
+            "on-primary-container": "#6b4c00",
+            "surface-container": "#1f1f29",
+            "surface": "#12121d",
+            "on-primary-fixed-variant": "#5e4200",
+            "on-background": "#e4e1f0",
+            "surface-bright": "#393844",
+            "secondary-fixed": "#d0e5fb",
+            "inverse-primary": "#7c5800",
+            "on-secondary-fixed-variant": "#35495b",
+            "on-secondary-container": "#a3b7cd",
+            "error-container": "#93000a",
+            "inverse-on-surface": "#302f3b",
+            "surface-dim": "#12121d",
+            "background": "#12121d",
+            "primary-container": "#ffb800",
+            "on-tertiary-fixed-variant": "#604100",
+            "secondary": "#b4c9df",
+            "tertiary-fixed": "#ffdead",
+            "tertiary": "#ffdca7",
+            "surface-container-high": "#292934",
+            "outline-variant": "#514532",
+            "on-tertiary": "#432c00",
+            "secondary-container": "#35495b",
+            "primary-fixed-dim": "#ffba20",
+            "on-error": "#690005",
+            "on-surface": "#e4e1f0",
+            "on-primary-fixed": "#271900",
+            "on-secondary-fixed": "#081d2e"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "1rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin": "1.25rem",
+            "space-xl": "2rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "title-md": ["Manrope"],
+            "body-lg": ["Manrope"],
+            "headline-sm": ["Epilogue"],
+            "headline-md": ["Epilogue"],
+            "headline-lg-mobile": ["Epilogue"],
+            "label-md": ["Manrope"],
+            "display-md": ["Epilogue"],
+            "label-lg": ["Manrope"],
+            "display-lg": ["Epilogue"],
+            "body-md": ["Manrope"],
+            "title-lg": ["Epilogue"],
+            "headline-lg": ["Epilogue"],
+            "label-sm": ["Manrope"]
+          },
+          "fontSize": {
+            "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "headline-lg-mobile": ["26px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "display-md": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "title-lg": ["18px", { "lineHeight": "26px", "fontWeight": "600" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.05em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Nocturnal Ambient Tone Glow */
+    .glow-amber-subtle {
+      box-shadow: 0 0 24px -2px rgba(255, 184, 0, 0.18);
+    }
+    
+    /* Custom input outline overrides */
+    input:focus, textarea:focus {
+      outline: none;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased selection:bg-primary-container selection:text-on-primary min-h-screen flex justify-center">
+<!-- Mobile Viewport Container (Android Shell Canvas: Max width 440px) -->
+<div class="w-full max-w-[440px] min-h-screen bg-surface-container-lowest flex flex-col relative shadow-2xl">
+<!-- Top App Bar: Pinned, Back Arrow, Title, Guardar Action Button -->
+<header class="sticky top-0 z-30 bg-surface/95 backdrop-blur-md px-5 py-3 flex items-center justify-between transition-colors duration-200">
+<div class="flex items-center gap-3">
+<button aria-label="Volver" class="w-10 h-10 -ml-1.5 rounded-full flex items-center justify-center text-on-surface hover:bg-surface-container-high active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm text-on-surface tracking-tight">Nuevo Recuerdo</h1>
+</div>
+<!-- Action Primary Pill Button -->
+<button class="bg-primary-container text-on-primary font-label-lg text-label-lg rounded-[20px] px-4 py-1.5 flex items-center gap-1.5 font-bold shadow-md hover:brightness-105 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">save</span>
+<span>Guardar</span>
+</button>
+</header>
+<!-- Scrollable Content Canvas -->
+<main class="flex-1 px-5 pt-3 pb-8 space-y-5 overflow-y-auto">
+<!-- Visual Memory Dropzone (~200px tall with nocturnal glass aesthetic) -->
+<div class="group relative w-full h-[200px] rounded-3xl bg-surface-container-low border-2 border-dashed border-primary/25 hover:border-primary-container/60 transition-all duration-300 flex flex-col items-center justify-center p-6 text-center cursor-pointer overflow-hidden glow-amber-subtle">
+<div class="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none"></div>
+<div class="w-14 h-14 rounded-full bg-surface-container-high flex items-center justify-center text-primary-container mb-3 shadow-inner group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[28px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+</div>
+<p class="font-title-md text-title-md text-on-surface font-semibold tracking-tight">Pulsa para tomar una foto</p>
+<p class="font-label-md text-label-md text-on-surface-variant mt-1">o sube una imagen de tu galería</p>
+</div>
+<!-- Field 1: Título del viaje (M3 Filled style with bottom gold active line) -->
+<div class="relative bg-surface-container-low rounded-t-xl rounded-b-none border-b-2 border-primary-container px-4 pt-3 pb-2 transition-colors focus-within:bg-surface-container">
+<label class="block font-label-sm text-label-sm text-primary uppercase tracking-wider font-bold" for="titulo">Título del viaje</label>
+<input class="w-full bg-transparent border-0 p-0 pt-1 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:ring-0" id="titulo" placeholder="Escribe el nombre de esta memoria..." type="text" value="Templo de Kinkaku-ji al atardecer"/>
+</div>
+<!-- Field 2 & 3: Ubicación y País (Two columns) -->
+<div class="grid grid-cols-2 gap-3">
+<!-- Ubicación -->
+<div class="relative bg-surface-container-low rounded-t-xl rounded-b-none border-b-2 border-outline/40 focus-within:border-primary-container px-3.5 pt-3 pb-2 transition-all focus-within:bg-surface-container">
+<div class="flex items-center justify-between">
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-bold" for="ubicacion">Ubicación</label>
+<span class="material-symbols-outlined text-[16px] text-primary-container">location_on</span>
+</div>
+<input class="w-full bg-transparent border-0 p-0 pt-1 font-body-md text-body-md text-on-surface placeholder:text-outline focus:ring-0" id="ubicacion" placeholder="Ciudad o sitio" type="text" value="Kioto"/>
+</div>
+<!-- País -->
+<div class="relative bg-surface-container-low rounded-t-xl rounded-b-none border-b-2 border-outline/40 focus-within:border-primary-container px-3.5 pt-3 pb-2 transition-all focus-within:bg-surface-container">
+<div class="flex items-center justify-between">
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-bold" for="pais">País</label>
+<span class="material-symbols-outlined text-[16px] text-secondary">public</span>
+</div>
+<input class="w-full bg-transparent border-0 p-0 pt-1 font-body-md text-body-md text-on-surface placeholder:text-outline focus:ring-0" id="pais" placeholder="País" type="text" value="Japón"/>
+</div>
+</div>
+<!-- Field 4: Etiqueta + Suggested Chips -->
+<div class="space-y-2">
+<div class="relative bg-surface-container-low rounded-t-xl rounded-b-none border-b-2 border-outline/40 focus-within:border-primary-container px-4 pt-3 pb-2 transition-colors focus-within:bg-surface-container">
+<div class="flex items-center justify-between">
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-bold" for="etiqueta">Etiqueta (ej. Senderismo, Ciudad)</label>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">local_offer</span>
+</div>
+<input class="w-full bg-transparent border-0 p-0 pt-1 font-body-md text-body-md text-on-surface placeholder:text-outline focus:ring-0" id="etiqueta" placeholder="Añade o selecciona una etiqueta..." type="text"/>
+</div>
+<!-- Sugerencias de Fichas (Chips M3 Expressive) -->
+<div class="flex flex-wrap gap-2 pt-1">
+<button class="h-9 px-3.5 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant/50 text-label-md font-label-md flex items-center gap-1.5 hover:border-primary/50 transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">hiking</span>
+<span>Senderismo</span>
+</button>
+<button class="h-9 px-3.5 rounded-full bg-primary-container text-on-primary text-label-md font-label-md flex items-center gap-1.5 font-bold shadow-sm" type="button">
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check</span>
+<span>Cultura</span>
+</button>
+<button class="h-9 px-3.5 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant/50 text-label-md font-label-md flex items-center gap-1.5 hover:border-primary/50 transition-colors" type="button">
+<span class="material-symbols-outlined text-[14px]">forest</span>
+<span>Naturaleza</span>
+</button>
+</div>
+</div>
+<!-- Field 5: Large Multiline Diary Entry (min height ~150px) -->
+<div class="relative bg-surface-container-low rounded-t-xl rounded-b-none border-b-2 border-outline/40 focus-within:border-primary-container px-4 pt-3 pb-3 transition-colors focus-within:bg-surface-container">
+<label class="block font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-bold" for="historia">Cuéntanos tu historia...</label>
+<textarea class="w-full min-h-[150px] bg-transparent border-0 p-0 pt-2 font-body-md text-body-md text-on-surface placeholder:text-outline focus:ring-0 resize-none leading-relaxed" id="historia" placeholder="El reflejo dorado en el estanque espejo era idéntico al recuerdo que guardaba en la memoria. El silencio otoñal envolvía el santuario mientras el cielo tomaba un tono violáceo..." rows="6"></textarea>
+</div>
+<!-- Date Selection Outlined Button -->
+<button class="w-full rounded-2xl border border-outline-variant/60 hover:border-primary-container bg-surface-container-low/40 px-4 py-3.5 flex items-center justify-between text-on-surface group transition-all" type="button">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[22px]">calendar_today</span>
+<span class="font-title-md text-title-md font-medium">Fecha: 15 May 2024</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors text-[20px]">edit_calendar</span>
+</button>
+<!-- Row: Favorito Toggle -->
+<div class="flex items-center justify-between p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30">
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined text-[20px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</div>
+<div>
+<p class="font-title-md text-title-md font-semibold text-on-surface leading-tight">Favorito</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Marcar este viaje en destacados</p>
+</div>
+</div>
+<!-- M3 Expressive Custom Switch (State: ON) -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-13 h-7 w-[52px] h-[30px] bg-surface-container-highest peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-primary-container after:content-[''] after:absolute after:top-[3px] after:left-[4px] after:bg-on-primary peer-checked:after:bg-on-primary after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary-container shadow-inner"></div>
+</label>
+</div>
+<!-- Muted Helper Text at bottom -->
+<div class="flex items-center justify-center gap-2 pt-2 pb-6 text-on-surface-variant/60">
+<span class="material-symbols-outlined text-[16px]">info</span>
+<p class="font-label-md text-label-md text-center">
+          Las coordenadas GPS se añadirán automáticamente si están disponibles.
+        </p>
+</div>
+</main>
+</div>
+</body></html>
