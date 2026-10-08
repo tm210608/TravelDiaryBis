@@ -3,13 +3,12 @@ package com.example.traveldiary.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // Paleta Premium: Night Adventure
-val DeepNavy = Color(0xFF0F0F28)
-val SoftGold = Color(0xFFFFD700)
-val CoolGray = Color(0xFF8E8E93)
-val SurfaceDark = Color(0xFF1C1C1E)
+val AtlasBackground = Color(0xFF101B22)
+val AtlasSurface = Color(0xFF1B2931)
+val AtlasElevated = Color(0xFF253640)
+val AtlasTurquoise = Color(0xFF78C9C4)
+val AtlasAmber = Color(0xFFE7AE6A)
+val AtlasPaper = Color(0xFFECE8DC)
 
 // Material 3 Tokens
-val PrimaryGold = Color(0xFFFFC107)
-val SecondaryBlue = Color(0xFF4FC3F7)
 val ErrorRed = Color(0xFFEF5350)
-val BackgroundDark = Color(0xFF0A0A0A)
