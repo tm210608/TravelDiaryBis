@@ -20,7 +20,6 @@ private fun String.normalized(): String =
         .trim()
 
 private val countryToContinent: Map<String, Continent> = mapOf(
-    // Europa
     "espana" to EUROPE, "spain" to EUROPE,
     "francia" to EUROPE, "france" to EUROPE,
     "italia" to EUROPE, "italy" to EUROPE,
@@ -64,7 +63,6 @@ private val countryToContinent: Map<String, Continent> = mapOf(
     "macedonia del norte" to EUROPE, "north macedonia" to EUROPE,
     "chipre" to EUROPE, "cyprus" to EUROPE,
 
-    // Asia
     "japon" to ASIA, "japan" to ASIA,
     "china" to ASIA,
     "corea del sur" to ASIA, "south korea" to ASIA, "korea" to ASIA, "corea" to ASIA,
@@ -102,7 +100,6 @@ private val countryToContinent: Map<String, Continent> = mapOf(
     "siria" to ASIA, "syria" to ASIA,
     "maldivas" to ASIA, "maldives" to ASIA,
 
-    // América
     "estados unidos" to AMERICA, "united states" to AMERICA, "usa" to AMERICA, "eeuu" to AMERICA,
     "canada" to AMERICA,
     "mexico" to AMERICA,
@@ -132,7 +129,6 @@ private val countryToContinent: Map<String, Continent> = mapOf(
     "belice" to AMERICA, "belize" to AMERICA,
     "aruba" to AMERICA, "curacao" to AMERICA,
 
-    // África
     "egipto" to AFRICA, "egypt" to AFRICA,
     "marruecos" to AFRICA, "morocco" to AFRICA,
     "sudafrica" to AFRICA, "south africa" to AFRICA,
@@ -161,7 +157,6 @@ private val countryToContinent: Map<String, Continent> = mapOf(
     "cabo verde" to AFRICA, "cape verde" to AFRICA,
     "zambia" to AFRICA,
 
-    // Oceanía
     "australia" to OCEANIA,
     "nueva zelanda" to OCEANIA, "new zealand" to OCEANIA,
     "fiyi" to OCEANIA, "fiji" to OCEANIA,
