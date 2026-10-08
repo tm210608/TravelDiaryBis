@@ -40,6 +40,7 @@ class EditEntryViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<EditEntryUiState>(EditEntryUiState.Loading)
     val uiState: StateFlow<EditEntryUiState> = _uiState.asStateFlow()
+    private var pendingImageUrl: String? = null
 
     fun loadEntry(id: Int) {
         viewModelScope.launch {
@@ -49,7 +50,11 @@ class EditEntryViewModel @Inject constructor(
                 _uiState.value = if (entry == null) {
                     EditEntryUiState.NotFound
                 } else {
-                    EditEntryUiState.Editing(entry, entry.toEntryDetails())
+                    val form = entry.toEntryDetails().let { currentForm ->
+                        pendingImageUrl?.let { currentForm.copy(imageUrl = it) } ?: currentForm
+                    }
+                    pendingImageUrl = null
+                    EditEntryUiState.Editing(entry, form)
                 }
             } catch (exception: Exception) {
                 _uiState.value = EditEntryUiState.Error(exception.message ?: "No se pudo cargar la entrada")
@@ -63,7 +68,11 @@ class EditEntryViewModel @Inject constructor(
     }
 
     fun updateImageUrl(uri: String) {
-        val state = _uiState.value as? EditEntryUiState.Editing ?: return
+        val state = _uiState.value as? EditEntryUiState.Editing
+        if (state == null) {
+            pendingImageUrl = uri
+            return
+        }
         updateForm(state.form.copy(imageUrl = uri))
     }
 

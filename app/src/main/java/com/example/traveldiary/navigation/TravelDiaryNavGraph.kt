@@ -2,6 +2,8 @@ package com.example.traveldiary.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -9,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.traveldiary.ui.screens.AddTravelEntryScreen
+import com.example.traveldiary.ui.screens.EditTravelEntryScreen
 import com.example.traveldiary.ui.screens.CameraScreen
 import com.example.traveldiary.ui.screens.MapScreen
 import com.example.traveldiary.ui.screens.MemoriesScreen
@@ -16,6 +19,7 @@ import com.example.traveldiary.ui.screens.ProfileScreen
 import com.example.traveldiary.ui.screens.TravelDetailScreen
 import com.example.traveldiary.ui.screens.TravelDiaryHomeScreen
 import com.example.traveldiary.ui.viewmodel.AddEntryViewModel
+import com.example.traveldiary.ui.viewmodel.EditEntryViewModel
 
 @Composable
 fun TravelDiaryNavGraph(navController: NavHostController) {
@@ -73,9 +77,47 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("entryId") { type = NavType.IntType })
         ) { backStackEntry ->
             val entryId = backStackEntry.arguments?.getInt("entryId") ?: 0
+            val refreshVersion by backStackEntry.savedStateHandle
+                .getStateFlow("refreshVersion", 0)
+                .collectAsState()
             TravelDetailScreen(
                 entryId = entryId,
-                onBackClick = { navController.popBackStack() }
+                refreshKey = refreshVersion,
+                onBackClick = { navController.popBackStack() },
+                onEditClick = { navController.navigate(Screen.EditEntry.createRoute(entryId)) },
+            )
+        }
+
+        composable(
+            route = Screen.EditEntry.route,
+            arguments = listOf(navArgument("entryId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val entryId = backStackEntry.arguments?.getInt("entryId") ?: 0
+            val capturedImageUri by backStackEntry.savedStateHandle
+                .getStateFlow<String?>("capturedImageUri", null)
+                .collectAsState()
+            val viewModel: EditEntryViewModel = hiltViewModel()
+
+            LaunchedEffect(capturedImageUri) {
+                capturedImageUri?.let { uri ->
+                    viewModel.updateImageUrl(uri)
+                    backStackEntry.savedStateHandle.remove<String>("capturedImageUri")
+                }
+            }
+
+            EditTravelEntryScreen(
+                entryId = entryId,
+                onBackClick = { navController.popBackStack() },
+                onSaved = {
+                    navController.previousBackStackEntry?.savedStateHandle?.let { handle ->
+                        val version = handle.get<Int>("refreshVersion") ?: 0
+                        handle["refreshVersion"] = version + 1
+                    }
+                    navController.popBackStack()
+                },
+                onEntryNotFound = { navController.popBackStack(Screen.Home.route, inclusive = false) },
+                onCameraClick = { navController.navigate(Screen.Camera.route) },
+                viewModel = viewModel,
             )
         }
 

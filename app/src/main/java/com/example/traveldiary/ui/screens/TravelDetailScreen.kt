@@ -11,6 +11,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Share
@@ -38,11 +39,13 @@ import com.example.traveldiary.ui.viewmodel.DetailViewModel
 fun TravelDetailScreen(
     entryId: Int,
     onBackClick: () -> Unit,
+    onEditClick: () -> Unit = {},
+    refreshKey: Int = 0,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(entryId) {
+    LaunchedEffect(entryId, refreshKey) {
         viewModel.loadEntry(entryId)
     }
 
@@ -80,6 +83,7 @@ fun TravelDetailScreen(
                     isFavourite = entry.isFavourite
                 ),
                 onBackClick = onBackClick,
+                onEditClick = onEditClick,
                 onFavouriteClick = { viewModel.toggleFavourite(entry.id, entry.isFavourite) }
             )
         }
@@ -90,6 +94,7 @@ fun TravelDetailScreen(
 private fun TravelDetailContent(
     entry: com.example.traveldiary.ui.viewmodel.EntryDetails,
     onBackClick: () -> Unit,
+    onEditClick: () -> Unit,
     onFavouriteClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -248,13 +253,22 @@ private fun TravelDetailContent(
         ) {
             GlassActionButton(
                 icon = Icons.Default.ArrowBack,
+                contentDescription = "Atrás",
                 onClick = onBackClick
             )
-            GlassActionButton(
-                icon = if (entry.isFavourite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
-                tint = if (entry.isFavourite) Color(0xFFEF5350) else Color.White,
-                onClick = onFavouriteClick
-            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                GlassActionButton(
+                    icon = Icons.Default.Edit,
+                    contentDescription = "Editar entrada",
+                    onClick = onEditClick
+                )
+                GlassActionButton(
+                    icon = if (entry.isFavourite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
+                    contentDescription = if (entry.isFavourite) "Quitar de favoritos" else "Añadir a favoritos",
+                    tint = if (entry.isFavourite) Color(0xFFEF5350) else Color.White,
+                    onClick = onFavouriteClick
+                )
+            }
         }
     }
 }
@@ -280,6 +294,7 @@ fun InfoChip(icon: ImageVector, text: String) {
 @Composable
 fun GlassActionButton(
     icon: ImageVector,
+    contentDescription: String,
     tint: Color = Color.White,
     onClick: () -> Unit
 ) {
@@ -292,7 +307,7 @@ fun GlassActionButton(
     ) {
         Icon(
             imageVector = icon,
-            contentDescription = null,
+            contentDescription = contentDescription,
             tint = tint
         )
     }
