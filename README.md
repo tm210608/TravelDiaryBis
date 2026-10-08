@@ -13,13 +13,14 @@
 - **Jetpack Compose**: Para una UI declarativa y moderna.
 - **Room Persistence Library**: Para el almacenamiento local de datos.
 - **CameraX**: Para una experiencia de captura de fotos integrada y eficiente.
-- **Hilt (en proceso)**: Inyección de dependencias.
+- **Hilt**: Inyección de dependencias.
+- **Google Maps Compose**: Mapa de viajes (requiere `MAPS_API_KEY` en `local.properties`).
 - **Coil**: Carga de imágenes eficiente.
 
 ---
 
 ## 📅 Roadmap de Desarrollo
-Consulta el archivo [ROADMAP_PROYECTO.md](./ROADMAP_PROYECTO.md) para ver el progreso actual y los próximos hitos.
+Consulta [docs/ROADMAP.md](./docs/ROADMAP.md) para el progreso y [docs/STATE.md](./docs/STATE.md) para el estado actual. Contexto para asistentes de IA: [AGENTS.md](./AGENTS.md).
 
 ---
 

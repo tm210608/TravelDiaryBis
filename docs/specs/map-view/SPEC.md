@@ -16,18 +16,20 @@ ubicación. Al tocar el info window, se navega al detalle de la entrada.
 
 ## Criterios de aceptación (testeables, sin ambigüedad)
 
-- [x] El tab "Mapa" del BottomNavigationBar navega a la pantalla MapScreen
-- [x] MapScreen muestra un Google Map a pantalla completa
-- [x] Cada TravelEntry con latitude Y longitude no-null se muestra como un Marker
-- [x] Las entradas sin coordenadas (lat/long null) NO aparecen en el mapa
-- [x] Cada Marker tiene título = entry.title y snippet = entry.location
-- [x] Al tocar un Marker, se muestra un InfoWindow con título y ubicación
-- [x] Al tocar el InfoWindow, se navega a DetailScreen(entryId)
-- [x] Si no hay entradas con coordenadas, se muestra un estado vacío con mensaje
-- [x] El mapa centra la cámara en todos los markers visibles con padding apropiado
-- [x] Si hay un solo marker, la cámara se centra en él con zoom 10
-- [x] MapScreen respeta el tema (light/dark mode) de la app
-- [x] MapScreen funciona en orientación portrait y landscape
+Leyenda: `[x]` verificado; `[ ]` implementado en código pero SIN verificar en dispositivo (requiere `MAPS_API_KEY`).
+
+- [ ] El tab "Mapa" del BottomNavigationBar navega a la pantalla MapScreen (la captura de evidencia mostró el launcher, no la pantalla; repetir)
+- [ ] MapScreen muestra un Google Map a pantalla completa
+- [ ] Cada TravelEntry con latitude Y longitude no-null se muestra como un Marker
+- [x] Las entradas sin coordenadas (lat/long null) NO aparecen en el mapa (unit test del use case)
+- [ ] Cada Marker tiene título = entry.title y snippet = entry.location
+- [ ] Al tocar un Marker, se muestra un InfoWindow con título y ubicación
+- [ ] Al tocar el InfoWindow, se navega a DetailScreen(entryId)
+- [x] Si no hay entradas con coordenadas, estado Empty (unit test del ViewModel; UI sin verificar)
+- [ ] El mapa centra la cámara en todos los markers visibles con padding apropiado
+- [ ] Si hay un solo marker, la cámara se centra en él con zoom 10
+- [ ] MapScreen respeta el tema (light/dark mode) de la app
+- [ ] MapScreen funciona en orientación portrait y landscape
 - [x] La app compila sin errores con `./gradlew compileDebugKotlin`
 - [x] Los tests unitarios pasan con `./gradlew test`
 - [x] Los tests nuevos pasan
