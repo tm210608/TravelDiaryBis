@@ -1,3 +1,7 @@
+---
+name: arquitectura-clean-senior
+description: Refactorizar siguiendo Clean Architecture (domain/data/ui) en TravelDiaryBis
+---
 # Apply-Clean-Architecture
 
 ## Descripción

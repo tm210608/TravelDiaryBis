@@ -1,3 +1,7 @@
+---
+name: persistencia-datos-robusta
+description: Persistencia robusta con Room, TypeConverters, migraciones y almacenamiento de imagenes en TravelDiaryBis
+---
 # Secure-Data-Flow
 
 ## Descripción
