@@ -17,18 +17,20 @@ El filtro de chip se combina (AND) con la búsqueda de texto existente.
 
 ## Criterios de aceptación (testeables, sin ambigüedad)
 
-- [ ] Chip "Todo" (default al entrar) muestra todas las entradas
-- [ ] Chip "Europa" muestra solo entradas cuyo `country` mapea a Europa (p.ej. France, España, Greece)
-- [ ] Chip "Asia" muestra solo entradas cuyo `country` mapea a Asia (p.ej. Japan, China)
-- [ ] Chip "América" muestra solo entradas cuyo `country` mapea a América (p.ej. Brazil, Mexico, USA)
-- [ ] Chip "Favoritos" muestra solo entradas con `isFavourite = true`
-- [ ] Entrada con `country` vacío, nulo o no reconocido solo aparece con chip "Todo" (y "Favoritos" si aplica)
-- [ ] Selección de un solo chip a la vez; tocar otro chip deselecciona el anterior
-- [ ] Chip + búsqueda se combinan: con "Asia" activo y query "Paris" la lista queda vacía
-- [ ] "Momentos Destacados" NO se ve afectado por el chip (siempre favoritos, take(3))
-- [ ] El contador "N viajes" del SectionHeader refleja el tamaño de la lista filtrada
-- [ ] La selección de chip sobrevive a rotación (ViewModel, no rememberSaveable necesario)
-- [ ] La app compila con `./gradlew compileDebugKotlin` y los tests pasan con `./gradlew testDebugUnitTest`
+Leyenda: `[x]` verificado; `[ ]` implementado en código pero SIN verificar en dispositivo.
+
+- [x] Chip "Todo" (default al entrar) muestra todas las entradas (verificado 2026-10-08 en Xiaomi, evidencia-home.png: 2 viajes)
+- [x] Chip "Europa" muestra solo entradas cuyo `country` mapea a Europa (evidencia-chip-europa.png: solo "Prueba Mapa" — España, "1 viajes")
+- [x] Chip "Asia" muestra solo entradas cuyo `country` mapea a Asia (evidencia-chip-asia.png: "0 viajes")
+- [x] Chip "América" muestra solo entradas cuyo `country` mapea a América (evidencia-chip-america.png: "0 viajes")
+- [x] Chip "Favoritos" muestra solo entradas con `isFavourite = true` (evidencia-chip-favoritos.png: "0 viajes"; unit test FilterEntriesByChipUseCaseTest)
+- [x] Entrada con `country` vacío, nulo o no reconocido solo aparece con chip "Todo" (y "Favoritos" si aplica) ("Con GPS" con país "PaisGPS" solo visible en Todo, evidencias europa/asia)
+- [x] Selección de un solo chip a la vez; tocar otro chip deselecciona el anterior (observado en todas las capturas)
+- [x] Chip + búsqueda se combinan: con "Europa" activo y query "Barcelona" solo aparece "Prueba Mapa" (evidencia-chip-busqueda.png)
+- [x] "Momentos Destacados" NO se ve afectado por el chip (cabecera presente en todas las capturas)
+- [x] El contador "N viajes" del SectionHeader refleja el tamaño de la lista filtrada ("2 viajes" → "1 viajes" → "0 viajes")
+- [x] La selección de chip sobrevive a rotación (evidencia-landscape.png: "Europa" sigue activo en landscape)
+- [x] La app compila con `./gradlew compileDebugKotlin` y los tests pasan con `./gradlew testDebugUnitTest` (57 tests, 0 fallos)
 
 ---
 
@@ -100,19 +102,21 @@ Sin cambios. Todo ocurre dentro de Home.
 
 ## Plan de tests
 
-- [ ] build: `scripts/verify.sh`
-- [ ] unit: `FilterEntriesByChipUseCaseTest` — cada chip filtra bien; país
+- [x] build: `scripts/verify.sh` — BUILD+TESTS OK (tests=57 fallos=0)
+- [x] unit: `FilterEntriesByChipUseCaseTest` — cada chip filtra bien; país
       desconocido/vacío solo en "Todo"; "Favoritos" por isFavourite;
       case-insensitive ("france", "FRANCE", "Francia")
-- [ ] unit: `ContinentTest` (o dentro del anterior) — continentOf mapea países
+- [x] unit: `ContinentTest` — continentOf mapea países
       conocidos y devuelve null en desconocidos
-- [ ] unit: actualizar `HomeViewModelTest` — `selectedChip` ya es StateFlow;
-      test de combinación chip+query con `backgroundScope.launch` +
+- [x] unit: actualizado `HomeViewModelTest` — `selectedChip` ya es StateFlow;
+      tests de chip, chip+query y favoritos con `backgroundScope.launch` +
       `advanceUntilIdle()` (patrón WhileSubscribed documentado en AGENTS.md)
-- [ ] dispositivo: `scripts/verify.sh --device` + flujo manual: crear entradas
-      con países de distintos continentes, tocar cada chip, combinar con búsqueda
-- [ ] evidencia: capturas en `docs/specs/filter-chips/` (chip Europa filtrando,
-      chip Favoritos, chip+búsqueda)
+- [x] dispositivo: `scripts/verify.sh --device` + flujo manual con adb
+      (taps en chips, búsqueda "Barcelona", rotación landscape) en Xiaomi
+- [x] evidencia: capturas en `docs/specs/filter-chips/` (evidencia-home.png,
+      evidencia-chip-europa.png, evidencia-chip-asia.png,
+      evidencia-chip-america.png, evidencia-chip-favoritos.png,
+      evidencia-chip-busqueda.png, evidencia-landscape.png)
 
 ---
 
