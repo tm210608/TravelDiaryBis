@@ -1,6 +1,6 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-10-08 | **Rama:** `feature/map-view` (commit `2e098a3`, pusheada a origin) | `develop` = origin/develop | **PR #29 abierta** a develop
+**Fecha:** 2026-10-08 | **Rama:** `develop` | **PR #29 mergeada** (merge commit `c3af9fc`) — map-view en develop
 
 ## Hecho
 - Feature Mapa de Viajes (SDMD) VERIFICADA en dispositivo: tiles, marker, InfoWindow -> detalle, estado vacío. Evidencias en `docs/evidence/`. SPEC actualizada.
@@ -12,8 +12,9 @@
 - `.devin/mcp_config.json` + `.devin/.gitignore` commiteados (sin secretos).
 
 ## Siguiente paso
-1. Revisar/mergear PR #29 -> `develop`.
-2. Opcional: verificar multi-marker bounds, dark mode y landscape (criterios `[ ]` restantes en SPEC).
+1. Nueva feature (flujo SDMD: `/spec` -> `/implement-spec` -> `/verify` -> `/handoff`) desde `develop`. Deuda candidata: filter chips, dark mode, tabs Recuerdos/Perfil, nav type-safe.
+2. Opcional: verificar multi-marker bounds, dark mode y landscape (criterios `[ ]` restantes en SPEC map-view).
+3. Opcional: borrar `feature/map-view` (remota y local) — ya mergeada.
 
 ## Decisiones vigentes
 - maps-compose 4.4.2 (9.x exige compileSdk 37/AGP 9.1).
