@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,6 +19,16 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
+        // Read MAPS_API_KEY from local.properties (gitignored)
+        val localProperties = rootProject.file("local.properties")
+        val mapsApiKey = if (localProperties.exists()) {
+            Properties().apply { localProperties.inputStream().use { load(it) } }
+                .getProperty("MAPS_API_KEY", "")
+        } else {
+            ""
+        }
+        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
     buildTypes {
@@ -78,6 +90,7 @@ dependencies {
     implementation(libs.coil.compose)
 
     implementation(libs.play.services.location)
+    implementation(libs.maps.compose)
 
     implementation(libs.kotlinx.serialization.json)
 

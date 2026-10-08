@@ -25,6 +25,7 @@ import com.example.traveldiary.ui.viewmodel.HomeViewModel
 fun TravelDiaryHomeScreen(
     onEntryClick: (TravelEntry) -> Unit = {},
     onAddClick: () -> Unit = {},
+    onMapClick: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val entriesList by viewModel.entriesList.collectAsState()
@@ -51,7 +52,13 @@ fun TravelDiaryHomeScreen(
         bottomBar = {
             BottomNavigationBar(
                 selectedTab = selectedTab,
-                onTabSelected = { viewModel.onTabSelected(it) },
+                onTabSelected = { index ->
+                    if (index == 1) {
+                        onMapClick()
+                    } else {
+                        viewModel.onTabSelected(index)
+                    }
+                },
             )
         },
     ) { innerPadding ->

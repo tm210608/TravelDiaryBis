@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.traveldiary.ui.screens.AddTravelEntryScreen
 import com.example.traveldiary.ui.screens.CameraScreen
+import com.example.traveldiary.ui.screens.MapScreen
 import com.example.traveldiary.ui.screens.TravelDetailScreen
 import com.example.traveldiary.ui.screens.TravelDiaryHomeScreen
 import com.example.traveldiary.ui.viewmodel.AddEntryViewModel
@@ -27,6 +28,9 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                 },
                 onAddClick = {
                     navController.navigate(Screen.AddEntry.route)
+                },
+                onMapClick = {
+                    navController.navigate(Screen.Map.route)
                 }
             )
         }
@@ -64,6 +68,15 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                     navController.popBackStack()
                 },
                 onClose = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.Map.route) {
+            MapScreen(
+                onEntryClick = { entryId ->
+                    navController.navigate(Screen.Detail.createRoute(entryId))
+                },
+                onBackClick = { navController.popBackStack() }
             )
         }
     }
