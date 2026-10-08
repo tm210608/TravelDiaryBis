@@ -6,6 +6,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class UpdateEntryUseCaseTest {
@@ -23,10 +25,26 @@ class UpdateEntryUseCaseTest {
             tag = "City",
             imageUrl = "url"
         )
-        coEvery { repository.updateEntry(entry) } returns Unit
+        coEvery { repository.updateEntry(entry) } returns true
 
-        useCase(entry)
+        val updated = useCase(entry)
 
+        assertTrue(updated)
         coVerify(exactly = 1) { repository.updateEntry(entry) }
+    }
+
+    @Test
+    fun `invoke returns false when repository does not update a row`() = runTest {
+        val entry = TravelEntry(
+            id = 99,
+            title = "Missing",
+            location = "Nowhere",
+            country = "Unknown",
+            tag = "Trip",
+            imageUrl = ""
+        )
+        coEvery { repository.updateEntry(entry) } returns false
+
+        assertFalse(useCase(entry))
     }
 }

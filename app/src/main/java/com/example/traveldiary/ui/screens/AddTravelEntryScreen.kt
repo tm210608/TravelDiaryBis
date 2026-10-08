@@ -3,25 +3,18 @@ package com.example.traveldiary.ui.screens
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import com.example.traveldiary.ui.components.TravelEntryFormFields
 import com.example.traveldiary.ui.viewmodel.AddEntryViewModel
 import com.example.traveldiary.utils.LocationHelper
 import kotlinx.coroutines.launch
@@ -56,7 +49,7 @@ fun AddTravelEntryScreen(
                 title = { Text("Nuevo Recuerdo") },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Atr\u00e1s")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás")
                     }
                 },
                 actions = {
@@ -99,73 +92,17 @@ fun AddTravelEntryScreen(
                 .padding(16.dp)
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .clickable { onCameraClick() },
-                contentAlignment = Alignment.Center
-            ) {
-                if (uiState.entryDetails.imageUrl.startsWith("http")) {
-                    Icon(Icons.Default.Camera, contentDescription = null, modifier = Modifier.size(48.dp))
-                    Text("Pulsa para tomar una foto", modifier = Modifier.padding(top = 64.dp))
-                } else {
-                    AsyncImage(
-                        model = uiState.entryDetails.imageUrl,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }
-
-            OutlinedTextField(
-                value = uiState.entryDetails.title,
-                onValueChange = { viewModel.updateUiState(uiState.entryDetails.copy(title = it)) },
-                label = { Text("T\u00edtulo del Viaje") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
+            TravelEntryFormFields(
+                form = uiState.entryDetails,
+                onFormChange = viewModel::updateUiState,
+                onCameraClick = onCameraClick,
+                allowPhotoRemoval = false,
+                onRemovePhoto = {},
             )
-
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
-                    value = uiState.entryDetails.location,
-                    onValueChange = { viewModel.updateUiState(uiState.entryDetails.copy(location = it)) },
-                    label = { Text("Ubicaci\u00f3n") },
-                    modifier = Modifier.weight(1f),
-                    singleLine = true
-                )
-                OutlinedTextField(
-                    value = uiState.entryDetails.country,
-                    onValueChange = { viewModel.updateUiState(uiState.entryDetails.copy(country = it)) },
-                    label = { Text("Pa\u00eds") },
-                    modifier = Modifier.weight(1f),
-                    singleLine = true
-                )
-            }
-
-            OutlinedTextField(
-                value = uiState.entryDetails.tag,
-                onValueChange = { viewModel.updateUiState(uiState.entryDetails.copy(tag = it)) },
-                label = { Text("Etiqueta (ej. Senderismo, Ciudad)") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            OutlinedTextField(
-                value = uiState.entryDetails.description,
-                onValueChange = { viewModel.updateUiState(uiState.entryDetails.copy(description = it)) },
-                label = { Text("Cu\u00e9ntanos tu historia...") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 150.dp)
-            )
-
+            Spacer(Modifier.height(16.dp))
             Text(
-                text = "La foto y las coordenadas GPS se a\u00f1adir\u00e1n autom\u00e1ticamente.",
+                text = "Las coordenadas GPS se añadirán automáticamente si están disponibles.",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

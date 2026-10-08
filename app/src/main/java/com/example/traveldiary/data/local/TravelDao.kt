@@ -23,7 +23,7 @@ interface TravelDao {
     suspend fun insertEntry(entry: TravelEntryEntity)
 
     @Update
-    suspend fun updateEntry(entry: TravelEntryEntity)
+    suspend fun updateEntry(entry: TravelEntryEntity): Int
 
     @Delete
     suspend fun deleteEntry(entry: TravelEntryEntity)

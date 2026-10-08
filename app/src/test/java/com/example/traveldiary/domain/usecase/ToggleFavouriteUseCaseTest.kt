@@ -17,7 +17,7 @@ class ToggleFavouriteUseCaseTest {
     fun `toggle from false to true`() = runTest {
         val entry = TravelEntry(id = 1, title = "A", location = "X", country = "Y", tag = "Z", imageUrl = "url", isFavourite = false)
         coEvery { repository.getEntryStream(1) } returns entry
-        coEvery { repository.updateEntry(any()) } returns Unit
+        coEvery { repository.updateEntry(any()) } returns true
 
         useCase(1, false)
 
@@ -28,7 +28,7 @@ class ToggleFavouriteUseCaseTest {
     fun `toggle from true to false`() = runTest {
         val entry = TravelEntry(id = 1, title = "A", location = "X", country = "Y", tag = "Z", imageUrl = "url", isFavourite = true)
         coEvery { repository.getEntryStream(1) } returns entry
-        coEvery { repository.updateEntry(any()) } returns Unit
+        coEvery { repository.updateEntry(any()) } returns true
 
         useCase(1, true)
 
