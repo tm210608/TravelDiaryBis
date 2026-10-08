@@ -1,6 +1,6 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-10-08 | **Rama:** `feature/m3-expressive` | **Commit:** `9bb5b68` evidencia reskin
+**Fecha:** 2026-10-08 | **Rama:** `develop` | **Commit:** `383f4cb` merge — reskin M3 Expressive
 
 ## Hecho
 - Rediseño Material 3 Expressive implementado en `feature/m3-expressive` (5 commits desde `develop`):
@@ -18,10 +18,12 @@
   con design system `assets/1b4a895e3dd24c3bae45c12074b3825a`. Referencias en `stitch/`.
 
 ## Siguiente paso
-1. Merge `feature/m3-expressive` a `develop` tras revisión del usuario (no se ha hecho aún).
+1. Rediseño M3 Expressive ya mergeado a `develop`. Candidatas siguientes: navegación type-safe
+   o exportar viaje; también pulir modo claro (hoy solo usa color dinámico).
 2. Verificación pendiente en dispositivo: modo claro dinámico, editar entrada, empty states,
    transiciones con springs. CameraScreen y editar conservan lógica previa.
 3. PNG sin seguimiento bajo `docs/specs/dark-mode/` (evidencias previas del usuario).
+   `feature/m3-expressive` puede borrarse solo con confirmación.
 
 ## Decisiones vigentes
 - material3 **1.5.0-alpha18**: la más nueva compatible con SDK 36/AGP 8.13 (1.5.0-beta01 exige SDK 37).
