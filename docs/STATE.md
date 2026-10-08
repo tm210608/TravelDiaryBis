@@ -3,15 +3,17 @@
 **Fecha:** 2026-10-08 | **Rama:** `feature/map-view` (commit `2e098a3`, pusheada a origin) | `develop` = origin/develop | **PR #29 abierta** a develop
 
 ## Hecho
-- Feature Mapa de Viajes (SDMD): use case, MapViewModel, MapScreen, navegación; 39 tests OK; instalada en Xiaomi 2412DPC0AG sin crash.
-- Verificado en dispositivo SIN API key: tab Mapa -> MapScreen con título "Mapa de Viajes" y estado vacío correcto (0 viajes). Evidencia: `docs/evidence/mapa-empty-state.png`.
+- Feature Mapa de Viajes (SDMD) VERIFICADA en dispositivo: tiles, marker, InfoWindow -> detalle, estado vacío. Evidencias en `docs/evidence/`. SPEC actualizada.
+- `MAPS_API_KEY` añadida a `local.properties` (restringida a app Android + SHA-1 debug).
+- Verificado en dispositivo: tab Mapa -> MapScreen, estado vacío (0 viajes), mapa con marker GPS real (Talavera), InfoWindow -> DetailScreen.
+- 39 tests OK; app instalada en Xiaomi 2412DPC0AG sin crash.
 - Sistema de contexto commiteado: AGENTS.md, docs/, scripts/verify.sh, skills.
 - MCP de GitHub arreglado: se eliminó `.devin/mcp_config.local.json` (pisaba la URL) + `devin mcp login github --scopes repo,read:org,read:user,gist,workflow`. Token OAuth en `%APPDATA%/devin/mcp/oauth/`. Push y PR funcionando.
 - `.devin/mcp_config.json` + `.devin/.gitignore` commiteados (sin secretos).
 
 ## Siguiente paso
-1. Añadir `MAPS_API_KEY=...` a `local.properties` (Google Cloud, Maps SDK for Android) y verificar en dispositivo: tiles, markers, info window -> detalle (hace falta una entrada con ubicación).
-2. Revisar/mergear PR #29 -> `develop`.
+1. Revisar/mergear PR #29 -> `develop`.
+2. Opcional: verificar multi-marker bounds, dark mode y landscape (criterios `[ ]` restantes en SPEC).
 
 ## Decisiones vigentes
 - maps-compose 4.4.2 (9.x exige compileSdk 37/AGP 9.1).
@@ -20,7 +22,7 @@
 - Git push: usar token OAuth de `%APPDATA%/devin/mcp/oauth/*.json` como `x-access-token` en URL (gh no autenticado; credential manager vacío).
 
 ## Bloqueos
-- Sin `MAPS_API_KEY` el mapa no pinta tiles; markers/info window sin verificar.
+- Ninguno.
 
 ## Deuda técnica (futuras specs)
 Filter chips funcionales, nav type-safe, dark mode, fixes de cámara, tabs Recuerdos/Perfil, clustering, subir AGP/compileSdk, detekt/ktlint.

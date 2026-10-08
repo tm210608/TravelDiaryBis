@@ -16,20 +16,20 @@ ubicación. Al tocar el info window, se navega al detalle de la entrada.
 
 ## Criterios de aceptación (testeables, sin ambigüedad)
 
-Leyenda: `[x]` verificado; `[ ]` implementado en código pero SIN verificar en dispositivo (requiere `MAPS_API_KEY`).
+Leyenda: `[x]` verificado; `[ ]` implementado en código pero SIN verificar en dispositivo.
 
-- [ ] El tab "Mapa" del BottomNavigationBar navega a la pantalla MapScreen (la captura de evidencia mostró el launcher, no la pantalla; repetir)
-- [ ] MapScreen muestra un Google Map a pantalla completa
-- [ ] Cada TravelEntry con latitude Y longitude no-null se muestra como un Marker
+- [x] El tab "Mapa" del BottomNavigationBar navega a la pantalla MapScreen (verificado 2026-10-08 en Xiaomi, evidencia mapa-tiles.png)
+- [x] MapScreen muestra un Google Map a pantalla completa (tiles cargando con MAPS_API_KEY)
+- [x] Cada TravelEntry con latitude Y longitude no-null se muestra como un Marker (1 marker visible)
 - [x] Las entradas sin coordenadas (lat/long null) NO aparecen en el mapa (unit test del use case)
-- [ ] Cada Marker tiene título = entry.title y snippet = entry.location
-- [ ] Al tocar un Marker, se muestra un InfoWindow con título y ubicación
-- [ ] Al tocar el InfoWindow, se navega a DetailScreen(entryId)
-- [x] Si no hay entradas con coordenadas, estado Empty (unit test del ViewModel; UI sin verificar)
-- [ ] El mapa centra la cámara en todos los markers visibles con padding apropiado
-- [ ] Si hay un solo marker, la cámara se centra en él con zoom 10
+- [x] Cada Marker tiene título = entry.title y snippet = entry.location (InfoWindow "Con GPS" / "UbicacionGPS")
+- [x] Al tocar un Marker, se muestra un InfoWindow con título y ubicación
+- [x] Al tocar el InfoWindow, se navega a DetailScreen(entryId) (evidencia detalle-desde-mapa.png)
+- [x] Si no hay entradas con coordenadas, estado Empty (unit test + verificado en UI, evidencia mapa-empty-state.png)
+- [ ] El mapa centra la cámara en todos los markers visibles con padding apropiado (sin verificar: solo había 1 marker)
+- [x] Si hay un solo marker, la cámara se centra en él con zoom 10 (centrado en Talavera de la Reina)
 - [ ] MapScreen respeta el tema (light/dark mode) de la app
-- [ ] MapScreen funciona en orientación portrait y landscape
+- [ ] MapScreen funciona en orientación portrait y landscape (solo portrait verificado)
 - [x] La app compila sin errores con `./gradlew compileDebugKotlin`
 - [x] Los tests unitarios pasan con `./gradlew test`
 - [x] Los tests nuevos pasan
@@ -120,10 +120,11 @@ Sigue la Clean Architecture existente (capas domain/data/ui):
 - [x] unit tests: `MapViewModelTest` (states Loading/Success/Empty, filtrado de entradas sin coords)
 - [x] `GetEntriesWithLocationUseCaseTest` (filtra nulls, devuelve vacío si todos son null)
 - [x] device: instalar en dispositivo físico (Xiaomi 2412DPC0AG) y ejecutar flujo
-- [x] evidencia: capturas de pantalla (evidence_home.png, evidence_map.png, evidence_map_screen.png)
+- [x] evidencia: capturas de pantalla (docs/evidence/mapa-empty-state.png, mapa-tiles.png, mapa-marker.png, detalle-desde-mapa.png)
 
-> **Nota:** Para que el mapa muestre tiles reales, falta configurar `MAPS_API_KEY` en `local.properties`.
-> La navegación, estados (Loading/Empty/Success) y markers funcionan sin la key; solo los tiles del mapa requieren la key de Google Cloud.
+> **Nota:** `MAPS_API_KEY` configurada en `local.properties` y verificada en dispositivo 2026-10-08:
+> tiles, marker con InfoWindow (título + ubicación) y navegación al detalle funcionando.
+> Pendiente: multi-marker bounds, dark mode y landscape.
 
 ---
 
