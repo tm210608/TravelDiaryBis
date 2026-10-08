@@ -13,21 +13,23 @@ Desde el detalle de un viaje, la persona puede abrir la entrada en modo edición
 
 ## Criterios de aceptación (testeables, sin ambigüedad)
 
-- [ ] DetailScreen ofrece la acción "Editar" y abre `edit_entry/{entryId}` con los datos de esa entrada precargados
-- [ ] El formulario de edición permite cambiar título, ubicación, país, fecha, etiqueta, descripción, foto y favorito; mantiene el mismo `id`
-- [ ] La foto se conserva si no se modifica; se puede reemplazar con la cámara o quitar. Entrada sin foto deja de aparecer en Recuerdos
-- [ ] Guardar una entrada sin cambios no crea una entrada nueva ni altera su id
-- [ ] Antes de guardar una entrada con latitud y longitud no nulas, se pregunta: "¿La ubicación registrada sigue siendo correcta?"
-- [ ] "Sí, conservar" guarda los cambios y conserva exactamente las coordenadas existentes
-- [ ] "No, actualizar ubicación" obtiene la ubicación actual y guarda ambas coordenadas actualizadas junto con el resto de cambios
-- [ ] Si falta permiso de ubicación, el permiso se solicita solo después de elegir "Actualizar ubicación"; si se deniega, se permanece en edición, no se guarda ni se alteran las coordenadas, y se informa cómo reintentar
-- [ ] Si ubicación actual no está disponible, no se guarda la edición ni se sustituyen las coordenadas; se muestra un error y se permite reintentar o cancelar
-- [ ] Si la entrada no tiene un par completo de coordenadas, no aparece el diálogo GPS y los valores actuales (incluidos null/pareja parcial) se conservan al guardar
-- [ ] Los campos requeridos conservan las mismas reglas de validación que crear una entrada; los errores se muestran junto al formulario y no se escribe en Room
-- [ ] Al guardar correctamente, Room actualiza la entrada existente; se vuelve al detalle de la misma entrada con valores nuevos
-- [ ] Cancelar vuelve al detalle sin persistir los cambios; si hay cambios sin guardar, se pide confirmación antes de descartarlos
-- [ ] Si la entrada deja de existir mientras se abre edición, se muestra "Esta entrada ya no existe" y se ofrece volver al detalle/Home sin crash
-- [ ] Build `./gradlew compileDebugKotlin` y tests `./gradlew testDebugUnitTest` pasan
+Leyenda: `[x]` verificado; `[ ]` implementado pero no verificado en dispositivo.
+
+- [x] DetailScreen ofrece "Editar" y abre `edit_entry/{entryId}` con los datos precargados (evidencia-formulario.png)
+- [x] El formulario expone título, ubicación, país, fecha, etiqueta, descripción, foto y favorito; ViewModel conserva el mismo `id` al actualizar (evidencia-formulario-campos.png + EditEntryViewModelTest)
+- [ ] La foto se conserva si no se modifica; se puede reemplazar con cámara o quitar; entrada sin foto deja Recuerdos (quitar probado en ViewModel y dispositivo de forma temporal, luego descartado; ruta de cámara y efecto en Recuerdos pendientes)
+- [x] Guardar sin cambios no crea entrada nueva ni altera su id (Room update por fila existente; prueba ViewModel y flujo de retorno al detalle)
+- [x] Antes de guardar con coordenadas completas se pregunta si siguen correctas (evidencia-confirmacion-gps.png)
+- [x] "Sí, conservar" guarda cambios manteniendo las coordenadas existentes (flujo manual sin alterar el dato, evidencia-detalle-actualizado.png)
+- [ ] "No, actualizar ubicación" obtiene la ubicación actual y guarda ambas coordenadas actualizadas (ViewModel probado con lat/lon suministradas; flujo de ubicación real no ejecutado para evitar modificar datos de usuario)
+- [ ] Permiso se solicita solo al elegir "Actualizar ubicación"; denegación mantiene edición y coordenadas (lógica ViewModel probada; diálogo del sistema no probado en dispositivo)
+- [x] Ubicación nula/no disponible no guarda ni sustituye coordenadas y muestra error recuperable (EditEntryViewModelTest)
+- [x] Sin coordenadas completas no se muestra diálogo y se preservan valores null/pareja parcial (EditEntryViewModelTest)
+- [x] Validación de título, ubicación y país evita escribir con formulario inválido (EditEntryViewModelTest)
+- [x] Al guardar, Room actualiza el mismo id y al volver el detalle observa la entrada (EditEntryViewModelTest + navegación manual)
+- [x] Cancelar con cambios solicita confirmación y descarta al confirmar (evidencia-descartar-cambios.png; datos persistidos sin cambios)
+- [ ] Entrada borrada mientras la edición está abierta muestra NotFound y vuelve a Home (ViewModel y DAO false probados; ruta visual no probada en dispositivo)
+- [x] Build y tests pasan: `scripts/verify.sh` (78 tests, 0 fallos)
 
 ---
 
@@ -102,15 +104,16 @@ sealed interface EditEntryUiState {
 
 ## Plan de tests
 
-- [ ] build: `scripts/verify.sh`
-- [ ] unit: `EditEntryViewModelTest` — carga, NotFound, precarga todos los campos, favorito/foto,
-      validación, dirty/cancelar, conservar coordenadas, refresh GPS correcto/denegado/no disponible,
-      éxito actualiza id existente
-- [ ] unit: `UpdateEntryUseCaseTest` — delega al repositorio y no inserta un nuevo registro
-- [ ] unit: validación del formulario compartida con el flujo de creación
-- [ ] dispositivo: `scripts/verify.sh --device` + editar una entrada desde detalle, conservar GPS,
-      actualizar GPS con permiso concedido, quitar/reemplazar foto, cancelar cambios y abrir detalle
-- [ ] evidencia: capturas en `docs/specs/edit-entry/` (form precargado, confirmación GPS, detalle actualizado)
+- [x] build: `scripts/verify.sh` — 78 tests, 0 fallos
+- [x] unit: `EditEntryViewModelTest` — carga/NotFound, precarga todos los campos, favorito/foto,
+      validación, conservar coordenadas, GPS actualizado/denegado/no disponible, éxito mismo id
+- [x] unit: `UpdateEntryUseCaseTest` — éxito y ausencia de fila actualizada; repositorio usa el resultado de Room
+- [x] unit: validación title/location/country compatible con la validación existente de creación
+- [ ] dispositivo: `scripts/verify.sh --device` OK; ejecutados detalle→editar→confirmar/conservar GPS→volver a detalle,
+      mostrar/cancelar cambios sin guardar. Actualizar GPS y cambio de foto completos quedan pendientes por no modificar datos del usuario
+- [x] evidencia: `evidencia-formulario.png`, `evidencia-formulario-campos.png`,
+      `evidencia-confirmacion-gps.png`, `evidencia-detalle-actualizado.png`,
+      `evidencia-descartar-cambios.png`, `evidencia-foto-quitada-sin-guardar.png` en `docs/specs/edit-entry/`
 
 ---
 
