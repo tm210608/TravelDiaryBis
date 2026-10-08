@@ -10,13 +10,13 @@ Visión: app offline-first, estética premium, captura rápida, datos locales de
 - [x] Mapa de viajes verificado en dispositivo: tiles, markers, InfoWindow, detalle, vacío, multi-marker bounds, dark mode (mapa) y landscape — `docs/specs/map-view/SPEC.md`
 - [x] Filter chips funcionales (Europa/Asia/América/Favoritos) verificados en dispositivo, combinados con búsqueda — `docs/specs/filter-chips/SPEC.md`
 - [x] Tabs Recuerdos/Perfil: galería, estadísticas y navegación verificados en dispositivo — `docs/specs/bottom-tabs/SPEC.md`
+- [x] Editar entrada: formulario reutilizado, Room actualiza por id, confirmación GPS — `docs/specs/edit-entry/SPEC.md` (GPS/cámara completos pendientes de verificar en dispositivo)
+- [x] Tema oscuro global Atlas nocturno, seguimiento del sistema y barras sincronizadas — `docs/specs/dark-mode/SPEC.md` (CameraScreen y cobertura clara total pendientes de dispositivo)
 
 ## En curso
 - [ ] UI tests Compose (Home -> AddEntry -> guardar -> Home); hay `CONTEXT.md` viejo en el stash
 
 ## Siguiente (una spec SDMD cada uno)
-- [ ] Editar entrada existente
-- [ ] Dark mode completo
 - [ ] Navegación type-safe
 - [ ] Exportar viaje a PDF/imagen
 - [ ] Release: R8, signing por variables de entorno, AAB, SDK 35
