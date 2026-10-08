@@ -64,6 +64,19 @@ class EditEntryViewModelTest {
     }
 
     @Test
+    fun `loading same entry again does not discard unsaved form changes`() = runTest {
+        val entry = entry()
+        val viewModel = viewModel()
+        load(this, viewModel, entry)
+        viewModel.updateForm((viewModel.uiState.value as EditEntryUiState.Editing).form.copy(title = "Unsaved"))
+
+        viewModel.loadEntry(entry.id)
+        advanceUntilIdle()
+
+        assertEquals("Unsaved", (viewModel.uiState.value as EditEntryUiState.Editing).form.title)
+    }
+
+    @Test
     fun `load reports NotFound when entry does not exist`() = runTest {
         val viewModel = viewModel()
         load(this, viewModel, null)

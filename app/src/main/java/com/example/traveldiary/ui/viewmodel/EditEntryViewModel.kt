@@ -41,12 +41,17 @@ class EditEntryViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<EditEntryUiState>(EditEntryUiState.Loading)
     val uiState: StateFlow<EditEntryUiState> = _uiState.asStateFlow()
     private var pendingImageUrl: String? = null
+    private var loadedEntryId: Int? = null
+    private var loadingEntryId: Int? = null
 
     fun loadEntry(id: Int) {
+        if (loadedEntryId == id || loadingEntryId == id) return
+        loadingEntryId = id
         viewModelScope.launch {
             _uiState.value = EditEntryUiState.Loading
             try {
                 val entry = getEntryByIdUseCase(id)
+                loadedEntryId = id
                 _uiState.value = if (entry == null) {
                     EditEntryUiState.NotFound
                 } else {
@@ -58,6 +63,8 @@ class EditEntryViewModel @Inject constructor(
                 }
             } catch (exception: Exception) {
                 _uiState.value = EditEntryUiState.Error(exception.message ?: "No se pudo cargar la entrada")
+            } finally {
+                if (loadingEntryId == id) loadingEntryId = null
             }
         }
     }
