@@ -30,7 +30,7 @@ fun TravelDiaryHomeScreen(
 ) {
     val entriesList by viewModel.entriesList.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
-    val selectedChip by viewModel.selectedChip
+    val selectedChip by viewModel.selectedChip.collectAsState()
     val selectedTab by viewModel.selectedTab
 
     Scaffold(

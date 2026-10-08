@@ -2,11 +2,10 @@ package com.example.traveldiary.ui.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.traveldiary.domain.model.TravelEntry
-import com.example.traveldiary.domain.usecase.AddEntryUseCase
+import com.example.traveldiary.domain.usecase.FilterEntriesByChipUseCase
 import com.example.traveldiary.domain.usecase.GetEntriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,17 +13,16 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getEntriesUseCase: GetEntriesUseCase,
-    private val addEntryUseCase: AddEntryUseCase,
+    getEntriesUseCase: GetEntriesUseCase,
+    private val filterEntriesByChipUseCase: FilterEntriesByChipUseCase,
 ) : ViewModel() {
 
-    private val _selectedChip = mutableStateOf("Todo")
-    val selectedChip: State<String> = _selectedChip
+    private val _selectedChip = MutableStateFlow(FilterEntriesByChipUseCase.CHIP_TODO)
+    val selectedChip: StateFlow<String> = _selectedChip
 
     private val _selectedTab = mutableIntStateOf(0)
     val selectedTab: State<Int> = _selectedTab
@@ -36,10 +34,11 @@ class HomeViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val entriesList: StateFlow<List<TravelEntry>> = combine(
-        _allEntries, _searchQuery
-    ) { entries, query ->
-        if (query.isBlank()) entries
-        else entries.filter {
+        _allEntries, _searchQuery, _selectedChip
+    ) { entries, query, chip ->
+        val byChip = filterEntriesByChipUseCase(entries, chip)
+        if (query.isBlank()) byChip
+        else byChip.filter {
             it.title.contains(query, ignoreCase = true) ||
             it.location.contains(query, ignoreCase = true) ||
             it.country.contains(query, ignoreCase = true)
@@ -56,11 +55,5 @@ class HomeViewModel @Inject constructor(
 
     fun onSearchQueryChanged(query: String) {
         _searchQuery.value = query
-    }
-
-    fun insertSampleEntry(entry: TravelEntry) {
-        viewModelScope.launch {
-            addEntryUseCase(entry)
-        }
     }
 }
