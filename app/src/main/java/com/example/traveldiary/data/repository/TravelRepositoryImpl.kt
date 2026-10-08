@@ -28,6 +28,6 @@ class TravelRepositoryImpl(
     override suspend fun deleteEntry(entry: TravelEntry) =
         travelDao.deleteEntry(entry.toEntity())
 
-    override suspend fun updateEntry(entry: TravelEntry) =
-        travelDao.updateEntry(entry.toEntity())
+    override suspend fun updateEntry(entry: TravelEntry): Boolean =
+        travelDao.updateEntry(entry.toEntity()) > 0
 }

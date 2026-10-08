@@ -9,5 +9,5 @@ interface TravelRepository {
     suspend fun getEntryStream(id: Int): TravelEntry?
     suspend fun insertEntry(entry: TravelEntry)
     suspend fun deleteEntry(entry: TravelEntry)
-    suspend fun updateEntry(entry: TravelEntry)
+    suspend fun updateEntry(entry: TravelEntry): Boolean
 }
