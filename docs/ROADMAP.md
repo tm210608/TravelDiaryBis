@@ -7,10 +7,9 @@ Visión: app offline-first, estética premium, captura rápida, datos locales de
 - [x] Hilt, sealed UI states, Clean Architecture (domain/data/ui, use cases)
 - [x] Permisos cámara/ubicación, Snackbar de feedback
 - [x] Unit tests (ViewModels, use cases, mapper)
-- [x] Mapa de viajes (código + tests + navegación) — `docs/specs/map-view/SPEC.md`
+- [x] Mapa de viajes verificado en dispositivo: tiles, markers, InfoWindow, detalle, vacío, multi-marker bounds, dark mode (mapa) y landscape — `docs/specs/map-view/SPEC.md`
 
 ## En curso
-- [ ] Verificar mapa en dispositivo con `MAPS_API_KEY` (markers, info window, vacío)
 - [ ] UI tests Compose (Home -> AddEntry -> guardar -> Home); hay `CONTEXT.md` viejo en el stash
 
 ## Siguiente (una spec SDMD cada uno)
