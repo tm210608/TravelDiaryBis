@@ -26,10 +26,10 @@ Leyenda: `[x]` verificado; `[ ]` implementado en código pero SIN verificar en d
 - [x] Al tocar un Marker, se muestra un InfoWindow con título y ubicación
 - [x] Al tocar el InfoWindow, se navega a DetailScreen(entryId) (evidencia detalle-desde-mapa.png)
 - [x] Si no hay entradas con coordenadas, estado Empty (unit test + verificado en UI, evidencia mapa-empty-state.png)
-- [ ] El mapa centra la cámara en todos los markers visibles con padding apropiado (sin verificar: solo había 1 marker)
+- [x] El mapa centra la cámara en todos los markers visibles con padding apropiado (verificado 2026-10-08 en Xiaomi con 2 markers: Talavera y Barcelona, evidencia mapa-multi-marker-bounds.png)
 - [x] Si hay un solo marker, la cámara se centra en él con zoom 10 (centrado en Talavera de la Reina)
-- [ ] MapScreen respeta el tema (light/dark mode) de la app
-- [ ] MapScreen funciona en orientación portrait y landscape (solo portrait verificado)
+- [x] MapScreen respeta el tema (light/dark mode) de la app (verificado 2026-10-08 con estilo JSON dark, evidencia mapa-dark-mode.png)
+- [x] MapScreen funciona en orientación portrait y landscape (verificado 2026-10-08 en ambas orientaciones, evidencia mapa-landscape.png)
 - [x] La app compila sin errores con `./gradlew compileDebugKotlin`
 - [x] Los tests unitarios pasan con `./gradlew test`
 - [x] Los tests nuevos pasan
@@ -124,7 +124,7 @@ Sigue la Clean Architecture existente (capas domain/data/ui):
 
 > **Nota:** `MAPS_API_KEY` configurada en `local.properties` y verificada en dispositivo 2026-10-08:
 > tiles, marker con InfoWindow (título + ubicación) y navegación al detalle funcionando.
-> Pendiente: multi-marker bounds, dark mode y landscape.
+> Cierre de pendientes 2026-10-08: multi-marker bounds, dark mode y landscape verificados.
 
 ---
 
