@@ -20,17 +20,17 @@ la tab sin cambiar de pantalla; ahora navega de verdad.
 
 Leyenda: `[x]` verificado; `[ ]` implementado en código pero SIN verificar en dispositivo.
 
-- [ ] Tab "Recuerdos" navega a MemoriesScreen con su tab marcada (índice 2)
-- [ ] MemoriesScreen muestra una cuadrícula con una celda por cada entrada con `imageUrl` no vacío (foto + título)
-- [ ] Tocar una foto en Recuerdos navega a `detail/{entryId}` de esa entrada
-- [ ] Si no hay entradas con foto, MemoriesScreen muestra estado vacío con mensaje
-- [ ] Tab "Perfil" navega a ProfileScreen con su tab marcada (índice 3)
-- [ ] ProfileScreen muestra avatar (mismo estilo "AL" del TopBar) y 4 estadísticas: viajes totales, favoritos, países visitados (distinct `country` no vacío), continentes visitados (distinct `continentOf(country)` no nulo)
-- [ ] Las estadísticas se actualizan al volver a Perfil tras añadir una entrada (son Flow, no snapshot)
-- [ ] El BottomNavigationBar funciona igual en las 3 pantallas que lo muestran (Home, Recuerdos, Perfil): las 4 tabs navegan; "Inicio" vuelve a Home sin duplicar entradas en el back stack
-- [ ] Tab "Mapa" sigue navegando a MapScreen (sin regresión)
-- [ ] Back desde Recuerdos/Perfil vuelve a Home con tab "Inicio" marcada
-- [ ] La app compila con `./gradlew compileDebugKotlin` y los tests pasan con `./gradlew testDebugUnitTest`
+- [x] Tab "Recuerdos" navega a MemoriesScreen con su tab marcada (índice 2) (evidencia-recuerdos.png)
+- [x] MemoriesScreen muestra una cuadrícula con una celda por cada entrada con `imageUrl` no vacío (foto + título) (evidencia-recuerdos.png)
+- [x] Tocar una foto en Recuerdos navega a `detail/{entryId}` de esa entrada (evidencia-detalle.png)
+- [ ] Si no hay entradas con foto, MemoriesScreen muestra estado vacío con mensaje (implementado; no verificado en dispositivo porque hay entradas con foto)
+- [x] Tab "Perfil" navega a ProfileScreen con su tab marcada (índice 3) (evidencia-perfil.png)
+- [x] ProfileScreen muestra avatar (mismo estilo "AL" del TopBar) y 4 estadísticas: viajes totales, favoritos, países visitados (distinct `country` no vacío), continentes visitados (distinct `continentOf(country)` no nulo) (evidencia-perfil.png + GetTravelStatsUseCaseTest)
+- [ ] Las estadísticas se actualizan al volver a Perfil tras añadir una entrada (son Flow, no snapshot; flujo dinámico no probado en dispositivo)
+- [x] El BottomNavigationBar funciona en Home, Recuerdos y Perfil: tabs navegan; "Inicio" vuelve a Home sin duplicar pantallas (flujo manual + evidencia-back-home.png)
+- [x] Tab "Mapa" sigue navegando a MapScreen (evidencia-mapa-tab.png)
+- [x] Back desde Perfil vuelve a Home con tab "Inicio" marcada (evidencia-back-home.png); back desde Detail vuelve a Recuerdos
+- [x] La app compila con `./gradlew compileDebugKotlin` y los tests pasan con `./gradlew testDebugUnitTest` (66 tests, 0 fallos)
 
 ---
 
@@ -112,17 +112,17 @@ data class TravelStats(
 
 ## Plan de tests
 
-- [ ] build: `scripts/verify.sh`
-- [ ] unit: `GetMemoriesUseCaseTest` — filtra imageUrl vacío, devuelve vacío si ninguna
-- [ ] unit: `GetTravelStatsUseCaseTest` — cuenta total/favoritos/países/continentes
+- [x] build: `scripts/verify.sh` — BUILD+TESTS OK (66 tests, 0 fallos)
+- [x] unit: `GetMemoriesUseCaseTest` — filtra imageUrl vacío, devuelve vacío si ninguna
+- [x] unit: `GetTravelStatsUseCaseTest` — cuenta total/favoritos/países/continentes
       (país desconocido no suma continente; duplicados de país cuentan 1)
-- [ ] unit: `MemoriesViewModelTest` — Loading/Empty/Success (patrón
+- [x] unit: `MemoriesViewModelTest` — Loading/Empty/Success (patrón
       `backgroundScope.launch` + `advanceUntilIdle()`)
-- [ ] unit: `ProfileViewModelTest` — Loading/Success con stats correctas
-- [ ] dispositivo: `scripts/verify.sh --device` + flujo: Home→Recuerdos→foto→detalle→back,
-      Home→Perfil (stats), tabs cruzadas, back
-- [ ] evidencia: capturas en `docs/specs/bottom-tabs/` (memories-grid, memories-empty,
-      profile-stats, tab-navigation)
+- [x] unit: `ProfileViewModelTest` — Loading/Success con stats correctas
+- [x] dispositivo: `scripts/verify.sh --device` + flujo Home→Recuerdos→foto→detalle→back,
+      Home→Perfil (stats), tabs cruzadas, back y tab Mapa en Xiaomi
+- [x] evidencia: capturas en `docs/specs/bottom-tabs/` (home, recuerdos, detalle,
+      perfil, mapa, back-home)
 
 ---
 

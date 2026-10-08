@@ -23,10 +23,10 @@ class GetTravelStatsUseCaseTest {
     fun `invoke computes trips favourites countries and continents`() = runTest {
         val entries = listOf(
             entry(1, "France", isFavourite = true),
-            entry(2, "France"),              // país duplicado: cuenta 1
+            entry(2, "France"),
             entry(3, "Japan", isFavourite = true),
             entry(4, "Brazil"),
-            entry(5, "Atlantis"),            // país sí, continente no
+            entry(5, "Atlantis"),
             entry(6, "  "),                  // país vacío: ni país ni continente
         )
         every { repository.getAllEntriesStream() } returns flowOf(entries)
