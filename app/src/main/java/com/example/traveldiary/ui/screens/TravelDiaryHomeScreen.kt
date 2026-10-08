@@ -1,10 +1,8 @@
 package com.example.traveldiary.ui.screens
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -38,15 +36,16 @@ fun TravelDiaryHomeScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         floatingActionButton = {
-            LargeFloatingActionButton(
+            FloatingActionButton(
                 onClick = onAddClick,
-                shape = RoundedCornerShape(16.dp),
-                containerColor = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(24.dp),
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.size(64.dp),
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
                     contentDescription = "Nueva entrada",
-                    tint = MaterialTheme.colorScheme.onPrimary,
                     modifier = Modifier.size(28.dp),
                 )
             }
@@ -79,7 +78,7 @@ fun TravelDiaryHomeScreen(
                     onQueryChanged = { viewModel.onSearchQueryChanged(it) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                        .padding(horizontal = 20.dp, vertical = 12.dp),
                 )
             }
 
@@ -95,7 +94,7 @@ fun TravelDiaryHomeScreen(
                 SectionHeader(
                     title = "Momentos Destacados",
                     actionLabel = "Ver todo",
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
                 )
             }
 
@@ -110,32 +109,19 @@ fun TravelDiaryHomeScreen(
                 SectionHeader(
                     title = "Todos los Viajes",
                     actionLabel = "${entriesList.size} viajes",
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
                 )
             }
 
-            itemsIndexed(entriesList, key = { _, entry -> entry.id }) { index, entry ->
-                var visible by remember { mutableStateOf(false) }
-                LaunchedEffect(Unit) {
-                    kotlinx.coroutines.delay(index * 100L)
-                    visible = true
-                }
-
-                AnimatedVisibility(
-                    visible = visible,
-                    enter = fadeIn(animationSpec = tween(500)) + slideInVertically(
-                        initialOffsetY = { it / 2 },
-                        animationSpec = tween(500)
-                    )
-                ) {
-                    EntryListCard(
-                        entry = entry,
-                        onClick = { onEntryClick(entry) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 5.dp),
-                    )
-                }
+            items(entriesList, key = { it.id }) { entry ->
+                EntryListCard(
+                    entry = entry,
+                    onClick = { onEntryClick(entry) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 5.dp)
+                        .animateItem(),
+                )
             }
         }
     }

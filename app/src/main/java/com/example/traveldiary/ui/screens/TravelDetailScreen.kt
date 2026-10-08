@@ -9,7 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
@@ -121,7 +121,7 @@ private fun TravelDetailContent(
                         .fillMaxSize()
                         .background(
                             Brush.verticalGradient(
-                                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.6f)),
+                                colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim.copy(alpha = 0.65f)),
                                 startY = 600f
                             )
                         )
@@ -133,13 +133,13 @@ private fun TravelDetailContent(
                         .padding(24.dp)
                 ) {
                     Surface(
-                        color = MaterialTheme.colorScheme.primary,
-                        shape = RoundedCornerShape(8.dp)
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                        shape = MaterialTheme.shapes.small
                     ) {
                         Text(
                             text = entry.tag,
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
                         )
                     }
@@ -203,8 +203,8 @@ private fun TravelDetailContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(180.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                        shape = MaterialTheme.shapes.medium,
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
                     ) {
                         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -221,7 +221,7 @@ private fun TravelDetailContent(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = MaterialTheme.shapes.medium
                 ) {
                     Row(
                         modifier = Modifier.padding(16.dp),
@@ -252,7 +252,7 @@ private fun TravelDetailContent(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             GlassActionButton(
-                icon = Icons.Default.ArrowBack,
+                icon = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Atrás",
                 onClick = onBackClick
             )
@@ -265,7 +265,7 @@ private fun TravelDetailContent(
                 GlassActionButton(
                     icon = if (entry.isFavourite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
                     contentDescription = if (entry.isFavourite) "Quitar de favoritos" else "Añadir a favoritos",
-                    tint = if (entry.isFavourite) Color(0xFFEF5350) else Color.White,
+                    tint = if (entry.isFavourite) MaterialTheme.colorScheme.error else Color.White,
                     onClick = onFavouriteClick
                 )
             }
