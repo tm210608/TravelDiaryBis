@@ -129,7 +129,7 @@ private fun EmptyState(modifier: Modifier = Modifier) {
             Icon(
                 imageVector = Icons.Outlined.Map,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primaryContainer,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(32.dp),
             )
         }

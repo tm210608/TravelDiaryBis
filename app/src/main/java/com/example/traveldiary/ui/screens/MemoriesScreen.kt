@@ -93,7 +93,7 @@ fun MemoriesScreen(
                             Icon(
                                 imageVector = Icons.Outlined.PhotoLibrary,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primaryContainer,
+                                tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.size(32.dp),
                             )
                         }

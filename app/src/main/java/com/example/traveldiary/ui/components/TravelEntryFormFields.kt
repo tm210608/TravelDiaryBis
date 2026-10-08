@@ -103,7 +103,7 @@ fun TravelEntryFormFields(
                         Icon(
                             Icons.Filled.CameraAlt,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primaryContainer,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(26.dp),
                         )
                     }
@@ -198,7 +198,7 @@ fun TravelEntryFormFields(
                 Icon(
                     imageVector = Icons.Filled.CalendarToday,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primaryContainer,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(18.dp),
                 )
                 Spacer(Modifier.width(12.dp))

@@ -148,7 +148,7 @@ private fun StatCard(
                 Icon(
                     imageVector = icon,
                     contentDescription = label,
-                    tint = MaterialTheme.colorScheme.primaryContainer,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp),
                 )
             }

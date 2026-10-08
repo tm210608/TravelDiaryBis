@@ -233,12 +233,12 @@ fun EntryListCard(
                             modifier = Modifier
                                 .size(6.dp)
                                 .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.primaryContainer),
+                                .background(MaterialTheme.colorScheme.primary),
                         )
                         Text(
                             text = "${entry.location}, ${entry.country}",
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primaryContainer,
+                            color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.Medium,
                         )
                     }
