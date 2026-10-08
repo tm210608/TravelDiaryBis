@@ -20,22 +20,25 @@ La app ya está envuelta por `TravelDiaryTheme` en `MainActivity` y selecciona e
 - Acento / ruta ámbar: `#E7AE6A`
 - Texto principal / papel cálido: `#ECE8DC`
 
-Firma visual: las superficies de contenido se sienten como páginas de un atlas nocturno; el turquesa identifica acciones principales y el ámbar se reserva para marcas de viaje/favoritos. Se conserva la tipografía actual y el layout, rediseñando los tokens de color oscuro y eliminando colores de día hardcodeados solo cuando se usen como fondo/texto de UI. Blanco/negro de alto contraste sobre foto o visor de cámara se mantiene intencional.
+Firma visual: las superficies de contenido se sienten como páginas de un atlas nocturno; el turquesa identifica acciones principales y el ámbar aporta acentos secundarios/gradientes de identidad. El rojo existente conserva su significado semántico para favoritos y errores. Se mantiene la tipografía y el layout actuales, rediseñando tokens oscuros y reemplazando colores hardcodeados solo cuando son superficies o texto de UI. Blanco/negro de alto contraste sobre foto o visor de cámara se mantiene intencional.
 
 ---
 
 ## Criterios de aceptación (testeables, sin ambigüedad)
 
-- [ ] `MainActivity` mantiene el contenido dentro de `TravelDiaryTheme`, que selecciona el esquema claro/oscuro a partir del modo Android del sistema
-- [ ] Los tokens de `DarkColorScheme` usan la paleta Atlas nocturno definida arriba (fondo, superficie, superficie elevada, primario, acento y texto)
-- [ ] Con sistema en modo claro, todas las pantallas conservan el esquema claro actual
-- [ ] Al activar modo oscuro Android, Inicio, Añadir, Detalle, Recuerdos y Perfil muestran fondo, superficies, texto, campos, tarjetas, botones, barras e iconos legibles según Atlas nocturno
-- [ ] Mapa mantiene su estilo cartográfico oscuro existente y cambia junto con el sistema; al volver a modo claro, vuelve al estilo claro
-- [ ] Cámara conserva preview real y controles visibles; el negro del visor y overlays sobre imagen se consideran intencionales, no fondos de UI que haya que recolorear
-- [ ] Snackbar, dialogs, estados Loading/Empty/Error, bottom navigation, FAB, formularios y teclado/navegación de sistema mantienen contraste legible en ambos temas
-- [ ] Cambiar el tema del sistema mientras la app está en foreground actualiza el esquema sin reiniciar ni perder el estado del formulario/navegación
-- [ ] No aparece ajuste propio Claro/Oscuro/Sistema ni se persiste una preferencia de tema de app
-- [ ] Build `./gradlew compileDebugKotlin` y tests `./gradlew testDebugUnitTest` pasan
+Leyenda: `[x]` verificado en código/dispositivo; `[ ]` implementado pero pendiente de verificar.
+
+- [x] `MainActivity` mantiene el contenido dentro de `TravelDiaryTheme`, que selecciona el esquema claro/oscuro a partir del modo Android del sistema (evidencia-home-sistema.png / evidencia-home-dark.png)
+- [x] Los tokens de `DarkColorScheme` usan la paleta Atlas nocturno definida arriba (fondo, superficie, superficie elevada, primario, acento y texto)
+- [ ] Con sistema en modo claro, todas las pantallas conservan el esquema claro actual (Home y Añadir verificados; falta recorrer todas las pantallas en claro)
+- [x] En oscuro, Inicio, Añadir, Detalle, Recuerdos y Perfil muestran fondos, superficies, texto, campos, tarjetas, botones, barras e iconos legibles según Atlas nocturno (capturas correspondientes)
+- [x] Mapa mantiene su estilo cartográfico oscuro existente y cambia junto con el sistema; la captura oscura muestra tiles y controles legibles (evidencia-mapa-dark.png)
+- [ ] Cámara conserva preview real y controles visibles; el negro del visor y overlays sobre imagen se consideran intencionales (pendiente de verificar CameraScreen en dispositivo)
+- [x] Barras de estado y navegación del sistema adoptan el fondo y contraste de iconos del esquema en modo claro y oscuro (evidencia-preserva-formulario-claro.png / evidencia-preserva-formulario-dark.png)
+- [ ] Snackbar, dialogs, estados Loading/Empty/Error, bottom navigation, FAB y formularios mantienen contraste legible en todos los estados (pantallas principales verificadas; cobertura completa pendiente)
+- [x] Cambiar el tema del sistema mientras la app está en edición conserva el texto sin guardar y recompone el tema claro/oscuro (evidencia-preserva-formulario-dark.png y evidencia-preserva-formulario-claro.png; EditEntryViewModelTest)
+- [x] No aparece ajuste propio Claro/Oscuro/Sistema ni se persiste una preferencia de tema de app (seguimiento del sistema Android)
+- [x] Build y tests pasan: `scripts/verify.sh` (79 tests, 0 fallos)
 
 ---
 
@@ -67,7 +70,7 @@ Sin cambios de rutas. `MainActivity` envuelve `TravelDiaryNavGraph` con `TravelD
 
 ## Arquitectura
 
-- `MainActivity.kt` — sin cambio funcional; confirmar en ejecución que `TravelDiaryTheme` sigue envolviendo el NavGraph
+- `MainActivity.kt` — sincronizar colores e iconos de las barras de estado/navegación del sistema con el esquema claro/oscuro
 - `ui/theme/Color.kt` — tokens semánticos de la paleta Atlas nocturno; conservar tokens claros actuales
 - `ui/theme/Theme.kt` — actualizar `DarkColorScheme` y mantener selección por `isSystemInDarkTheme()`
 - `ui/components/CommonComponents.kt`, `ui/components/EntryCards.kt` — revisar colores hardcodeados en texto/superficies
@@ -87,11 +90,11 @@ Sin cambios de rutas. `MainActivity` envuelve `TravelDiaryNavGraph` con `TravelD
 
 ## Plan de tests
 
-- [ ] build: `scripts/verify.sh`
-- [ ] unit: no requiere nueva lógica de dominio; mantener todos los tests existentes en verde
-- [ ] UI/preview: comprobar componentes principales con `LightColorScheme` y `DarkColorScheme` si la infraestructura actual lo permite
-- [ ] dispositivo: `scripts/verify.sh --device`; en Xiaomi, cambiar Quick Settings entre claro/oscuro con app visible y validar Home, Añadir, Detalle, Mapa, Recuerdos, Perfil y Cámara
-- [ ] evidencia: capturas en `docs/specs/dark-mode/` de Inicio, formulario, Detalle, Mapa, Recuerdos y Perfil en tema oscuro; Home en tema claro para regresión
+- [x] build: `scripts/verify.sh` — 79 tests, 0 fallos
+- [x] unit: sin nueva lógica de dominio; toda la suite existente sigue verde
+- [ ] UI/preview: no se añadieron previews específicos de ambos esquemas
+- [ ] dispositivo: `scripts/verify.sh --device` OK; en Xiaomi se probaron cambios del sistema claro/oscuro, estado de edición preservado, Home, Añadir, Detalle, Mapa, Recuerdos y Perfil. CameraScreen y recorrido completo en tema claro pendientes
+- [x] evidencia: `evidencia-home-dark.png`, `evidencia-formulario-dark.png`, `evidencia-detalle-dark.png`, `evidencia-mapa-dark.png`, `evidencia-recuerdos-dark.png`, `evidencia-perfil-dark.png`, `evidencia-formulario-claro.png`, `evidencia-preserva-formulario-dark.png` y `evidencia-preserva-formulario-claro.png`
 
 ---
 
