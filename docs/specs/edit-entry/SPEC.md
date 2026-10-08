@@ -77,7 +77,8 @@ sealed interface EditEntryUiState {
 ## Arquitectura
 
 - `domain/usecase/GetEntryByIdUseCase.kt` — reutilizar para cargar la entrada
-- `domain/usecase/UpdateEntryUseCase.kt` — reutilizar para persistir cambios; verificar/añadir tests del caso de uso
+- `domain/repository/TravelRepository.kt` + `data/local/TravelDao.kt` + `data/repository/TravelRepositoryImpl.kt` — hacer que `updateEntry` reporte si Room actualizó una fila (`@Update` devuelve filas afectadas), sin migración de esquema
+- `domain/usecase/UpdateEntryUseCase.kt` — reutilizar para persistir cambios; devolver éxito/fallo y cubrir ambos con tests
 - `ui/viewmodel/EditEntryViewModel.kt` (NUEVO) — carga por id, formulario, validación, dirty state, actualización y estados
 - `ui/viewmodel/AddEntryViewModel.kt` / `ui/screens/AddTravelEntryScreen.kt` — extraer/compartir formulario sin cambiar el flujo de creación; mantener ambos modos independientes en ViewModel
 - `ui/screens/TravelDetailScreen.kt` — acción Editar y callback de navegación
@@ -85,7 +86,7 @@ sealed interface EditEntryUiState {
 - `navigation/Screen.kt` — route `edit_entry/{entryId}`
 - `navigation/TravelDiaryNavGraph.kt` — route, argumento Int, cámara y retorno a detalle
 - `utils/LocationHelper.kt` — reutilizar obtención actual de ubicación y manejo de permisos; solo solicitar al elegir actualizar GPS
-- `data/` / Room — sin cambios de esquema; update existente mediante repositorio
+- Room — sin cambios de esquema; retorno de filas afectadas para detectar si la entrada fue borrada antes del update
 
 ---
 
