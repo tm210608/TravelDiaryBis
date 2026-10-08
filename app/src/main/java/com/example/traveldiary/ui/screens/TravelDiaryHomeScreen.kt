@@ -26,6 +26,8 @@ fun TravelDiaryHomeScreen(
     onEntryClick: (TravelEntry) -> Unit = {},
     onAddClick: () -> Unit = {},
     onMapClick: () -> Unit = {},
+    onMemoriesClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val entriesList by viewModel.entriesList.collectAsState()
@@ -53,10 +55,11 @@ fun TravelDiaryHomeScreen(
             BottomNavigationBar(
                 selectedTab = selectedTab,
                 onTabSelected = { index ->
-                    if (index == 1) {
-                        onMapClick()
-                    } else {
-                        viewModel.onTabSelected(index)
+                    when (index) {
+                        1 -> onMapClick()
+                        2 -> onMemoriesClick()
+                        3 -> onProfileClick()
+                        else -> viewModel.onTabSelected(index)
                     }
                 },
             )

@@ -11,6 +11,8 @@ import androidx.navigation.navArgument
 import com.example.traveldiary.ui.screens.AddTravelEntryScreen
 import com.example.traveldiary.ui.screens.CameraScreen
 import com.example.traveldiary.ui.screens.MapScreen
+import com.example.traveldiary.ui.screens.MemoriesScreen
+import com.example.traveldiary.ui.screens.ProfileScreen
 import com.example.traveldiary.ui.screens.TravelDetailScreen
 import com.example.traveldiary.ui.screens.TravelDiaryHomeScreen
 import com.example.traveldiary.ui.viewmodel.AddEntryViewModel
@@ -21,6 +23,22 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
         navController = navController,
         startDestination = Screen.Home.route
     ) {
+        val onTabNavigate: (Int) -> Unit = { index ->
+            when (index) {
+                0 -> navController.popBackStack(Screen.Home.route, inclusive = false)
+                else -> navController.navigate(
+                    when (index) {
+                        1 -> Screen.Map.route
+                        2 -> Screen.Memories.route
+                        else -> Screen.Profile.route
+                    }
+                ) {
+                    launchSingleTop = true
+                    popUpTo(Screen.Home.route) { saveState = true }
+                }
+            }
+        }
+
         composable(Screen.Home.route) {
             TravelDiaryHomeScreen(
                 onEntryClick = { entry ->
@@ -29,9 +47,9 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                 onAddClick = {
                     navController.navigate(Screen.AddEntry.route)
                 },
-                onMapClick = {
-                    navController.navigate(Screen.Map.route)
-                }
+                onMapClick = { onTabNavigate(1) },
+                onMemoriesClick = { onTabNavigate(2) },
+                onProfileClick = { onTabNavigate(3) }
             )
         }
 
@@ -77,6 +95,21 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                     navController.navigate(Screen.Detail.createRoute(entryId))
                 },
                 onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.Memories.route) {
+            MemoriesScreen(
+                onEntryClick = { entry ->
+                    navController.navigate(Screen.Detail.createRoute(entry.id))
+                },
+                onTabSelected = onTabNavigate
+            )
+        }
+
+        composable(Screen.Profile.route) {
+            ProfileScreen(
+                onTabSelected = onTabNavigate
             )
         }
     }
