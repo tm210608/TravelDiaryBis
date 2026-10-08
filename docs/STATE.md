@@ -1,27 +1,32 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-10-08 | **Rama:** `develop` | **Commit:** `e560f99` mergeado — filter chips funcionales
+**Fecha:** 2026-10-08 | **Rama:** `develop` | **Commit:** `6a862a5` mergeado — tabs Recuerdos y Perfil
 
 ## Hecho
-- Feature filter-chips completa (SPEC -> implement -> verify -> merge), verificada en Xiaomi:
-  - `domain/model/Continent.kt`: enum + `continentOf(country)` con tabla ~140 países
-    (español/inglés, case y acentos-insensitive vía `Normalizer`).
-  - `domain/usecase/FilterEntriesByChipUseCase.kt`: Todo / Europa / Asia / América / Favoritos.
-  - `HomeViewModel`: `selectedChip` ahora `StateFlow`; `entriesList` combina
-    entries + query + chip (AND). Eliminado `insertSampleEntry`/`AddEntryUseCase` sin uso.
-  - HomeScreen: `selectedChip` con `collectAsState()`.
-- Evidencias en `docs/specs/filter-chips/` (europa, asia, américa, favoritos, chip+búsqueda, landscape).
-- 57 unit tests OK, build OK, app en dispositivo sin crash. Rotación conserva el chip.
+- Feature filter-chips completa y verificada en Xiaomi; tabla país→continente offline,
+  filtros combinados con búsqueda. 57 tests OK. Evidencias en `docs/specs/filter-chips/`.
+- Feature tabs Recuerdos/Perfil implementada y mergeada:
+  - `GetMemoriesUseCase`: Flow de entradas con foto.
+  - `GetTravelStatsUseCase` + `TravelStats`: total, favoritos, países y continentes.
+  - MemoriesScreen: galería 3 columnas, foto navega al detalle, estado vacío implementado.
+  - ProfileScreen: avatar y cuatro tarjetas de estadísticas.
+  - Tabs en Home/Recuerdos/Perfil navegan; Mapa sigue abriendo MapScreen.
+- Tests/build OK: `scripts/verify.sh` = 66 tests, 0 fallos.
+- Verificado en Xiaomi: Home→Recuerdos→detalle→back; Perfil y sus estadísticas;
+  tabs cruzadas; back a Home; Mapa. Evidencias en `docs/specs/bottom-tabs/`.
+- Pendiente de verificación en dispositivo: estado vacío de Recuerdos y actualización
+  de estadísticas tras añadir una entrada. Criterios quedan sin marcar en SPEC.
 
 ## Siguiente paso
-1. Nueva feature SDMD desde `develop` (`/spec` -> `/implement-spec` -> `/verify` -> `/handoff`).
-   Candidatas: tabs Recuerdos/Perfil, editar entrada, navegación type-safe, dark mode global.
-2. Opcional: borrar `feature/map-view` y `feature/filter-chips` (ya mergeadas).
+1. Nueva feature SDMD desde `develop` (`/spec` → aprobación → `/implement-spec` → `/verify` → `/handoff`).
+   Candidatas: editar entrada existente, dark mode global, navegación type-safe.
+2. Opcional: borrar ramas `feature/map-view`, `feature/filter-chips` y `feature/bottom-tabs`
+   (ya mergeadas); requiere confirmación antes de borrar.
 
 ## Decisiones vigentes
-- `maps-compose` 4.4.2 (no subir a 9.x sin pedirlo; requiere compileSdk 37/AGP 9.1).
-- Continente derivado de `country` con tabla interna (offline); país desconocido solo en "Todo".
-  Sin chips África/Oceanía por ahora.
+- `maps-compose` 4.4.2; no subir a 9.x sin pedirlo (requiere compileSdk 37/AGP 9.1).
+- Continente derivado de `country` con tabla interna offline; país desconocido solo en "Todo".
+- Recuerdos muestra todas las entradas con foto; Perfil es solo lectura (nombre/foto editable queda para otra spec).
 - `local.properties` con `MAPS_API_KEY` no se commitea.
 - Commits atómicos en rama `feature/` o `fix/` y merge `--no-ff` a `develop`.
 
@@ -29,6 +34,6 @@
 - Ninguno.
 
 ## Deuda técnica (futuras specs)
-Tabs Recuerdos/Perfil, nav type-safe, dark mode global, editar entrada, fixes de cámara,
+Editar entrada, navegación type-safe, dark mode global, fixes de cámara,
 chips África/Oceanía si hacen falta, clustering, subir AGP/compileSdk, detekt/ktlint,
-`Icons.Filled.ArrowBack` deprecados.
+`Icons.Filled.ArrowBack` deprecados, verificar estados vacíos y refresco de estadísticas en dispositivo.

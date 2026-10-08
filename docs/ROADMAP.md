@@ -9,13 +9,13 @@ Visión: app offline-first, estética premium, captura rápida, datos locales de
 - [x] Unit tests (ViewModels, use cases, mapper)
 - [x] Mapa de viajes verificado en dispositivo: tiles, markers, InfoWindow, detalle, vacío, multi-marker bounds, dark mode (mapa) y landscape — `docs/specs/map-view/SPEC.md`
 - [x] Filter chips funcionales (Europa/Asia/América/Favoritos) verificados en dispositivo, combinados con búsqueda — `docs/specs/filter-chips/SPEC.md`
+- [x] Tabs Recuerdos/Perfil: galería, estadísticas y navegación verificados en dispositivo — `docs/specs/bottom-tabs/SPEC.md`
 
 ## En curso
 - [ ] UI tests Compose (Home -> AddEntry -> guardar -> Home); hay `CONTEXT.md` viejo en el stash
 
 ## Siguiente (una spec SDMD cada uno)
 - [ ] Editar entrada existente
-- [ ] Tabs Recuerdos y Perfil
 - [ ] Dark mode completo
 - [ ] Navegación type-safe
 - [ ] Exportar viaje a PDF/imagen
