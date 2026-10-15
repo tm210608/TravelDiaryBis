@@ -69,6 +69,10 @@ class DiaryExporterImplTest {
         assertEquals(setOf("photos/entry-1-0.jpg", "photos/entry-2-0.jpg", "diary.json"), files.keys)
         assertEquals(listOf<Byte>(1, 2, 3), files.getValue("photos/entry-1-0.jpg").toList())
 
+        val rawJson = files.getValue(DiaryExporterImpl.DIARY_JSON_ENTRY).toString(Charsets.UTF_8)
+        assertTrue(rawJson.contains("\"formatVersion\": 1"))
+        assertTrue(rawJson.contains("\"app\": \"TravelDiaryBis\""))
+
         val doc = files.diaryJson()
         assertEquals(1, doc.formatVersion)
         assertEquals("TravelDiaryBis", doc.app)

@@ -15,7 +15,10 @@ import kotlinx.serialization.json.Json
 
 class DiaryExporterImpl @Inject constructor() : DiaryExporter {
 
-    private val json = Json { prettyPrint = true }
+    private val json = Json {
+        prettyPrint = true
+        encodeDefaults = true
+    }
 
     override suspend fun export(
         entries: List<TravelEntry>,
