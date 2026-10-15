@@ -11,28 +11,37 @@ es un sobre versionado diseñado para ser también el DTO de una futura sincroni
 online (sin tocar el esquema de Room en esta feature).
 
 ## Criterios de aceptación (testeables, sin ambigüedad)
-- [ ] Icono de exportar visible en la top bar de Home solo cuando el diario tiene >= 1 entrada.
-- [ ] Al activar modo selección: cada tarjeta muestra checkbox, tap alterna su selección,
+- [x] Icono de exportar visible en la top bar de Home solo cuando el diario tiene >= 1 entrada.
+      (evidencia-01: vacío sin icono; evidencia-02: con entradas, icono visible)
+- [x] Al activar modo selección: cada tarjeta muestra checkbox, tap alterna su selección,
       la top bar cambia a "N seleccionadas" con acciones "seleccionar todo" y "cerrar" (sale del modo).
-- [ ] El botón/acción de exportar está deshabilitado con 0 entradas seleccionadas.
-- [ ] Al exportar, el usuario elige entre **Guardar** (lanza `CreateDocument` con mime
+      (evidencia-03/04/11; ✕ verificado)
+- [x] El botón/acción de exportar está deshabilitado con 0 entradas seleccionadas.
+      (evidencia-03)
+- [x] Al exportar, el usuario elige entre **Guardar** (lanza `CreateDocument` con mime
       `application/zip` y nombre sugerido `traveldiary-export-<yyyyMMdd-HHmm>.zip`) y
       **Compartir** (lanza share sheet con `EXTRA_STREAM`, `FLAG_GRANT_READ_URI_PERMISSION`).
-- [ ] El ZIP contiene `diary.json`, documento versionado:
+      (evidencia-05/06/08)
+- [x] El ZIP contiene `diary.json`, documento versionado:
       `{formatVersion: 1, app: "TravelDiaryBis", appVersion, exportedAt (ISO-8601),
       entryCount, entries: [...]}`; cada entrada con campos
       `id, title, location, country, date (ISO-8601), tag, description, latitude, longitude,
       isFavourite, imageUrl (valor original), photoFile (nombre dentro del ZIP o null)`.
-- [ ] Las fotos se copian a `photos/entry-<id>-<n>.<ext>` resolviendo `imageUrl`:
+      (ZIP extraído e inspeccionado; bug de encodeDefaults corregido en a080097)
+- [x] Las fotos se copian a `photos/entry-<id>-<n>.<ext>` resolviendo `imageUrl`:
       `content://`/`file://`/path absoluto via ContentResolver/File. URLs `http(s)` NO se
       descargan: `photoFile = null` y `imageUrl` conserva la URL.
-- [ ] Si una foto no se puede leer, la exportación continúa y esa entrada queda con
-      `photoFile = null` (no falla el ZIP entero).
-- [ ] Compartir usa `FileProvider` (authority `${applicationId}.fileprovider`) sobre un ZIP
-      temporal en `cacheDir/exports/`.
-- [ ] "Exportar diario" en Perfil navega a Home con el modo selección ya activado.
-- [ ] Cancelar el picker SAF vuelve al modo selección sin mostrar error.
-- [ ] Exportación exitosa: sale del modo selección y muestra snackbar "Diario exportado".
+      (diary.json: Paris file:// -> photos/entry-1-0.jpg; Kioto http -> photoFile null)
+- [x] Si una foto no se puede leer, la exportación continúa y esa entrada queda con
+      `photoFile = null` (no falla el ZIP entero). (cubierto por test JVM `unreadable photo keeps entry`)
+- [x] Compartir usa `FileProvider` (authority `${applicationId}.fileprovider`) sobre un ZIP
+      temporal en `cacheDir/exports/`. (evidencia-08: share sheet con el ZIP adjunto)
+- [x] "Exportar diario" en Perfil navega a Home con el modo selección ya activado.
+      (evidencia-09/10)
+- [x] Cancelar el picker SAF vuelve al modo selección sin mostrar error.
+      (BACK en picker -> "2 seleccionadas" intacto, sin snackbar de error)
+- [x] Exportación exitosa: sale del modo selección y muestra snackbar "Diario exportado".
+      (evidencia-07)
 
 ## Fuera de alcance
 - Sincronización online, backend, auth, uuid/identidad remota por entrada: su propia
@@ -89,16 +98,17 @@ online (sin tocar el esquema de Room en esta feature).
 - Solo lectura sobre Room y archivos de fotos; no se modifica ningún dato.
 
 ## Plan de tests
-- [ ] build: `scripts/verify.sh`
-- [ ] unit `DiaryExporterImpl` (JVM, resolver de fotos fake): ZIP válido con
-      `entries.json` correcto; foto presente -> `photoFile`; foto fallida/http -> `null`.
-- [ ] unit `HomeViewModel`: toggle/selectAll/exit limpia selección; exportar deshabilitado
+- [x] build: `scripts/verify.sh` -> OK, 94 tests 0 fallos
+- [x] unit `DiaryExporterImpl` (JVM, resolver de fotos fake): ZIP válido con
+      `diary.json` correcto; foto presente -> `photoFile`; foto fallida/http -> `null`.
+- [x] unit `HomeViewModel`: toggle/selectAll/exit limpia selección; exportar deshabilitado
       con 0 seleccionadas; `exportSelectedTo` produce `Success`; error -> `Error`.
-      (patrón `backgroundScope.launch { collect {} }` + `advanceUntilIdle()`)
-- [ ] dispositivo: `scripts/verify.sh --device` + flujo manual: seleccionar 2 entradas
-      con foto -> Guardar en Descargas -> abrir ZIP y comprobar JSON + fotos;
-      Compartir -> share sheet abre con el ZIP adjunto.
-- [ ] evidencia: capturas en `docs/specs/exportar-entradas/`
+- [x] dispositivo: `scripts/verify.sh --device` + flujo manual en emulador API 36.1:
+      2 entradas (1 con foto real CameraX) -> Guardar en Descargas -> ZIP inspeccionado
+      (JSON + foto); Compartir -> share sheet con ZIP adjunto; Perfil -> modo selección;
+      cancelar SAF -> selección intacta.
+      NOTA: verificado en emulador, pendiente en Xiaomi físico.
+- [x] evidencia: capturas en `docs/specs/exportar-entradas/evidencia-*.png`
 
 ## Edge cases
 - Diario vacío: icono de exportar no aparece.
