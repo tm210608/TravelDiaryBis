@@ -18,7 +18,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TopBar() {
+fun TopBar(
+    showExport: Boolean = false,
+    onExportClick: () -> Unit = {},
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -39,7 +42,17 @@ fun TopBar() {
                 color = MaterialTheme.colorScheme.onSurface,
             )
         }
-        Box(
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (showExport) {
+                IconButton(onClick = onExportClick) {
+                    Icon(
+                        imageVector = Icons.Outlined.FileUpload,
+                        contentDescription = "Exportar diario",
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
+            Box(
             modifier = Modifier
                 .size(44.dp)
                 .clip(CircleShape)
@@ -67,6 +80,7 @@ fun TopBar() {
                     color = MaterialTheme.colorScheme.primary,
                 )
             }
+        }
         }
     }
 }
