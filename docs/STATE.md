@@ -23,10 +23,9 @@
   sin error. Evidencia `docs/specs/importar-entradas/evidencia-0*.png` (5).
 - Verificado en XIAOMI FÍSICO (HyperOS, tema claro): export 2 entradas reales ->
   SAF Downloads -> import desde Perfil -> "2 entradas importadas" -> 4 viajes
-  con fotos visibles. Hallazgo: fotos `content://` del picker NO entran al ZIP
-  (export las deja `photoFile=null`); al importar en el MISMO dispositivo el
-  `imageUrl` content:// sigue resolviendo y las fotos se ven. En OTRO
-  dispositivo se verían rotas (limitación conocida del spec).
+  con fotos visibles. Las fotos de esas entradas son URLs remotas
+  (unsplash) -> `photoFile=null` por diseño (no se descargan); el imageUrl
+  se preserva y Coil las renderiza. Comportamiento correcto según spec.
   Evidencia `evidencia-06..08-xiaomi-*.png` (3).
 - 107 tests 0 fallos (`scripts/verify.sh`).
 
@@ -56,6 +55,6 @@ Migraciones Room reales antes de Play Store (hoy destructive fallback borra dato
 política de privacidad + Data Safety (fotos/ubicación), keystore/R8/AAB, UI tests
 Compose, sync online, esquema light de marca, nav type-safe, CameraScreen
 (`LocalLifecycleOwner` deprecado), clustering, detekt/ktlint.
-Fotos `content://` no viajan en el ZIP de exportación (solo file://) — en otro
-dispositivo esas imágenes se verían rotas; valorar copiar fotos del picker a
-filesDir al crear la entrada.
+Decisión de producto pendiente (no bug): las fotos con `imageUrl` http(s)
+NO viajan en el ZIP — si la URL muere, la imagen desaparece. Valorar
+descargarlas al exportar en una futura spec.
