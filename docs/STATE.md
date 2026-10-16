@@ -1,6 +1,6 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-10-16 | **Rama:** `feature/importar-entradas` | **Commit:** evidencia Xiaomi + SPEC marcada
+**Fecha:** 2026-10-16 | **Rama:** `develop` | **Commit:** merge de `feature/importar-entradas` (verde, 107 tests)
 
 ## Hecho
 - `feature/exportar-entradas` mergeada a `develop` con `--no-ff`; post-merge verde (94 tests).
@@ -30,12 +30,11 @@
 - 107 tests 0 fallos (`scripts/verify.sh`).
 
 ## Siguiente paso
-1. Merge `feature/importar-entradas` -> `develop` (sin pantalla nueva).
-2. El diario del Xiaomi tiene 2 duplicados del round-trip ("Con GPS" x2,
+1. El diario del Xiaomi tiene 2 duplicados del round-trip ("Con GPS" x2,
    "Prueba Mapa" x2) — borrarlos a mano si molestan.
-3. Candidatas: migraciones Room reales (previo Play Store), esquema light de
+2. Candidatas: migraciones Room reales (previo Play Store), esquema light de
    marca, nav type-safe, sync online. Usuario apunta a Play Store a medio plazo.
-4. PNG sin seguimiento en `docs/specs/dark-mode/` (evidencias del usuario).
+3. PNG sin seguimiento en `docs/specs/dark-mode/` (evidencias del usuario).
 
 ## Decisiones vigentes
 - Exportar = ZIP (`diary.json` `formatVersion=1` + `photos/`); Importar lee ese
