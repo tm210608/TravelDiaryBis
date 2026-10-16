@@ -14,18 +14,18 @@ Visión: app offline-first, estética premium, captura rápida, datos locales de
 - [x] Tema oscuro global Atlas nocturno, seguimiento del sistema y barras sincronizadas — `docs/specs/dark-mode/SPEC.md` (CameraScreen y cobertura clara total pendientes de dispositivo)
 - [x] Reskin Material 3 Expressive (tokens Stitch navy/ámbar, Epilogue/Manrope) mergeado a develop — `docs/specs/m3-expressive-redesign/`
 - [x] Exportar diario a ZIP (diary.json versionado `formatVersion=1` + fotos) con Guardar (SAF) y Compartir (FileProvider), verificado en emulador — `docs/specs/exportar-entradas/SPEC.md`
-- [x] Importar diario desde ZIP exportado (merge sin dedup, fotos copiadas, parseo tolerante), verificado en emulador — `docs/specs/importar-entradas/SPEC.md`
+- [x] Importar diario desde ZIP exportado (merge sin dedup, fotos copiadas, parseo tolerante), verificado en emulador y Xiaomi físico — `docs/specs/importar-entradas/SPEC.md`
+- [x] Migraciones Room reales: `exportSchema` + `MIGRATION_2_3` con uuid por entrada (identidad estable para futura sync) + `MigrationTestHelper` en androidTest, verificado en Xiaomi — `docs/specs/migraciones-room/SPEC.md`
 
 ## En curso
 - [ ] UI tests Compose (Home -> AddEntry -> guardar -> Home); hay `CONTEXT.md` viejo en el stash
 
 ## Siguiente (una spec SDMD cada uno)
-- [ ] Migraciones Room reales (hoy `fallbackToDestructiveMigration` borra datos; requisito previo a Play Store)
 - [ ] Esquema light de marca (hoy solo color dinámico en API 31+)
 - [ ] Navegación type-safe (exige Navigation 2.8.x; hoy 2.7.7)
-- [ ] Sync online / backend (el sobre `ExportDocument` ya sirve de DTO)
-- [ ] Release Play Store: migraciones Room reales (hoy destructive fallback), política de
-  privacidad + Data Safety (fotos/ubicación), keystore, R8, AAB
+- [ ] Sync online / backend (el sobre `ExportDocument` ya sirve de DTO; uuid por entrada listo)
+- [ ] Release Play Store: política de privacidad + Data Safety (fotos/ubicación),
+  keystore, R8, AAB (migraciones Room ya resueltas)
 - [ ] Exportar variante PDF/imagen (legible para humanos)
 - [ ] detekt + ktlint
 
