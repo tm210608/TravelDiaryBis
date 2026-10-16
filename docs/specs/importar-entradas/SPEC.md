@@ -8,25 +8,25 @@ a `filesDir/photos` reescribiendo `imageUrl` al path local. Errores de archivo
 informan al usuario sin cerrar nada.
 
 ## Criterios de aceptación (testeables, sin ambigüedad)
-- [ ] Opción "Importar diario" en Perfil (bajo "Exportar diario") lanza `OpenDocument`
+- [x] Opción "Importar diario" en Perfil (bajo "Exportar diario") lanza `OpenDocument`
       con mimes `application/zip`, `application/x-zip-compressed`, `application/octet-stream`.
-- [ ] ZIP válido: se insertan TODAS las entradas del documento con id nuevo (sin dedup;
+- [x] ZIP válido: se insertan TODAS las entradas del documento con id nuevo (sin dedup;
       reimportar el mismo ZIP duplica). Campos preservados: title, location, country,
       date, tag, description, latitude, longitude, isFavourite.
-- [ ] Cada `photoFile` se copia a `filesDir/photos/import-<yyyyMMdd-HHmmss>-<i>.<ext>`
+- [x] Cada `photoFile` se copia a `filesDir/photos/import-<yyyyMMdd-HHmmss>-<i>.<ext>`
       y `imageUrl` se reescribe a `file://<path>` (formato legible por `PhotoLoader`
       de la exportación -> round-trip funciona).
-- [ ] `photoFile = null` o archivo ausente en el ZIP: la entrada se importa conservando
+- [x] `photoFile = null` o archivo ausente en el ZIP: la entrada se importa conservando
       el `imageUrl` original (http remoto sigue mostrándose).
-- [ ] Fichero no-zip, sin `diary.json` o JSON malformado -> `Error` "No es un archivo
+- [x] Fichero no-zip, sin `diary.json` o JSON malformado -> `Error` "No es un archivo
       de diario válido".
-- [ ] `formatVersion != 1` (incluido ausente) -> `Error` "Versión de diario no soportada".
-- [ ] `entries` vacío -> `Error` "El archivo no contiene entradas".
-- [ ] Éxito: snackbar "N entradas importadas"; las nuevas aparecen en Home al volver.
-- [ ] Error: snackbar con el mensaje; el diario queda intacto (nada parcial salvo fotos
+- [x] `formatVersion != 1` (incluido ausente) -> `Error` "Versión de diario no soportada".
+- [x] `entries` vacío -> `Error` "El archivo no contiene entradas".
+- [x] Éxito: snackbar "N entradas importadas"; las nuevas aparecen en Home al volver.
+- [x] Error: snackbar con el mensaje; el diario queda intacto (nada parcial salvo fotos
       ya copiadas, aceptado como residuo inocuo).
-- [ ] Cancelar el picker -> vuelve a Perfil sin error.
-- [ ] Las entradas existentes NO se tocan (merge puro, nada se borra ni modifica).
+- [x] Cancelar el picker -> vuelve a Perfil sin error.
+- [x] Las entradas existentes NO se tocan (merge puro, nada se borra ni modifica).
 
 ## Fuera de alcance
 - Reemplazar el diario (destructivo), dedup por contenido, uuid por entrada,
@@ -68,17 +68,19 @@ informan al usuario sin cerrar nada.
 - Escritura Room solo `insertEntry` por entrada; fotos solo se añaden (nada se borra).
 
 ## Plan de tests
-- [ ] build: `scripts/verify.sh`
-- [ ] unit `DiaryImporterImpl` (JVM, savePhoto fake): parseo v1, fotos extraídas y
+- [x] build: `scripts/verify.sh` — 107 tests, 0 fallos
+- [x] unit `DiaryImporterImpl` (JVM, savePhoto fake): parseo v1, fotos extraídas y
       `imageUrl` reescrito, `photoFile=null`/ausente conserva `imageUrl`, no-zip ->
       InvalidFile, version!=1 -> UnsupportedVersion, entries vacío -> Empty.
-- [ ] unit `ImportEntriesUseCase`: inserta cada entrada (coVerify), cuenta devuelta,
+- [x] unit `ImportEntriesUseCase`: inserta cada entrada (coVerify), cuenta devuelta,
       error del storage -> InvalidFile.
-- [ ] unit `ProfileViewModel`: importDiary -> Success/Error; consume -> Idle.
-- [ ] dispositivo: `scripts/verify.sh --device` + round-trip: exportar diario ->
-      Importar el MISMO zip -> +N entradas duplicadas (merge sin dedup esperado) ->
-      fotos visibles offline; zip corrupto -> error; cancelar picker -> sin error.
-- [ ] evidencia: capturas en `docs/specs/importar-entradas/`
+- [x] unit `ProfileViewModel`: importDiary -> Success/Error; consume -> Idle.
+- [x] dispositivo: emulador Medium_Phone_API_36.1. Round-trip: ZIP exportado ayer
+      (2 entradas) importado sobre diario de 2 -> 4 viajes; reimportado -> 6 viajes
+      (duplicados intencionados); foto copiada a `files/photos/import-…jpg` y visible
+      en Home; zip corrupto -> snackbar "No es un archivo de diario válido" sin tocar
+      el diario; cancelar picker -> sin error.
+- [x] evidencia: 5 capturas en `docs/specs/importar-entradas/` (evidencia-01..05)
 
 ## Edge cases
 - Reimportar el mismo ZIP duplica entradas (decisión: sin dedup esta versión).
