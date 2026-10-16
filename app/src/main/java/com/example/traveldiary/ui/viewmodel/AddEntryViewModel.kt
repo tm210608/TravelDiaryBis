@@ -8,6 +8,7 @@ import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.domain.usecase.AddEntryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Instant
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -59,7 +60,8 @@ data class EntryDetails(
     val imageUrl: String = "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600",
     val latitude: Double? = null,
     val longitude: Double? = null,
-    val isFavourite: Boolean = false
+    val isFavourite: Boolean = false,
+    val uuid: String = UUID.randomUUID().toString(),
 )
 
 fun EntryDetails.toTravelEntry(): TravelEntry = TravelEntry(
@@ -73,5 +75,6 @@ fun EntryDetails.toTravelEntry(): TravelEntry = TravelEntry(
     imageUrl = imageUrl,
     latitude = latitude,
     longitude = longitude,
-    isFavourite = isFavourite
+    isFavourite = isFavourite,
+    uuid = uuid,
 )

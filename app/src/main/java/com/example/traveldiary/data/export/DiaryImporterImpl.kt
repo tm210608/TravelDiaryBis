@@ -7,6 +7,7 @@ import com.example.traveldiary.domain.model.ExportedEntry
 import com.example.traveldiary.domain.model.TravelEntry
 import java.io.InputStream
 import java.time.Instant
+import java.util.UUID
 import java.util.zip.ZipInputStream
 import javax.inject.Inject
 import kotlinx.serialization.decodeFromString
@@ -70,6 +71,7 @@ class DiaryImporterImpl @Inject constructor() : DiaryImporter {
             latitude = latitude,
             longitude = longitude,
             isFavourite = isFavourite,
+            uuid = uuid.ifEmpty { UUID.randomUUID().toString() },
         )
     }
 

@@ -35,4 +35,5 @@ data class ExportedEntry(
     val isFavourite: Boolean,
     val imageUrl: String,
     val photoFile: String?,
+    val uuid: String = "",
 )

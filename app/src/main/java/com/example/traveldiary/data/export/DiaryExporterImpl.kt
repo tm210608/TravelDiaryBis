@@ -66,6 +66,7 @@ class DiaryExporterImpl @Inject constructor() : DiaryExporter {
         isFavourite = isFavourite,
         imageUrl = imageUrl,
         photoFile = photoFile,
+        uuid = uuid,
     )
 
     companion object {

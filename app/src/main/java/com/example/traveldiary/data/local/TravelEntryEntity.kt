@@ -18,4 +18,5 @@ data class TravelEntryEntity(
     val latitude: Double? = null,
     val longitude: Double? = null,
     val isFavourite: Boolean = false,
+    val uuid: String = "",
 )

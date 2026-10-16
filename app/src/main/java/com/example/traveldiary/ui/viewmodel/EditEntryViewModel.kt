@@ -174,4 +174,5 @@ fun TravelEntry.toEntryDetails() = EntryDetails(
     latitude = latitude,
     longitude = longitude,
     isFavourite = isFavourite,
+    uuid = uuid,
 )
