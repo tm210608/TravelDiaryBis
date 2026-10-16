@@ -4,6 +4,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import java.util.UUID
 
 fun Instant.formatToDisplay(): String {
     val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
@@ -24,4 +25,5 @@ data class TravelEntry(
     val latitude: Double? = null,
     val longitude: Double? = null,
     val isFavourite: Boolean = false,
+    val uuid: String = UUID.randomUUID().toString(),
 )
