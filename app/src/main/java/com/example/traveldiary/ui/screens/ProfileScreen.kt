@@ -10,11 +10,16 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FlightTakeoff
 import androidx.compose.material.icons.filled.Public
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.FileUpload
 import androidx.compose.material3.*
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.traveldiary.ui.components.BottomNavigationBar
+import com.example.traveldiary.ui.viewmodel.ImportUiState
 import com.example.traveldiary.ui.viewmodel.ProfileUiState
 import com.example.traveldiary.ui.viewmodel.ProfileViewModel
 
@@ -34,9 +40,32 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val importState by viewModel.importState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val importLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        uri?.let { viewModel.importDiary(it.toString()) }
+    }
+
+    LaunchedEffect(importState) {
+        when (val state = importState) {
+            is ImportUiState.Success -> {
+                snackbarHostState.showSnackbar("${state.count} entradas importadas")
+                viewModel.onImportStateConsumed()
+            }
+            is ImportUiState.Error -> {
+                snackbarHostState.showSnackbar(state.message)
+                viewModel.onImportStateConsumed()
+            }
+            else -> Unit
+        }
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             BottomNavigationBar(
                 selectedTab = 3,
@@ -156,6 +185,64 @@ fun ProfileScreen(
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
+                            }
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        Card(
+                            onClick = {
+                                if (importState !is ImportUiState.Importing) {
+                                    importLauncher.launch(
+                                        arrayOf(
+                                            "application/zip",
+                                            "application/x-zip-compressed",
+                                            "application/octet-stream",
+                                        )
+                                    )
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = MaterialTheme.shapes.medium,
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer
+                            ),
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 14.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.FileDownload,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(22.dp),
+                                )
+                                Spacer(Modifier.width(14.dp))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = "Importar diario",
+                                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold),
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                    )
+                                    Text(
+                                        text = "Restaura un ZIP exportado",
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
+                                if (importState is ImportUiState.Importing) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(20.dp),
+                                        strokeWidth = 2.dp,
+                                    )
+                                } else {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    )
+                                }
                             }
                         }
                     }

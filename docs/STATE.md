@@ -1,49 +1,60 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-10-15 | **Rama:** `feature/exportar-entradas` | **Commit:** `c4144c3` evidencia + SPEC marcada
+**Fecha:** 2026-10-16 | **Rama:** `feature/importar-entradas` | **Commit:** evidencia Xiaomi + SPEC marcada
 
 ## Hecho
-- Feature "exportar entradas" completa y verificada (6 commits sobre `develop`):
-  - domain: `ExportDocument`/`ExportedEntry` (`@Serializable`, sobre versionado
-    `formatVersion=1` pensado como DTO de futura sync), `DiaryExporter`, `PhotoLoader`,
-    `ExportStorage`, `ExportEntriesUseCase` (saveToUri / toTempZip).
-  - data: `DiaryExporterImpl` (ZipOutputStream + kotlinx-json `encodeDefaults=true`),
-    `ContentResolverPhotoLoader` (content/file/path; http no descarga), `ExportStorageImpl`,
-    DI en `di/ExportModule.kt`. `buildConfig=true` para `VERSION_NAME`.
-  - ui: `ExportUiState` (Idle/Exporting/ShareReady/Success/Error) + modo selección en
-    `HomeViewModel`; icono exportar en TopBar (solo si hay entradas), SelectionTopBar
-    (N seleccionadas/Todo/Exportar deshabilitado a 0 + menú), checkboxes en EntryListCard,
-    FAB oculto, BackHandler, FileProvider (`${applicationId}.fileprovider`, cache `exports/`),
-    ruta `home?export={export}` (Perfil -> selección directa).
-- Verificado en EMULADOR API 36.1: 2 entradas con foto real CameraX -> Guardar en
-  Downloads + ZIP inspeccionado (diary.json + foto) + share sheet + cancelar SAF +
-  toggle + Perfil. Evidencia `docs/specs/exportar-entradas/evidencia-*.png` (11).
-  Bug pillado en verificación: kotlinx omite defaults -> `encodeDefaults=true` (`a080097`).
-- 94 tests 0 fallos (`scripts/verify.sh`).
+- `feature/exportar-entradas` mergeada a `develop` con `--no-ff`; post-merge verde (94 tests).
+- Feature "importar entradas" completa y verificada (6 commits sobre `develop`):
+  - domain: `ImportResult` (Success/InvalidFile/UnsupportedVersion/Empty),
+    `DiaryImporter`, `ImportStorage`, `ImportEntriesUseCase` (inserta cada entrada
+    como nueva vía `repository.insertEntry`, sin dedup).
+  - data: `DiaryImporterImpl` (ZipInputStream + kotlinx-json `ignoreUnknownKeys=true`,
+    tolerante a campos futuros; requiere `formatVersion=1` y `entries` no vacío),
+    `ImportStorageImpl` (ContentResolver openInputStream + copia fotos a
+    `filesDir/photos/import-<ts>-<i>.<ext>`, devuelve `file://path`), DI en
+    `di/ExportModule.kt`.
+  - ui: `ImportUiState` (Idle/Importing/Success(count)/Error) en `ProfileViewModel`
+    + card "Importar diario" en Perfil (launcher `OpenDocument` mimes zip +
+    spinner durante import) + snackbar éxito/error.
+- Verificado en EMULADOR API 36.1 (round-trip real): ZIP exportado (2 entradas)
+  importado sobre diario de 2 -> 4 viajes; reimportado -> 6 (duplicados
+  intencionados); foto copiada `import-…jpg` y visible en Home; zip corrupto ->
+  snackbar "No es un archivo de diario válido" sin tocar datos; cancelar SAF ->
+  sin error. Evidencia `docs/specs/importar-entradas/evidencia-0*.png` (5).
+- Verificado en XIAOMI FÍSICO (HyperOS, tema claro): export 2 entradas reales ->
+  SAF Downloads -> import desde Perfil -> "2 entradas importadas" -> 4 viajes
+  con fotos visibles. Las fotos de esas entradas son URLs remotas
+  (unsplash) -> `photoFile=null` por diseño (no se descargan); el imageUrl
+  se preserva y Coil las renderiza. Comportamiento correcto según spec.
+  Evidencia `evidencia-06..08-xiaomi-*.png` (3).
+- 107 tests 0 fallos (`scripts/verify.sh`).
 
 ## Siguiente paso
-1. Merge `feature/exportar-entradas` -> `develop` (revisar diff; sin pantalla nueva).
-2. Pendiente en Xiaomi físico: flujo exportar completo + lo arrastrado (modo claro
-   dinámico, editar entrada, empty states, springs).
-3. Candidatas: importar/restaurar (lee `formatVersion=1`), esquema light de marca,
-   nav type-safe, sync online. Usuario apunta a Play Store a medio plazo.
+1. Merge `feature/importar-entradas` -> `develop` (sin pantalla nueva).
+2. El diario del Xiaomi tiene 2 duplicados del round-trip ("Con GPS" x2,
+   "Prueba Mapa" x2) — borrarlos a mano si molestan.
+3. Candidatas: migraciones Room reales (previo Play Store), esquema light de
+   marca, nav type-safe, sync online. Usuario apunta a Play Store a medio plazo.
 4. PNG sin seguimiento en `docs/specs/dark-mode/` (evidencias del usuario).
 
 ## Decisiones vigentes
-- Exportar = ZIP (`diary.json` + `photos/entry-<id>-0.<ext>`); Guardar SAF + Compartir
-  FileProvider; SIN importación (otra spec).
-- `formatVersion=1` debe seguir parseándose siempre (contrato para import/sync online).
+- Exportar = ZIP (`diary.json` `formatVersion=1` + `photos/`); Importar lee ese
+  mismo formato y hace MERGE (nada se borra, siempre ids nuevos, sin dedup).
+- `formatVersion=1` es contrato permanente (parseable en futuras versiones/sync).
+- `imageUrl` de foto ausente en ZIP se conserva (http remoto sigue visible).
 - Room sin cambios (sin uuid por entrada; queda para la spec online).
 - material3 1.5.0-alpha18, maps-compose 4.4.2; no subir versiones sin pedir.
 - `local.properties` no se commitea. Sin push. Commits `feat|fix|test|docs|chore:`.
 
 ## Bloqueos
-- Emulador API 36.1: Pixel Launcher roto (ANR en bucle); desactivado con
-  `pm disable-user com.google.android.apps.nexuslauncher` (queda FallbackHome).
-  Verificación hecha en emulador, pendiente en Xiaomi físico.
+- Emulador API 36.1: Pixel Launcher deshabilitado (ANR en bucle la sesión
+  anterior); queda FallbackHome. Restaurar: `pm enable com.google.android.apps.nexuslauncher`.
 
 ## Deuda técnica
 Migraciones Room reales antes de Play Store (hoy destructive fallback borra datos),
-política de privacidad + Data Safety (fotos/ubicación), keystore/R8/AAB, UI tests Compose,
-importar diario, sync online, esquema light de marca, nav type-safe, CameraScreen
+política de privacidad + Data Safety (fotos/ubicación), keystore/R8/AAB, UI tests
+Compose, sync online, esquema light de marca, nav type-safe, CameraScreen
 (`LocalLifecycleOwner` deprecado), clustering, detekt/ktlint.
+Decisión de producto pendiente (no bug): las fotos con `imageUrl` http(s)
+NO viajan en el ZIP — si la URL muere, la imagen desaparece. Valorar
+descargarlas al exportar en una futura spec.

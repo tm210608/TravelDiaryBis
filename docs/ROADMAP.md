@@ -14,12 +14,13 @@ Visión: app offline-first, estética premium, captura rápida, datos locales de
 - [x] Tema oscuro global Atlas nocturno, seguimiento del sistema y barras sincronizadas — `docs/specs/dark-mode/SPEC.md` (CameraScreen y cobertura clara total pendientes de dispositivo)
 - [x] Reskin Material 3 Expressive (tokens Stitch navy/ámbar, Epilogue/Manrope) mergeado a develop — `docs/specs/m3-expressive-redesign/`
 - [x] Exportar diario a ZIP (diary.json versionado `formatVersion=1` + fotos) con Guardar (SAF) y Compartir (FileProvider), verificado en emulador — `docs/specs/exportar-entradas/SPEC.md`
+- [x] Importar diario desde ZIP exportado (merge sin dedup, fotos copiadas, parseo tolerante), verificado en emulador — `docs/specs/importar-entradas/SPEC.md`
 
 ## En curso
 - [ ] UI tests Compose (Home -> AddEntry -> guardar -> Home); hay `CONTEXT.md` viejo en el stash
 
 ## Siguiente (una spec SDMD cada uno)
-- [ ] Importar/restaurar diario (consume `formatVersion=1` del ZIP de exportación)
+- [ ] Migraciones Room reales (hoy `fallbackToDestructiveMigration` borra datos; requisito previo a Play Store)
 - [ ] Esquema light de marca (hoy solo color dinámico en API 31+)
 - [ ] Navegación type-safe (exige Navigation 2.8.x; hoy 2.7.7)
 - [ ] Sync online / backend (el sobre `ExportDocument` ya sirve de DTO)
