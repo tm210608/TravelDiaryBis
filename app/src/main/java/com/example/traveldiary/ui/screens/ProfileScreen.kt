@@ -191,7 +191,13 @@ fun ProfileScreen(
                         Card(
                             onClick = {
                                 if (importState !is ImportUiState.Importing) {
-                                    importLauncher.launch(arrayOf("application/zip"))
+                                    importLauncher.launch(
+                                        arrayOf(
+                                            "application/zip",
+                                            "application/x-zip-compressed",
+                                            "application/octet-stream",
+                                        )
+                                    )
                                 }
                             },
                             modifier = Modifier.fillMaxWidth(),
