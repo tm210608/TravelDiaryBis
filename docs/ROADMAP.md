@@ -21,7 +21,8 @@ Visión: app offline-first, estética premium, captura rápida, datos locales de
 - [ ] UI tests Compose (Home -> AddEntry -> guardar -> Home); hay `CONTEXT.md` viejo en el stash
 
 ## Siguiente (una spec SDMD cada uno)
-- [ ] Esquema light de marca (hoy solo color dinámico en API 31+)
+- [ ] Pulido visual Fase 1 (`ui-cuaderno-campo-home`): Tema Light de marca "Cuaderno de Campo Cartográfico" + tarjetas billete troqueladas con talón de fecha y telemetría GPS en monoespaciada — ref `docs/specs/ui-polish-concepts/stitch-01-atlas-campo-home.png`
+- [ ] Pulido visual Fase 2 (`ui-pasaporte-y-contactos`): Perfil "Pasaporte de Expedición" con sellos entintados dinámicos y KM Haversine + Recuerdos como "Hoja de Contactos 35mm" + hilo de ruta en Mapa — ref `docs/specs/ui-polish-concepts/stitch-02-pasaporte-y-contactos-dark.png`
 - [ ] Navegación type-safe (exige Navigation 2.8.x; hoy 2.7.7)
 - [ ] Sync online / backend (el sobre `ExportDocument` ya sirve de DTO; uuid por entrada listo)
 - [ ] Release Play Store: política de privacidad + Data Safety (fotos/ubicación),
