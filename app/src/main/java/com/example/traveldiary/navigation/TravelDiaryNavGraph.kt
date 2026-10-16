@@ -43,8 +43,17 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
             }
         }
 
-        composable(Screen.Home.route) {
+        composable(
+            route = Screen.Home.ROUTE_PATTERN,
+            arguments = listOf(
+                navArgument("export") {
+                    type = NavType.BoolType
+                    defaultValue = false
+                }
+            )
+        ) { backStackEntry ->
             TravelDiaryHomeScreen(
+                exportRequested = backStackEntry.arguments?.getBoolean("export") ?: false,
                 onEntryClick = { entry ->
                     navController.navigate(Screen.Detail.createRoute(entry.id))
                 },
@@ -151,7 +160,13 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
 
         composable(Screen.Profile.route) {
             ProfileScreen(
-                onTabSelected = onTabNavigate
+                onTabSelected = onTabNavigate,
+                onExportClick = {
+                    navController.navigate(Screen.Home.exportRoute()) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
     }

@@ -1,7 +1,10 @@
 package com.example.traveldiary.navigation
 
 sealed class Screen(val route: String) {
-    object Home : Screen("home")
+    object Home : Screen("home") {
+        const val ROUTE_PATTERN = "home?export={export}"
+        fun exportRoute() = "home?export=true"
+    }
     object AddEntry : Screen("add_entry")
     object Detail : Screen("detail/{entryId}") {
         fun createRoute(entryId: Int) = "detail/$entryId"
