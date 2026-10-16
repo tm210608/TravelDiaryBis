@@ -1,6 +1,6 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-10-16 | **Rama:** `feature/importar-entradas` | **Commit:** `4d18c23` evidencia + SPEC marcada
+**Fecha:** 2026-10-16 | **Rama:** `feature/importar-entradas` | **Commit:** evidencia Xiaomi + SPEC marcada
 
 ## Hecho
 - `feature/exportar-entradas` mergeada a `develop` con `--no-ff`; post-merge verde (94 tests).
@@ -21,12 +21,19 @@
   intencionados); foto copiada `import-…jpg` y visible en Home; zip corrupto ->
   snackbar "No es un archivo de diario válido" sin tocar datos; cancelar SAF ->
   sin error. Evidencia `docs/specs/importar-entradas/evidencia-0*.png` (5).
+- Verificado en XIAOMI FÍSICO (HyperOS, tema claro): export 2 entradas reales ->
+  SAF Downloads -> import desde Perfil -> "2 entradas importadas" -> 4 viajes
+  con fotos visibles. Hallazgo: fotos `content://` del picker NO entran al ZIP
+  (export las deja `photoFile=null`); al importar en el MISMO dispositivo el
+  `imageUrl` content:// sigue resolviendo y las fotos se ven. En OTRO
+  dispositivo se verían rotas (limitación conocida del spec).
+  Evidencia `evidencia-06..08-xiaomi-*.png` (3).
 - 107 tests 0 fallos (`scripts/verify.sh`).
 
 ## Siguiente paso
 1. Merge `feature/importar-entradas` -> `develop` (sin pantalla nueva).
-2. Pendiente en Xiaomi físico: exportar+importar round-trip y lo arrastrado
-   (modo claro dinámico, editar entrada, empty states, springs).
+2. El diario del Xiaomi tiene 2 duplicados del round-trip ("Con GPS" x2,
+   "Prueba Mapa" x2) — borrarlos a mano si molestan.
 3. Candidatas: migraciones Room reales (previo Play Store), esquema light de
    marca, nav type-safe, sync online. Usuario apunta a Play Store a medio plazo.
 4. PNG sin seguimiento en `docs/specs/dark-mode/` (evidencias del usuario).
@@ -43,10 +50,12 @@
 ## Bloqueos
 - Emulador API 36.1: Pixel Launcher deshabilitado (ANR en bucle la sesión
   anterior); queda FallbackHome. Restaurar: `pm enable com.google.android.apps.nexuslauncher`.
-- Sin Xiaomi físico conectado; toda la verificación es en emulador.
 
 ## Deuda técnica
 Migraciones Room reales antes de Play Store (hoy destructive fallback borra datos),
 política de privacidad + Data Safety (fotos/ubicación), keystore/R8/AAB, UI tests
 Compose, sync online, esquema light de marca, nav type-safe, CameraScreen
 (`LocalLifecycleOwner` deprecado), clustering, detekt/ktlint.
+Fotos `content://` no viajan en el ZIP de exportación (solo file://) — en otro
+dispositivo esas imágenes se verían rotas; valorar copiar fotos del picker a
+filesDir al crear la entrada.
