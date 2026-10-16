@@ -1,6 +1,6 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-10-16 | **Rama:** `feature/migraciones-room` | **Commit:** `19ab9c8` SPEC+evidencia
+**Fecha:** 2026-10-16 | **Rama:** `develop` | **Commit:** merge de `feature/migraciones-room` (verde, 107 tests)
 
 ## Hecho
 - `feature/importar-entradas` mergeada a `develop` con `--no-ff`; post-merge verde (107 tests).
@@ -22,10 +22,9 @@
 - 107 tests JVM 0 fallos (`scripts/verify.sh`).
 
 ## Siguiente paso
-1. Merge `feature/migraciones-room` -> `develop`.
-2. Candidatas: esquema light de marca, nav type-safe, sync online (uuid ya
+1. Candidatas: esquema light de marca, nav type-safe, sync online (uuid ya
    preparado), descargar fotos http al exportar. Usuario apunta a Play Store.
-3. PNG sin seguimiento en `docs/specs/dark-mode/` (evidencias del usuario).
+2. PNG sin seguimiento en `docs/specs/dark-mode/` (evidencias del usuario).
 
 ## Decisiones vigentes
 - Exportar = ZIP (`diary.json` `formatVersion=1` + `photos/`); Importar lee ese
