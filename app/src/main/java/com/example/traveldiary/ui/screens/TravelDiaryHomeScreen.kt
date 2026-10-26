@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -128,10 +129,17 @@ fun TravelDiaryHomeScreen(
             )
         },
     ) { innerPadding ->
-        LazyColumn(
+        val gridColor = MaterialTheme.colorScheme.onSurface.copy(
+            alpha = if (isSystemInDarkTheme()) 0.06f else 0.05f
+        )
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .padding(innerPadding)
+                .cartographyGrid(gridColor)
+        ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(bottom = 24.dp),
         ) {
             item {
@@ -173,25 +181,31 @@ fun TravelDiaryHomeScreen(
                 )
             }
 
-            item {
-                SectionHeader(
-                    title = "Momentos Destacados",
-                    actionLabel = "Ver todo",
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
-                )
-            }
+            val featured = entriesList.filter { it.isFavourite }.take(3)
+                .ifEmpty { entriesList.take(3) }
+            if (featured.isNotEmpty()) {
+                item {
+                    SectionHeader(
+                        title = "Registro Destacado",
+                        actionLabel = "%02d".format(featured.size),
+                        eyebrow = "EXPEDICIÓN",
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+                    )
+                }
 
-            item {
-                FeaturedEntriesRow(
-                    entries = entriesList.filter { it.isFavourite }.take(3),
-                    onEntryClick = onEntryClick,
-                )
+                item {
+                    FeaturedEntriesRow(
+                        entries = featured,
+                        onEntryClick = onEntryClick,
+                    )
+                }
             }
 
             item {
                 SectionHeader(
                     title = "Todos los Viajes",
-                    actionLabel = "${entriesList.size} viajes",
+                    actionLabel = "%02d".format(entriesList.size),
+                    eyebrow = "HOJA DE RUTA",
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
                 )
             }
@@ -211,6 +225,7 @@ fun TravelDiaryHomeScreen(
                         .animateItem(),
                 )
             }
+        }
         }
     }
 }

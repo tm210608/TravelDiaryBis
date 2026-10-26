@@ -7,10 +7,10 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,7 +26,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.traveldiary.domain.model.TravelEntry
-import com.example.traveldiary.domain.model.formatToDisplay
+import com.example.traveldiary.domain.model.formatToCompact
+import com.example.traveldiary.domain.model.formatToTicket
+import com.example.traveldiary.domain.model.hasGps
+import com.example.traveldiary.domain.model.telemetryLine
+import com.example.traveldiary.domain.model.toCardinalLat
+import com.example.traveldiary.domain.model.toCardinalLon
+import com.example.traveldiary.ui.theme.MonoEyebrow
+import com.example.traveldiary.ui.theme.MonoStubDay
+import com.example.traveldiary.ui.theme.MonoStubMeta
+import com.example.traveldiary.ui.theme.MonoTelemetry
+import java.util.Locale
 
 @Composable
 fun FeaturedEntriesRow(
@@ -66,7 +76,7 @@ fun FeaturedCard(
         onClick = onClick,
         modifier = Modifier
             .width(240.dp)
-            .height(180.dp)
+            .height(190.dp)
             .graphicsLayer(scaleX = scale, scaleY = scale)
             .pointerInput(Unit) {
                 detectTapGestures(
@@ -77,7 +87,7 @@ fun FeaturedCard(
                     }
                 )
             },
-        shape = MaterialTheme.shapes.medium,
+        shape = ticketShape(),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -102,6 +112,21 @@ fun FeaturedCard(
                     )
             )
 
+            Surface(
+                color = Color.Black.copy(alpha = 0.35f),
+                shape = RoundedCornerShape(4.dp),
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(10.dp),
+            ) {
+                Text(
+                    text = "EXP · ${entry.tag.uppercase(Locale.getDefault())}",
+                    style = MonoStubMeta,
+                    color = Color.White,
+                    modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+                )
+            }
+
             IconButton(
                 onClick = { favourite = !favourite },
                 modifier = Modifier
@@ -125,45 +150,24 @@ fun FeaturedCard(
                     .padding(14.dp),
             ) {
                 Text(
-                    text = entry.title,
-                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
-                    color = Color.White,
+                    text = if (entry.hasGps) {
+                        "${entry.latitude!!.toCardinalLat()} · ${entry.longitude!!.toCardinalLon()} · ${entry.date.formatToCompact()}"
+                    } else {
+                        entry.date.formatToCompact()
+                    },
+                    style = MonoTelemetry,
+                    color = Color.White.copy(alpha = 0.85f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Spacer(Modifier.height(5.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    Text(
-                        text = entry.date.formatToDisplay(),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White.copy(alpha = 0.78f),
-                    )
-                    Surface(
-                        shape = CircleShape,
-                        color = Color.White.copy(alpha = 0.18f),
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.LocationOn,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primaryContainer,
-                                modifier = Modifier.size(11.dp),
-                            )
-                            Spacer(Modifier.width(3.dp))
-                            Text(
-                                text = "${entry.location}, ${entry.country}",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = Color.White,
-                            )
-                        }
-                    }
-                }
+                Text(
+                    text = entry.title,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
             }
         }
     }
@@ -183,6 +187,7 @@ fun EntryListCard(
         targetValue = if (isPressed) 0.98f else 1f,
         animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
     )
+    val ticket = entry.date.formatToTicket()
 
     Card(
         onClick = onClick,
@@ -197,7 +202,7 @@ fun EntryListCard(
                     }
                 )
             },
-        shape = MaterialTheme.shapes.medium,
+        shape = ticketShape(),
         colors = CardDefaults.cardColors(
             containerColor = if (selected) {
                 MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
@@ -207,14 +212,15 @@ fun EntryListCard(
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
-        Row(modifier = Modifier.height(92.dp)) {
+        Row(
+            modifier = Modifier.height(92.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             if (selectionMode) {
                 Checkbox(
                     checked = selected,
                     onCheckedChange = { onClick() },
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(start = 8.dp),
+                    modifier = Modifier.padding(start = 4.dp),
                 )
             }
             AsyncImage(
@@ -222,15 +228,18 @@ fun EntryListCard(
                 contentDescription = entry.title,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
-                    .width(88.dp)
+                    .padding(start = if (selectionMode) 4.dp else 14.dp)
+                    .width(72.dp)
                     .fillMaxHeight()
-                    .clip(MaterialTheme.shapes.medium),
+                    .padding(vertical = 10.dp)
+                    .clip(RoundedCornerShape(10.dp)),
             )
 
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .padding(horizontal = 12.dp, vertical = 10.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Column {
@@ -242,23 +251,17 @@ fun EntryListCard(
                         overflow = TextOverflow.Ellipsis,
                     )
                     Spacer(Modifier.height(3.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(6.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.primary),
-                        )
-                        Text(
-                            text = "${entry.location}, ${entry.country}",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.Medium,
-                        )
-                    }
+                    Text(
+                        text = entry.telemetryLine(),
+                        style = MonoTelemetry,
+                        color = if (entry.hasGps) {
+                            MaterialTheme.colorScheme.tertiary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
                 }
 
                 Row(
@@ -266,23 +269,71 @@ fun EntryListCard(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(
-                        text = entry.date.formatToDisplay(),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                    if (entry.hasGps) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.weight(1f, fill = false),
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(6.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.primary),
+                            )
+                            Text(
+                                text = "${entry.location}, ${entry.country}",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.Medium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+                    } else {
+                        Spacer(Modifier.width(1.dp))
+                    }
                     Surface(
                         shape = CircleShape,
-                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.18f),
+                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.30f),
                     ) {
                         Text(
                             text = entry.tag,
-                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Medium),
+                            style = MonoStubMeta,
                             color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.padding(horizontal = 9.dp, vertical = 3.dp),
                         )
                     }
                 }
+            }
+
+            TicketDivider(
+                color = MaterialTheme.colorScheme.outlineVariant,
+                modifier = Modifier.fillMaxHeight(),
+            )
+
+            Column(
+                modifier = Modifier
+                    .width(54.dp)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text(
+                    text = ticket.day,
+                    style = MonoStubDay,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Text(
+                    text = "${ticket.month} ${ticket.yearShort}",
+                    style = MonoStubMeta,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = ticket.time,
+                    style = MonoStubMeta,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
     }

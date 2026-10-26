@@ -3,17 +3,16 @@ package com.example.traveldiary.ui.screens
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
@@ -31,7 +30,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.traveldiary.domain.model.formatToDisplay
+import com.example.traveldiary.domain.model.formatToTicket
+import com.example.traveldiary.domain.model.toCardinalLat
+import com.example.traveldiary.domain.model.toCardinalLon
+import com.example.traveldiary.ui.components.TicketDivider
+import com.example.traveldiary.ui.components.cartographyGrid
+import com.example.traveldiary.ui.components.ticketShape
+import com.example.traveldiary.ui.theme.MonoEyebrow
+import com.example.traveldiary.ui.theme.MonoStubMeta
+import com.example.traveldiary.ui.theme.MonoTelemetry
 import com.example.traveldiary.ui.viewmodel.DetailUiState
 import com.example.traveldiary.ui.viewmodel.DetailViewModel
 
@@ -98,8 +105,16 @@ private fun TravelDetailContent(
     onFavouriteClick: () -> Unit
 ) {
     val context = LocalContext.current
+    val gridColor = MaterialTheme.colorScheme.onSurface.copy(
+        alpha = if (isSystemInDarkTheme()) 0.06f else 0.05f
+    )
 
-    Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .cartographyGrid(gridColor)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -159,12 +174,91 @@ private fun TravelDetailContent(
                     .padding(24.dp)
                     .fillMaxWidth()
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                val ticket = entry.date.formatToTicket()
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .then(
+                            if (entry.latitude != null && entry.longitude != null) {
+                                Modifier.clickable {
+                                    val gmmIntentUri = Uri.parse("geo:${entry.latitude},${entry.longitude}?q=${entry.latitude},${entry.longitude}")
+                                    val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                                    mapIntent.setPackage("com.google.android.apps.maps")
+                                    if (mapIntent.resolveActivity(context.packageManager) != null) {
+                                        context.startActivity(mapIntent)
+                                    }
+                                }
+                            } else Modifier
+                        ),
+                    shape = ticketShape(),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                 ) {
-                    InfoChip(icon = Icons.Default.CalendarToday, text = entry.date.formatToDisplay())
-                    InfoChip(icon = Icons.Default.LocationOn, text = "${entry.location}, ${entry.country}")
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 16.dp),
+                        ) {
+                            Text(
+                                text = "TALÓN DE EXPEDICIÓN",
+                                style = MonoEyebrow,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                            Spacer(Modifier.height(6.dp))
+                            Text(
+                                text = "${ticket.day} ${ticket.month} ${ticket.year} · ${ticket.time}",
+                                style = MonoTelemetry,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Spacer(Modifier.height(3.dp))
+                            Text(
+                                text = "${entry.location}, ${entry.country}",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        TicketDivider(
+                            color = MaterialTheme.colorScheme.outlineVariant,
+                            modifier = Modifier.height(52.dp),
+                        )
+                        Column(
+                            modifier = Modifier.width(92.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            if (entry.latitude != null && entry.longitude != null) {
+                                Text(
+                                    text = entry.latitude.toCardinalLat(),
+                                    style = MonoTelemetry,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                )
+                                Text(
+                                    text = entry.longitude.toCardinalLon(),
+                                    style = MonoTelemetry,
+                                    color = MaterialTheme.colorScheme.tertiary,
+                                )
+                                Spacer(Modifier.height(2.dp))
+                                Text(
+                                    text = "VER MAPA",
+                                    style = MonoStubMeta,
+                                    color = MaterialTheme.colorScheme.primary,
+                                )
+                            } else {
+                                Text(
+                                    text = "SIN GPS",
+                                    style = MonoTelemetry,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -182,39 +276,6 @@ private fun TravelDetailContent(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 )
-
-                if (entry.latitude != null && entry.longitude != null) {
-                    Spacer(modifier = Modifier.height(32.dp))
-                    Text(
-                        text = "Ubicaci\u00f3n",
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Card(
-                        onClick = {
-                            val gmmIntentUri = Uri.parse("geo:${entry.latitude},${entry.longitude}?q=${entry.latitude},${entry.longitude}")
-                            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-                            mapIntent.setPackage("com.google.android.apps.maps")
-                            if (mapIntent.resolveActivity(context.packageManager) != null) {
-                                context.startActivity(mapIntent)
-                            }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(180.dp),
-                        shape = MaterialTheme.shapes.medium,
-                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
-                    ) {
-                        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
-                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                Icon(Icons.Default.LocationOn, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(32.dp))
-                                Text("${String.format("%.4f", entry.latitude)}, ${String.format("%.4f", entry.longitude)}")
-                                Text("Toca para abrir en Google Maps", style = MaterialTheme.typography.labelSmall)
-                            }
-                        }
-                    }
-                }
 
                 Spacer(modifier = Modifier.height(40.dp))
 
@@ -270,24 +331,6 @@ private fun TravelDetailContent(
                 )
             }
         }
-    }
-}
-
-@Composable
-fun InfoChip(icon: ImageVector, text: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier.size(16.dp),
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.width(6.dp))
-        Text(
-            text = text,
-            style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }
 

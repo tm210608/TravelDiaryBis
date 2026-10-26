@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.traveldiary.ui.theme.MonoEyebrow
 
 @Composable
 fun TopBar(
@@ -32,10 +33,11 @@ fun TopBar(
     ) {
         Column {
             Text(
-                text = "BIENVENIDO DE NUEVO",
-                style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                text = "BITÁCORA DE VIAJE",
+                style = MonoEyebrow,
+                color = MaterialTheme.colorScheme.primary,
             )
+            Spacer(Modifier.height(2.dp))
             Text(
                 text = "Mi Diario de Viaje",
                 style = MaterialTheme.typography.headlineMedium,
@@ -176,24 +178,33 @@ fun SectionHeader(
     title: String,
     actionLabel: String,
     modifier: Modifier = Modifier,
+    eyebrow: String? = null,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        TextButton(onClick = {}) {
+        Column {
+            if (eyebrow != null) {
+                Text(
+                    text = eyebrow.uppercase(),
+                    style = MonoEyebrow,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Spacer(Modifier.height(2.dp))
+            }
             Text(
-                text = actionLabel,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
+                text = title,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
             )
         }
+        Text(
+            text = "[$actionLabel]",
+            style = MonoEyebrow,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
