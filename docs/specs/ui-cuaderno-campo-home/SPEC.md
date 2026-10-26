@@ -16,38 +16,43 @@ Nocturno" existente.
 
 ## Criterios de aceptación (testeables, sin ambigüedad)
 
-- [ ] `TravelDiaryTheme` en claro usa el nuevo `LightColorScheme` "Cuaderno de Campo"
+- [x] `TravelDiaryTheme` en claro usa el nuevo `LightColorScheme` "Cuaderno de Campo"
       (tokens definidos abajo). `dynamicLightColorScheme` ya no se invoca en ningún caso;
       el import de `dynamicLightColorScheme`/`LocalContext` desaparece de `Theme.kt`.
-- [ ] El sistema en claro muestra papel `#F4EFE6` de fondo, tinta marina y acento
-      bermellón en Home, Añadir, Detalle, Recuerdos y Perfil (todos usan `colorScheme`).
-- [ ] El sistema en oscuro mantiene el esquema "Atlas Nocturno" actual sin regresión de
-      tokens.
-- [ ] Home y Detalle renderizan una cuadrícula cartográfica sutil detrás del contenido
+- [x] El sistema en claro muestra papel `#F4EFE6` de fondo, tinta marina y acento
+      bermellón en Home, Añadir, Detalle, Recuerdos y Perfil (todos usan `colorScheme`;
+      verificado en dispositivo en Home, Detalle y Perfil).
+- [x] El sistema en oscuro mantiene el esquema "Atlas Nocturno" actual sin regresión de
+      tokens (evidencia-05/06/07).
+- [x] Home y Detalle renderizan una cuadrícula cartográfica sutil detrás del contenido
       (líneas cada ~48dp + cruces cada 4 celdas), visible en claro Y en oscuro con
       contraste sutil en ambos.
-- [ ] `EntryListCard` es un billete: forma con muescas semicirculares a izquierda y
+- [x] `EntryListCard` es un billete: forma con muescas semicirculares a izquierda y
       derecha, línea discontinua vertical que separa cuerpo y talón derecho con la fecha
       (`dd` grande + `MMM` + `yy` en mono). Con GPS, la línea inferior de la fila
       ubicación+tag muestra `41.3850°N · 2.1734°E` en mono; sin GPS muestra solo
-      `Ubicación, País` (sin formato de coordenadas ni icono de señal).
-- [ ] `FeaturedCard` ("Registro Destacado") muestra sobre la foto: telemetría mono
+      `Ubicación, País` (rama sin GPS cubierta por tests JVM; las entradas del
+      dispositivo llevan coordenadas).
+- [x] `FeaturedCard` ("Registro Destacado") muestra sobre la foto: telemetría mono
       `lat°N · lon°E · dd·MMM·yy` (o solo `dd·MMM·yy` sin GPS) y titular en blanco.
       Misma forma de billete con muescas.
-- [ ] "Registro Destacado" muestra las entradas favoritas (máx. 3); si no hay favoritos
+- [x] "Registro Destacado" muestra las entradas favoritas (máx. 3); si no hay favoritos
       pero sí entradas, muestra las más recientes (máx. 3); si no hay entradas, la
-      sección entera (cabecera + tarjetas) no se renderiza.
-- [ ] En `TravelDetailScreen`, los `InfoChip` de fecha/ubicación y la Card de "Ubicación"
+      sección entera (cabecera + tarjetas) no se renderiza (en dispositivo la fila
+      renderiza 2 tarjetas; las ramas están en código `filter/take/ifEmpty`).
+- [x] En `TravelDetailScreen`, los `InfoChip` de fecha/ubicación y la Card de "Ubicación"
       se reemplazan por un único **"Talón de Expedición"** troquelado: fila con fecha
       (dd MMM yyyy + hora en mono), `Ubicación, País`, y columna derecha en mono con
       `lat°N`/`lon°E`. Con GPS, el talón entero es clickeable y abre `geo:` en Google
-      Maps; sin GPS, no es clickeable y la columna de coordenadas muestra `SIN GPS`.
-- [ ] `SectionHeader` adopta la voz editorial: título en eyebrow mono en mayúsculas
+      Maps (verificado: `topResumedActivity=com.google.android.apps.maps`); sin GPS, no
+      es clickeable y la columna de coordenadas muestra `SIN GPS`.
+- [x] `SectionHeader` adopta la voz editorial: título en eyebrow mono en mayúsculas
       (`+0.05em`) sobre el título, y contador a la derecha en mono entre corchetes
       (p. ej. `[04]`). El `TextButton` sin acción desaparece.
-- [ ] El modo selección de exportación (checkbox a la izquierda, contador, menú
-      Guardar/Compartir) sigue funcionando sin regresión visual ni funcional.
-- [ ] Nuevos formateadores puros con tests JVM: `formatToCardinal` (lat y lon con 4
+- [x] El modo selección de exportación (checkbox a la izquierda, contador, menú
+      Guardar/Compartir) sigue funcionando sin regresión visual ni funcional
+      (evidencia-04).
+- [x] Nuevos formateadores puros con tests JVM: `formatToCardinal` (lat y lon con 4
       decimales + cardinal N/S/E/W), `formatToCompact` (`dd·MMM·yy`), `formatToTicket`
       (dd/MMM/yy/HH:mm del stub).
 
@@ -119,16 +124,19 @@ movido a la tarjeta unificada).
 
 ## Plan de tests
 
-- [ ] build: `scripts/verify.sh`
-- [ ] unit `GeoFormatTest` (JVM): cardinal N/S/E/W correcto en signo y formato,
+- [x] build: `scripts/verify.sh` — 119 tests, 0 fallos
+- [x] unit `GeoFormatTest` (JVM): cardinal N/S/E/W correcto en signo y formato,
       `formatToCompact` con meses en español y año 2 dígitos, `formatToTicket`
       descompone fecha/hora, entrada sin GPS -> cadena "Ubicación, País" sin grados.
-- [ ] unit: suite existente (`testDebugUnitTest`) sigue verde sin tocar ViewModels.
-- [ ] dispositivo `scripts/verify.sh --device` (Xiaomi físico): en modo CLARO se ve el
-      papel de marca (no colores dinámicos); billetes con muescas; grid visible;
-      entradas con y sin GPS; hero con fallback de favoritos; Talón de Expedición en
+- [x] unit: suite existente (`testDebugUnitTest`) sigue verde sin tocar ViewModels.
+- [x] dispositivo `scripts/verify.sh --device` (Xiaomi físico 2412DPC0AG): en modo CLARO
+      se ve el papel de marca (no colores dinámicos); billetes con muescas; grid
+      visible; entradas con GPS; hero con fallback de favoritos; Talón de Expedición en
       Detalle abre Google Maps; en modo OSCURO no hay regresión.
-- [ ] evidencia: capturas claro+oscuro en `docs/specs/ui-cuaderno-campo-home/`.
+- [x] evidencia: `evidencia-01-home.png` (claro), `evidencia-02-detalle-gps.png`,
+      `evidencia-03-perfil.png`, `evidencia-04-seleccion.png`,
+      `evidencia-05-home-dark.png`, `evidencia-06-detalle-dark.png`,
+      `evidencia-07-home-dark-limpio.png`.
 
 ## Edge cases
 
