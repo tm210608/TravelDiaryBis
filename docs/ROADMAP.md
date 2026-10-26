@@ -16,12 +16,12 @@ Visión: app offline-first, estética premium, captura rápida, datos locales de
 - [x] Exportar diario a ZIP (diary.json versionado `formatVersion=1` + fotos) con Guardar (SAF) y Compartir (FileProvider), verificado en emulador — `docs/specs/exportar-entradas/SPEC.md`
 - [x] Importar diario desde ZIP exportado (merge sin dedup, fotos copiadas, parseo tolerante), verificado en emulador y Xiaomi físico — `docs/specs/importar-entradas/SPEC.md`
 - [x] Migraciones Room reales: `exportSchema` + `MIGRATION_2_3` con uuid por entrada (identidad estable para futura sync) + `MigrationTestHelper` en androidTest, verificado en Xiaomi — `docs/specs/migraciones-room/SPEC.md`
+- [x] Pulido visual Fase 1 (`ui-cuaderno-campo-home`): tema claro de marca "Cuaderno de Campo" (sin dynamic color), billetes troquelados con talón de fecha, cuadrícula cartográfica y telemetría GPS en mono, claro y oscuro, verificado en Xiaomi — `docs/specs/ui-cuaderno-campo-home/SPEC.md`
 
 ## En curso
 - [ ] UI tests Compose (Home -> AddEntry -> guardar -> Home); hay `CONTEXT.md` viejo en el stash
 
 ## Siguiente (una spec SDMD cada uno)
-- [ ] Pulido visual Fase 1 (`ui-cuaderno-campo-home`): Tema Light de marca "Cuaderno de Campo Cartográfico" + tarjetas billete troqueladas con talón de fecha y telemetría GPS en monoespaciada — ref `docs/specs/ui-polish-concepts/stitch-01-atlas-campo-home.png`
 - [ ] Pulido visual Fase 2 (`ui-pasaporte-y-contactos`): Perfil "Pasaporte de Expedición" con sellos entintados dinámicos y KM Haversine + Recuerdos como "Hoja de Contactos 35mm" + hilo de ruta en Mapa — ref `docs/specs/ui-polish-concepts/stitch-02-pasaporte-y-contactos-dark.png`
 - [ ] Navegación type-safe (exige Navigation 2.8.x; hoy 2.7.7)
 - [ ] Sync online / backend (el sobre `ExportDocument` ya sirve de DTO; uuid por entrada listo)
