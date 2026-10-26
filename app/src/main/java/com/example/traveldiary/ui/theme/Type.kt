@@ -50,6 +50,20 @@ private fun manrope(size: Int, line: Int, weight: FontWeight, spacingEm: Float =
         letterSpacing = spacingEm.em,
     )
 
+private fun mono(size: Int, line: Int, weight: FontWeight, spacingEm: Float = 0f) =
+    TextStyle(
+        fontFamily = FontFamily.Monospace,
+        fontSize = size.sp,
+        lineHeight = line.sp,
+        fontWeight = weight,
+        letterSpacing = spacingEm.em,
+    )
+
+val MonoTelemetry = mono(11, 15, FontWeight.Medium, 0.02f)
+val MonoEyebrow = mono(10, 14, FontWeight.Bold, 0.14f)
+val MonoStubDay = mono(18, 20, FontWeight.Bold)
+val MonoStubMeta = mono(9, 11, FontWeight.Medium, 0.08f)
+
 // Escala de docs/specs/m3-expressive-redesign/stitch/DESIGN.md
 val DiaryTypography = Typography(
     displayLarge = epilogue(48, 56, FontWeight.ExtraBold, -0.02f),
