@@ -30,6 +30,7 @@
 - Ninguno. adb inalámbrico del Xiaomi se desconectó a mitad de sesión; reconectado por el usuario (`adb-MVVSE6A6S4IVQ8MJ._adb-tls-connect._tcp`).
 
 ## Deuda técnica
+- **Cuadrícula cartográfica casi invisible en dispositivo** (reportado por usuario): `cartographyGrid` usa `onSurface` al 5% alpha claro / 6% oscuro + trazo 0.8px (`TravelDiaryHomeScreen` ~L132, `TravelDetailScreen` ~L114). En el Xiaomi no se aprecia vs. el mockup Stitch. Subir alpha (~0.10-0.14) o usar tono rejilla `#D8CFC0` más opaco.
 - **Bug preexistente:** `exportRequested` es argumento de nav pegajoso — volver a Home re-activa el modo selección (`LaunchedEffect` se re-dispara). Fix candidato: consumir el arg una vez.
 - Placeholder de 0 sellos y estados Empty/Loading de Recuerdos: implementados, sin evidencia en dispositivo (diario con datos).
 - Pre-Play Store: privacidad/Data Safety, keystore/R8/AAB.
