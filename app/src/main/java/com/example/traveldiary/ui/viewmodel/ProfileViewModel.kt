@@ -3,7 +3,9 @@ package com.example.traveldiary.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.traveldiary.domain.export.ImportResult
+import com.example.traveldiary.domain.model.PassportData
 import com.example.traveldiary.domain.model.TravelStats
+import com.example.traveldiary.domain.usecase.GetPassportUseCase
 import com.example.traveldiary.domain.usecase.GetTravelStatsUseCase
 import com.example.traveldiary.domain.usecase.ImportEntriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,14 +13,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed interface ProfileUiState {
     data object Loading : ProfileUiState
-    data class Success(val stats: TravelStats) : ProfileUiState
+    data class Success(val stats: TravelStats, val passport: PassportData) : ProfileUiState
 }
 
 sealed interface ImportUiState {
@@ -31,13 +33,14 @@ sealed interface ImportUiState {
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     getTravelStatsUseCase: GetTravelStatsUseCase,
+    getPassportUseCase: GetPassportUseCase,
     private val importEntriesUseCase: ImportEntriesUseCase,
 ) : ViewModel() {
 
     val uiState: StateFlow<ProfileUiState> =
-        getTravelStatsUseCase()
-            .map { ProfileUiState.Success(it) }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProfileUiState.Loading)
+        combine(getTravelStatsUseCase(), getPassportUseCase()) { stats, passport ->
+            ProfileUiState.Success(stats, passport)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProfileUiState.Loading)
 
     private val _importState = MutableStateFlow<ImportUiState>(ImportUiState.Idle)
     val importState: StateFlow<ImportUiState> = _importState.asStateFlow()

@@ -5,19 +5,11 @@ import com.example.traveldiary.domain.model.Continent.AMERICA
 import com.example.traveldiary.domain.model.Continent.ASIA
 import com.example.traveldiary.domain.model.Continent.EUROPE
 import com.example.traveldiary.domain.model.Continent.OCEANIA
-import java.text.Normalizer
-import java.util.Locale
 
 enum class Continent { EUROPE, ASIA, AMERICA, AFRICA, OCEANIA }
 
 fun continentOf(country: String): Continent? =
     countryToContinent[country.normalized()]
-
-private fun String.normalized(): String =
-    Normalizer.normalize(this, Normalizer.Form.NFD)
-        .replace("\\p{Mn}+".toRegex(), "")
-        .lowercase(Locale.ROOT)
-        .trim()
 
 private val countryToContinent: Map<String, Continent> = mapOf(
     "espana" to EUROPE, "spain" to EUROPE,

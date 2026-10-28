@@ -2,8 +2,10 @@ package com.example.traveldiary.ui.viewmodel
 
 import com.example.traveldiary.TestDispatcherRule
 import com.example.traveldiary.domain.export.ImportResult
+import com.example.traveldiary.domain.model.PassportData
 import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.domain.model.TravelStats
+import com.example.traveldiary.domain.usecase.GetPassportUseCase
 import com.example.traveldiary.domain.usecase.GetTravelStatsUseCase
 import com.example.traveldiary.domain.usecase.ImportEntriesUseCase
 import io.mockk.coEvery
@@ -27,11 +29,13 @@ class ProfileViewModelTest {
     val rule = TestDispatcherRule()
 
     private val getTravelStatsUseCase: GetTravelStatsUseCase = mockk()
+    private val getPassportUseCase: GetPassportUseCase = mockk()
     private val importEntriesUseCase: ImportEntriesUseCase = mockk()
 
     private fun viewModel(): ProfileViewModel {
         every { getTravelStatsUseCase() } returns flowOf(TravelStats(0, 0, 0, 0))
-        return ProfileViewModel(getTravelStatsUseCase, importEntriesUseCase)
+        every { getPassportUseCase() } returns flowOf(PassportData(0.0, 0, emptyList()))
+        return ProfileViewModel(getTravelStatsUseCase, getPassportUseCase, importEntriesUseCase)
     }
 
     @Test
@@ -41,17 +45,20 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `uiState becomes Success with stats`() = runTest {
+    fun `uiState becomes Success with stats and passport`() = runTest {
         val stats = TravelStats(totalTrips = 5, favourites = 2, countries = 3, continents = 2)
+        val passport = PassportData(kmTotal = 1234.0, legs = 3, stamps = emptyList())
         every { getTravelStatsUseCase() } returns flowOf(stats)
+        every { getPassportUseCase() } returns flowOf(passport)
 
-        val viewModel = ProfileViewModel(getTravelStatsUseCase, importEntriesUseCase)
+        val viewModel = ProfileViewModel(getTravelStatsUseCase, getPassportUseCase, importEntriesUseCase)
         backgroundScope.launch { viewModel.uiState.collect {} }
         advanceUntilIdle()
 
         val state = viewModel.uiState.value
         assertTrue(state is ProfileUiState.Success)
         assertEquals(stats, (state as ProfileUiState.Success).stats)
+        assertEquals(passport, state.passport)
     }
 
     @Test
