@@ -1,6 +1,7 @@
 package com.example.traveldiary.ui.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -48,12 +49,13 @@ fun ticketShape(cornerRadius: Dp = 14.dp, notchRadius: Dp = 8.dp): Shape =
 fun TicketDivider(
     color: Color,
     modifier: Modifier = Modifier,
+    vertical: Boolean = true,
 ) {
-    Canvas(modifier.width(1.dp)) {
+    Canvas(modifier.then(if (vertical) Modifier.width(1.dp) else Modifier.height(1.dp))) {
         drawLine(
             color = color,
-            start = Offset(size.width / 2f, 0f),
-            end = Offset(size.width / 2f, size.height),
+            start = if (vertical) Offset(size.width / 2f, 0f) else Offset(0f, size.height / 2f),
+            end = if (vertical) Offset(size.width / 2f, size.height) else Offset(size.width, size.height / 2f),
             strokeWidth = 1.dp.toPx(),
             pathEffect = PathEffect.dashPathEffect(floatArrayOf(9f, 7f)),
         )

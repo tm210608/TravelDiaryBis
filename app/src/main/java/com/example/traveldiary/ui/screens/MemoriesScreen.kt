@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -27,6 +27,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.ui.components.BottomNavigationBar
+import com.example.traveldiary.ui.components.FilmAmber
+import com.example.traveldiary.ui.components.filmStrip
+import com.example.traveldiary.ui.theme.MonoEyebrow
+import com.example.traveldiary.ui.theme.MonoStubMeta
 import com.example.traveldiary.ui.viewmodel.MemoriesUiState
 import com.example.traveldiary.ui.viewmodel.MemoriesViewModel
 
@@ -54,6 +58,12 @@ fun MemoriesScreen(
         ) {
             Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)) {
                 Text(
+                    text = "ARCHIVO FOTOGRÁFICO",
+                    style = MonoEyebrow,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Spacer(Modifier.height(2.dp))
+                Text(
                     text = "Recuerdos",
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onSurface,
@@ -63,7 +73,7 @@ fun MemoriesScreen(
                     Spacer(Modifier.height(2.dp))
                     Text(
                         text = "$count momentos capturados",
-                        style = MaterialTheme.typography.bodySmall,
+                        style = MonoStubMeta,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -113,14 +123,22 @@ fun MemoriesScreen(
                     }
                 }
                 is MemoriesUiState.Success -> {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        items(state.entries, key = { it.id }) { entry ->
-                            MemoryCell(entry = entry, onClick = { onEntryClick(entry) })
+                    Box(modifier = Modifier.fillMaxSize().filmStrip()) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(3),
+                            contentPadding = PaddingValues(
+                                start = 22.dp, end = 22.dp, top = 14.dp, bottom = 14.dp,
+                            ),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(14.dp),
+                        ) {
+                            itemsIndexed(state.entries, key = { _, entry -> entry.id }) { index, entry ->
+                                MemoryCell(
+                                    entry = entry,
+                                    frameNumber = "%02dA".format(index + 1),
+                                    onClick = { onEntryClick(entry) },
+                                )
+                            }
                         }
                     }
                 }
@@ -131,44 +149,53 @@ fun MemoriesScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MemoryCell(entry: TravelEntry, onClick: () -> Unit) {
-    Card(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(1f),
-        shape = MaterialTheme.shapes.small,
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            AsyncImage(
-                model = entry.imageUrl,
-                contentDescription = entry.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize(),
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                MaterialTheme.colorScheme.scrim.copy(alpha = 0.8f),
-                            ),
-                            startY = 120f,
+private fun MemoryCell(entry: TravelEntry, frameNumber: String, onClick: () -> Unit) {
+    Column {
+        Card(
+            onClick = onClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f),
+            shape = RoundedCornerShape(4.dp),
+        ) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                AsyncImage(
+                    model = entry.imageUrl,
+                    contentDescription = entry.title,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize(),
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Transparent,
+                                    MaterialTheme.colorScheme.scrim.copy(alpha = 0.8f),
+                                ),
+                                startY = 120f,
+                            )
                         )
-                    )
-            )
-            Text(
-                text = entry.title,
-                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
-                color = Color.White,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(10.dp),
-            )
+                )
+                Text(
+                    text = entry.title,
+                    style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
+                    color = Color.White,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(8.dp),
+                )
+            }
         }
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = frameNumber,
+            style = MonoStubMeta,
+            color = FilmAmber,
+            modifier = Modifier.align(Alignment.End),
+        )
     }
 }

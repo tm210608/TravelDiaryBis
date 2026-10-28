@@ -63,6 +63,7 @@ val MonoTelemetry = mono(11, 15, FontWeight.Medium, 0.02f)
 val MonoEyebrow = mono(10, 14, FontWeight.Bold, 0.14f)
 val MonoStubDay = mono(18, 20, FontWeight.Bold)
 val MonoStubMeta = mono(9, 11, FontWeight.Medium, 0.08f)
+val MonoDisplay = mono(30, 34, FontWeight.Bold)
 
 // Escala de docs/specs/m3-expressive-redesign/stitch/DESIGN.md
 val DiaryTypography = Typography(

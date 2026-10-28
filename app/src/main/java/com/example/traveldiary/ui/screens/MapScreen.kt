@@ -52,7 +52,10 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
+import com.google.android.gms.maps.model.Dash
+import com.google.android.gms.maps.model.Gap
 import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 
@@ -201,11 +204,28 @@ private fun MapContent(
         }
     }
 
+    val routePoints = remember(entries) {
+        entries
+            .filter { it.latitude != null && it.longitude != null }
+            .sortedBy { it.date }
+            .map { LatLng(it.latitude!!, it.longitude!!) }
+    }
+    val routeColor = MaterialTheme.colorScheme.primary
+    val routeWidth = with(density) { 4.dp.toPx() }
+
     GoogleMap(
         modifier = modifier.fillMaxSize(),
         cameraPositionState = cameraPositionState,
         properties = mapProperties,
     ) {
+        if (routePoints.size >= 2) {
+            Polyline(
+                points = routePoints,
+                color = routeColor,
+                width = routeWidth,
+                pattern = listOf(Dash(30f), Gap(16f)),
+            )
+        }
         entries.forEach { entry ->
             key(entry.id) {
                 val position = LatLng(entry.latitude ?: 0.0, entry.longitude ?: 0.0)
