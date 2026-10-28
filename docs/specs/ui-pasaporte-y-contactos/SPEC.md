@@ -16,38 +16,40 @@ orden de fecha ascendente.
 
 ## Criterios de aceptación (testeables, sin ambigüedad)
 
-- [ ] `ProfileScreen` renderiza una cubierta de pasaporte: eyebrow mono
+- [x] `ProfileScreen` renderiza una cubierta de pasaporte: eyebrow mono
       "REGISTRO EXPEDICIONARIO", avatar `AL` en mono, nombre "Viajero" y línea de stats
       en mono `VIAJES NN · FAV NN · PAÍSES NN · CONT NN` (datos reales de
       `TravelStats`). Las 4 `StatCard` desaparecen.
-- [ ] Tira telemétrica bajo la cubierta: eyebrow "KM RECORRIDOS" + número grande en
+- [x] Tira telemétrica bajo la cubierta: eyebrow "KM RECORRIDOS" + número grande en
       mono formateado con separador de miles español (`1.234`) + etiqueta "KM"; más
       contador de tramos con GPS (`NN TRAMOS CON GPS`). Con 0 tramos muestra `0 KM ·
       0 TRAMOS`.
-- [ ] `haversineKm` y `totalDistanceKm` son funciones puras en domain: suma de
+- [x] `haversineKm` y `totalDistanceKm` son funciones puras en domain: suma de
       distancias entre entradas CON GPS consecutivas ordenadas por fecha ascendente;
       las entradas sin GPS no generan tramo.
-- [ ] "Visados y Sellos de Ruta": un sello por **país único** (`country.trim()`
+- [x] "Visados y Sellos de Ruta": un sello por **país único** (`country.trim()`
       no-vacío, case-insensitive), fecha = primera visita a ese país (`dd MMM yy`
       mono), código ISO3 por tabla + fallback 3 primeras letras en caps. Máx. 8,
       ordenados por primera visita descendente. Rotación determinística por país
       (mismo país => misma rotación entre ejecuciones), rango ±6°.
-- [ ] Sellos dibujados en Compose puro: doble borde rectangular + texto mono en caps
+- [x] Sellos dibujados en Compose puro: doble borde rectangular + texto mono en caps
       con alpha ~0.75 (efecto entintado), sin assets.
 - [ ] Si no hay sellos, la sección muestra un placeholder "Completa tu primer visado"
-      (no se oculta la cabecera).
-- [ ] Exportar/Importar conservan posición al final, iconos y comportamiento intactos.
-- [ ] `MemoriesScreen` Success: grid de 3 columnas sobre fondo de carrete oscuro
+      (no se oculta la cabecera). — implementado en `ProfileScreen` pero NO observado
+      en dispositivo (el diario de verificación tiene 2 países con sello).
+- [x] Exportar/Importar conservan posición al final, iconos y comportamiento intactos.
+- [x] `MemoriesScreen` Success: grid de 3 columnas sobre fondo de carrete oscuro
       (`#0E0D12` o similar) con columnas de perforaciones (agujeros de carrete) a
       izquierda y derecha dibujadas con `Canvas`; cada fotograma = foto cuadrada +
       numeración `01A`, `02A`... en mono ámbar debajo. Tap -> Detalle igual que hoy.
       Aspecto idéntico en claro y oscuro.
-- [ ] `MemoriesScreen` Empty/Loading conservan su comportamiento actual.
-- [ ] `MapScreen` Success dibuja `Polyline` de hilo de ruta: puntos = entradas con GPS
+- [x] `MemoriesScreen` Empty/Loading conservan su comportamiento actual (ramas sin
+      tocar; verificado por diff).
+- [x] `MapScreen` Success dibuja `Polyline` de hilo de ruta: puntos = entradas con GPS
       ordenadas por fecha ASC, color `primary` del tema (vermillón claro / ámbar
       oscuro), trazo discontinuo (dash+gap). Con 1 solo punto no se dibuja polyline.
       Markers e InfoWindow -> Detalle sin cambios.
-- [ ] `ProfileUiState.Success` pasa a llevar `stats` + `passport` (`PassportData`);
+- [x] `ProfileUiState.Success` pasa a llevar `stats` + `passport` (`PassportData`);
       `ProfileViewModelTest` actualizado. Sin estados nuevos ni navegación nueva.
 
 ## Fuera de alcance
@@ -106,18 +108,20 @@ Perfil -> export (ruta `home?export=true` existente) e import SAF picker intacto
 
 ## Plan de tests
 
-- [ ] build: `scripts/verify.sh`
-- [ ] unit `HaversineTest`: distancia conocida Madrid->Barcelona (~505 km ±10), puntos
+- [x] build: `scripts/verify.sh` — BUILD+TESTS OK (137 tests, 0 fallos)
+- [x] unit `HaversineTest`: distancia conocida Madrid->Barcelona (~505 km ±10), puntos
       idénticos -> 0, lista vacía/sin GPS -> (0.0, 0), orden por fecha respeta tramos.
-- [ ] unit `CountryCodeTest`: `España`->ESP, `Spain`->ESP, `Japón`/`Japan`->JPN,
+- [x] unit `CountryCodeTest`: `España`->ESP, `Spain`->ESP, `Japón`/`Japan`->JPN,
       acentos y case insensibles, desconocido->3 letras, blank->null.
-- [ ] unit `RouteStampTest`: países duplicados -> 1 sello con fecha mínima, cap 8,
+- [x] unit `RouteStampTest`: países duplicados -> 1 sello con fecha mínima, cap 8,
       blank country ignorado, rotación determinista (misma entrada -> misma rotación).
-- [ ] unit `ProfileViewModelTest` actualizado: Success expone stats + passport.
-- [ ] dispositivo `scripts/verify.sh --device` (Xiaomi): Perfil pasaporte en claro y
-      oscuro, sellos con rotación, Recuerdos con perforaciones + `NNa` en ambos temas,
-      Mapa con hilo de ruta, tap foto -> Detalle.
-- [ ] evidencia: capturas en `docs/specs/ui-pasaporte-y-contactos/`.
+- [x] unit `ProfileViewModelTest` actualizado: Success expone stats + passport.
+- [x] dispositivo `scripts/verify.sh --device` (Xiaomi 2412DPC0AG): Perfil pasaporte
+      en claro (ev-02) y oscuro (ev-07), sellos con rotación, Recuerdos con
+      perforaciones + `NNa` en ambos temas (ev-03, ev-08), Mapa con hilo de ruta
+      (ev-04 claro, ev-07-map dark), tap InfoWindow -> Detalle (ev-05/06), tap
+      fotograma -> Detalle (ev-09).
+- [x] evidencia: capturas en `docs/specs/ui-pasaporte-y-contactos/` (evidencia-01..09).
 
 ## Edge cases
 
