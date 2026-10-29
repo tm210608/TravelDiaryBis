@@ -1,9 +1,11 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-10-26 | **Rama:** `develop` | **Commit:** merge fast-forward de `feature/ui-pasaporte-y-contactos` (`287d00f`, 137 tests JVM verdes, verificado en Xiaomi)
+**Fecha:** 2026-10-29 | **Rama:** `feature/cuadricula-visible` (desde `develop`, ya subido a origin) | 137 tests JVM verdes
 
-## Hecho en esta sesión
-- **Spec 2 del plan Stitch implementada, verificada y mergeada a `develop`** (`ui-pasaporte-y-contactos`):
+## Hecho el 2026-10-29
+- `develop` local (76 commits sin subir) pusheado a `origin/develop`. PR #30 (filtro de chips rehecho en VM sobre base vieja) cerrado sin merge: duplicaba `feature/filter-chips`.
+- Cuadrícula cartográfica visible: `gridColor` alpha 0.14 claro / 0.12 oscuro (antes 0.05/0.06) en Home y Detalle; `cartographyGrid(strokeWidth = 1.dp)` (antes 0.8px). Verificado en emulador Pixel 6 API 34 (claro y oscuro), pendiente de ver en el Xiaomi.
+- (2026-10-26) **Spec 2 del plan Stitch implementada, verificada y mergeada a `develop`** (`ui-pasaporte-y-contactos`):
   - `domain/model/GeoFormat.kt`: `haversineKm`, `totalDistanceKm(entries) -> (km, tramos)`, `formatKm` (miles `.` es, determinista sin locale).
   - `domain/model/CountryCode.kt`: `countryCodeOf` con tabla es/en (~150 alias) + fallback 3 letras; normalización compartida con `Continent.kt`.
   - `domain/model/Passport.kt`: `PassportData{kmTotal,legs,stamps}` + `RouteStamp` + `buildRouteStamps` (1 sello/país, primera visita, rotación determinista ±6°, cap 8).
@@ -30,7 +32,6 @@
 - Ninguno. adb inalámbrico del Xiaomi se desconectó a mitad de sesión; reconectado por el usuario (`adb-MVVSE6A6S4IVQ8MJ._adb-tls-connect._tcp`).
 
 ## Deuda técnica
-- **Cuadrícula cartográfica casi invisible en dispositivo** (reportado por usuario): `cartographyGrid` usa `onSurface` al 5% alpha claro / 6% oscuro + trazo 0.8px (`TravelDiaryHomeScreen` ~L132, `TravelDetailScreen` ~L114). En el Xiaomi no se aprecia vs. el mockup Stitch. Subir alpha (~0.10-0.14) o usar tono rejilla `#D8CFC0` más opaco.
 - **Bug preexistente:** `exportRequested` es argumento de nav pegajoso — volver a Home re-activa el modo selección (`LaunchedEffect` se re-dispara). Fix candidato: consumir el arg una vez.
 - Placeholder de 0 sellos y estados Empty/Loading de Recuerdos: implementados, sin evidencia en dispositivo (diario con datos).
 - Pre-Play Store: privacidad/Data Safety, keystore/R8/AAB.
