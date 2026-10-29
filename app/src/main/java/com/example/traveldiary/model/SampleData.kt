@@ -61,5 +61,3 @@ val allEntries = listOf(
         imageUrl = "https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=300",
     ),
 )
-
-val filterChips = listOf("Todo", "Europa", "Asia", "América", "Favoritos")
