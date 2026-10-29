@@ -1,6 +1,6 @@
 # SPEC: Filtro real de chips en Home
 
-> **Estado:** APROBADA
+> **Estado:** VERIFICADA (2026-10-29, emulador Pixel 6 API 34 en VM Devin; 57 tests OK)
 > Metodología SDMD — la spec es la fuente de verdad, el código la sirve.
 > "Done" = build + tests + app instalada + flujo ejecutado + evidencia.
 
@@ -16,28 +16,28 @@ resultados, se muestra un estado vacío con botón "Ver todos".
 Leyenda: `[x]` verificado con evidencia; `[~]` verificado en unit test (pendiente dispositivo); `[ ]` pendiente.
 
 **Resolución de continente (`ContinentResolver`)**
-- [ ] AC-01: "France", "Francia", "francia ", "FRANCIA" -> `EUROPA` (trim + case-insensitive).
-- [ ] AC-02: "Japón" y "Japon" -> `ASIA` (insensible a tildes/diacríticos).
-- [ ] AC-03: "México", "Estados Unidos", "EEUU", "USA", "Brasil", "Cuba", "Canada" -> `AMERICA` (Norte, Centro, Sur y Caribe).
-- [ ] AC-04: Países de África u Oceanía (p. ej. "Marruecos", "Australia") -> `AFRICA` / `OCEANIA` (no aparecen en ningún chip de continente).
-- [ ] AC-05: País no reconocido ("Marte", errata, vacío) -> `null`.
-- [ ] AC-06: Transcontinentales siguen la ONU (M49): "Rusia" -> `EUROPA`, "Turquía" -> `ASIA`, "Egipto" -> `AFRICA`.
+- [~] AC-01: "France", "Francia", "francia ", "FRANCIA" -> `EUROPA` (trim + case-insensitive). *(ContinentResolverTest; en emulador "Francia" sale en Europa)*
+- [~] AC-02: "Japón" y "Japon" -> `ASIA` (insensible a tildes/diacríticos). *(ContinentResolverTest; en emulador "Japón" sale en Asia)*
+- [~] AC-03: "México", "Estados Unidos", "EEUU", "USA", "Brasil", "Cuba", "Canada" -> `AMERICA` (Norte, Centro, Sur y Caribe). *(ContinentResolverTest; en emulador "México" sale en América)*
+- [~] AC-04: Países de África u Oceanía (p. ej. "Marruecos", "Australia") -> `AFRICA` / `OCEANIA` (no aparecen en ningún chip de continente). *(ContinentResolverTest; en emulador "Australia" solo sale en Todo)*
+- [~] AC-05: País no reconocido ("Marte", errata, vacío) -> `null`. *(ContinentResolverTest; en emulador "Marte" solo sale en Todo/Favoritos)*
+- [~] AC-06: Transcontinentales siguen la ONU (M49): "Rusia" -> `EUROPA`, "Turquía" -> `ASIA`, "Egipto" -> `AFRICA`. *(ContinentResolverTest)*
 
 **Filtrado (`FilterEntriesUseCase`)**
-- [ ] AC-07: Chip "Todo" -> todas las entradas (incluidas las de país no reconocido, África y Oceanía).
-- [ ] AC-08: Chip "Europa" / "Asia" / "América" -> solo entradas cuyo `country` resuelve a ese continente.
-- [ ] AC-09: Chip "Favoritos" -> solo entradas con `isFavourite == true`, de cualquier continente.
-- [ ] AC-10: Chip + búsqueda se combinan con AND (la búsqueda sigue mirando title/location/country).
-- [ ] AC-11: Se conserva el orden original de las entradas.
+- [x] AC-07: Chip "Todo" -> todas las entradas (incluidas las de país no reconocido, África y Oceanía). *(FilterEntriesUseCaseTest; ver-todos.png: 6 viajes incl. Marte y Australia)*
+- [x] AC-08: Chip "Europa" / "Asia" / "América" -> solo entradas cuyo `country` resuelve a ese continente. *(FilterEntriesUseCaseTest; chip-europa.png: Torre Eiffel + Coliseo; Asia/América comprobados por uiautomator)*
+- [x] AC-09: Chip "Favoritos" -> solo entradas con `isFavourite == true`, de cualquier continente. *(chip-favoritos.png: Kyoto, Base Lunar (Marte), Coliseo)*
+- [x] AC-10: Chip + búsqueda se combinan con AND (la búsqueda sigue mirando title/location/country). *(FilterEntriesUseCaseTest + HomeViewModelTest; no-results-busqueda.png: Asia + "roma" -> 0)*
+- [~] AC-11: Se conserva el orden original de las entradas. *(FilterEntriesUseCaseTest)*
 
 **Home (ViewModel + UI)**
-- [ ] AC-12: Al pulsar un chip, la lista "Todos los Viajes" y el contador "N viajes" reflejan el resultado filtrado.
-- [ ] AC-13: "Momentos Destacados" muestra los favoritos del resultado filtrado (máx. 3).
-- [ ] AC-14: Si hay viajes en la BD pero el filtro (chip y/o búsqueda) deja 0, se muestra "No hay viajes en <Chip>"
-  (o "No hay resultados para \"<query>\"" si hay búsqueda) y un botón "Ver todos".
-- [ ] AC-15: "Ver todos" vuelve el chip a "Todo" y limpia la búsqueda.
-- [ ] AC-16: El chip seleccionado sobrevive a la rotación (`SavedStateHandle`); al reabrir la app vuelve a "Todo".
-- [ ] AC-17: Build y tests OK con `scripts/verify.sh`; tests nuevos pasan.
+- [x] AC-12: Al pulsar un chip, la lista "Todos los Viajes" y el contador "N viajes" reflejan el resultado filtrado. *(chip-europa.png: "2 viajes")*
+- [x] AC-13: "Momentos Destacados" muestra los favoritos del resultado filtrado (máx. 3). *(chip-europa.png: destacados solo Coliseo)*
+- [x] AC-14: Si hay viajes en la BD pero el filtro (chip y/o búsqueda) deja 0, se muestra "No hay viajes en <Chip>"
+  (o "No hay resultados para \"<query>\"" si hay búsqueda) y un botón "Ver todos". *(no-results.png: "No hay viajes en Asia"; no-results-busqueda.png: "No hay resultados para \"roma\"")*
+- [x] AC-15: "Ver todos" vuelve el chip a "Todo" y limpia la búsqueda. *(HomeViewModelTest; ver-todos.png: chip Todo, búsqueda vacía, 6 viajes)*
+- [x] AC-16: El chip seleccionado sobrevive a la rotación (`SavedStateHandle`); al reabrir la app vuelve a "Todo". *(HomeViewModelTest; rotacion-europa.png y vuelta a portrait con Europa/2 viajes; reabrir-todo.png tras force-stop)*
+- [x] AC-17: Build y tests OK con `scripts/verify.sh`; tests nuevos pasan. *(scripts/verify.sh: 57 tests, 0 fallos)*
 
 ## Fuera de alcance
 - Campo `continent` en Room, migraciones o selector de continente en el formulario de alta.
@@ -77,12 +77,13 @@ Sin cambios. Todo ocurre dentro de `home`.
 - Rotación: chip en `SavedStateHandle`; búsqueda mantiene el comportamiento actual.
 
 ## Plan de tests
-- [ ] build: `scripts/verify.sh`
-- [ ] unit `ContinentResolverTest`: AC-01..AC-06.
-- [ ] unit `FilterEntriesUseCaseTest`: AC-07..AC-11.
-- [ ] unit `HomeViewModelTest` (actualizado, `SavedStateHandle()` real + `backgroundScope.launch{collect}` + `advanceUntilIdle()`): AC-12..AC-16 (rotación = restaurar desde `SavedStateHandle` con valor previo).
-- [ ] dispositivo/emulador: `scripts/verify.sh --device`; flujo: crear viajes en Francia, Japón, México, "Marte" (1 favorito) -> pulsar cada chip -> búsqueda + chip -> estado vacío -> "Ver todos" -> rotar.
-- [ ] evidencia: capturas en `docs/specs/home-filter-chips/` (chip-europa.png, chip-favoritos.png, no-results.png).
+- [x] build: `scripts/verify.sh`
+- [x] unit `ContinentResolverTest`: AC-01..AC-06.
+- [x] unit `FilterEntriesUseCaseTest`: AC-07..AC-11.
+- [x] unit `HomeViewModelTest` (actualizado, `SavedStateHandle()` real + `backgroundScope.launch{collect}` + `advanceUntilIdle()`): AC-12..AC-16 (rotación = restaurar desde `SavedStateHandle` con valor previo).
+- [x] dispositivo/emulador: `scripts/verify.sh --device`; flujo: crear viajes en Francia, Japón, México, "Marte" (1 favorito) -> pulsar cada chip -> búsqueda + chip -> estado vacío -> "Ver todos" -> rotar.
+- [x] evidencia: capturas en `docs/specs/home-filter-chips/` (chip-europa, chip-favoritos, no-results, no-results-busqueda, ver-todos, rotacion-europa, reabrir-todo).
+- Nota: verificado en emulador (no en el Xiaomi). Datos sembrados con sqlite3 vía `adb root`.
 
 ## Edge cases
 - `country` con espacios, mayúsculas, tildes o "ñ" (España/Espana) -> se normaliza.
