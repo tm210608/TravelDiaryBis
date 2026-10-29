@@ -14,7 +14,7 @@ Visión: app offline-first, estética premium, captura rápida, datos locales de
 - [ ] UI tests Compose (Home -> AddEntry -> guardar -> Home); hay `CONTEXT.md` viejo en el stash
 
 ## Siguiente (una spec SDMD cada uno)
-- [ ] Filtro real de chips (Europa/Asia/América/Favoritos)
+- [x] Filtro real de chips (Europa/Asia/América/Favoritos)
 - [ ] Editar entrada existente
 - [ ] Tabs Recuerdos y Perfil
 - [ ] Dark mode completo
