@@ -24,7 +24,7 @@ class ContinentResolverTest {
 
     @Test
     fun `resolve maps north central south america and caribbean to AMERICA`() {
-        listOf("México", "Estados Unidos", "EEUU", "EE.UU.", "USA", "Brasil", "Cuba", "Canada", "Canadá").forEach {
+        listOf("México", "Estados Unidos", "EEUU", "EE.UU.", "EE. UU.", "USA", "Brasil", "Cuba", "Canada", "Canadá").forEach {
             assertEquals(it, Continent.AMERICA, ContinentResolver.resolve(it))
         }
     }

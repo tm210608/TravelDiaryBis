@@ -28,7 +28,7 @@ object ContinentResolver {
             "uzbekistan|vietnam|yemen|hong kong|macao|macau",
         Continent.AMERICA to "antigua y barbuda|antigua and barbuda|argentina|bahamas|barbados|belice|belize|" +
             "bolivia|brasil|brazil|canada|chile|colombia|costa rica|cuba|dominica|ecuador|el salvador|" +
-            "estados unidos|estados unidos de america|eeuu|usa|us|united states|united states of america|" +
+            "estados unidos|estados unidos de america|eeuu|ee uu|usa|us|united states|united states of america|" +
             "grenada|guatemala|guyana|haiti|honduras|jamaica|mexico|nicaragua|panama|paraguay|peru|puerto rico|" +
             "republica dominicana|dominican republic|san cristobal y nieves|saint kitts and nevis|santa lucia|" +
             "saint lucia|san vicente y las granadinas|saint vincent and the grenadines|surinam|suriname|" +
