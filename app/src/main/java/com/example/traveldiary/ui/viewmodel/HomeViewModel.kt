@@ -2,11 +2,13 @@ package com.example.traveldiary.ui.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.traveldiary.domain.model.HomeFilter
 import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.domain.usecase.AddEntryUseCase
+import com.example.traveldiary.domain.usecase.FilterEntriesUseCase
 import com.example.traveldiary.domain.usecase.GetEntriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,14 +19,21 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+sealed interface HomeListState {
+    data class Results(val entries: List<TravelEntry>, val featured: List<TravelEntry>) : HomeListState
+    data class NoResults(val filter: HomeFilter, val query: String) : HomeListState
+}
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getEntriesUseCase: GetEntriesUseCase,
     private val addEntryUseCase: AddEntryUseCase,
+    private val filterEntriesUseCase: FilterEntriesUseCase,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val _selectedChip = mutableStateOf("Todo")
-    val selectedChip: State<String> = _selectedChip
+    val selectedFilter: StateFlow<HomeFilter> =
+        savedStateHandle.getStateFlow(KEY_SELECTED_FILTER, HomeFilter.TODO)
 
     private val _selectedTab = mutableIntStateOf(0)
     val selectedTab: State<Int> = _selectedTab
@@ -32,22 +41,28 @@ class HomeViewModel @Inject constructor(
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
 
-    private val _allEntries: StateFlow<List<TravelEntry>> = getEntriesUseCase()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    val entriesList: StateFlow<List<TravelEntry>> = combine(
-        _allEntries, _searchQuery
-    ) { entries, query ->
-        if (query.isBlank()) entries
-        else entries.filter {
-            it.title.contains(query, ignoreCase = true) ||
-            it.location.contains(query, ignoreCase = true) ||
-            it.country.contains(query, ignoreCase = true)
+    val listState: StateFlow<HomeListState> = combine(
+        getEntriesUseCase(), selectedFilter, _searchQuery
+    ) { entries, filter, query ->
+        val filtered = filterEntriesUseCase(entries, filter, query)
+        if (filtered.isEmpty() && entries.isNotEmpty()) {
+            HomeListState.NoResults(filter, query)
+        } else {
+            HomeListState.Results(filtered, filtered.filter { it.isFavourite }.take(FEATURED_LIMIT))
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        HomeListState.Results(emptyList(), emptyList()),
+    )
 
-    fun onChipSelected(chip: String) {
-        _selectedChip.value = chip
+    fun onFilterSelected(filter: HomeFilter) {
+        savedStateHandle[KEY_SELECTED_FILTER] = filter
+    }
+
+    fun onShowAll() {
+        savedStateHandle[KEY_SELECTED_FILTER] = HomeFilter.TODO
+        _searchQuery.value = ""
     }
 
     fun onTabSelected(index: Int) {
@@ -62,5 +77,10 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             addEntryUseCase(entry)
         }
+    }
+
+    private companion object {
+        const val KEY_SELECTED_FILTER = "selected_filter"
+        const val FEATURED_LIMIT = 3
     }
 }
