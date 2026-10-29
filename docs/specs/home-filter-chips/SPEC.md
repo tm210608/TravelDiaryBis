@@ -1,6 +1,6 @@
 # SPEC: Filtro real de chips en Home
 
-> **Estado:** BORRADOR
+> **Estado:** APROBADA
 > Metodología SDMD — la spec es la fuente de verdad, el código la sirve.
 > "Done" = build + tests + app instalada + flujo ejecutado + evidencia.
 
