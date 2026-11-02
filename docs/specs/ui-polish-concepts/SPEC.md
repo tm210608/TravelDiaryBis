@@ -17,44 +17,48 @@ metafórica `Cuaderno / Rutas / Satélite / Índice`.
 
 ## Criterios de aceptación (testeables, sin ambigüedad)
 
-- [ ] `TopBar` muestra bajo el eyebrow una línea de telemetría mono:
+- [x] `TopBar` muestra bajo el eyebrow una línea de telemetría mono:
       `ARCHIVO CARTOGRÁFICO · NN EXPEDICIONES ACTIVAS` con NN = nº real de entradas
       (`entriesList.size`, formateado a 2 dígitos). Línea estática adicional a la derecha
       o debajo: `ESCALA 1:24.000 · FOLIO 001` (copy decorativo).
-- [ ] `SearchBar` cambia el placeholder a `Buscar expedición, coordenadas o recuerdo…`.
+- [x] `SearchBar` cambia el placeholder a `Buscar expedición, coordenadas o recuerdo…`.
       No hay hint `⌘K` (sin sentido sin teclado hardware).
-- [ ] `FilterChipsRow` muestra el contador real por chip: `TODOS (NN)`, `FAVORITOS (NN)`
+- [x] `FilterChipsRow` muestra el contador real por chip: `TODOS (NN)`, `FAVORITOS (NN)`
       y por continente el nº de entradas que cumplen ese filtro. El contador respeta el
       estado actual de búsqueda (mismo criterio que el filtrado de la lista).
-- [ ] `EntryListCard` añade eyebrow mono sobre el título: `TAG · PAÍS` en mayúsculas
+- [x] `EntryListCard` añade eyebrow mono sobre el título: `TAG · PAÍS` en mayúsculas
       (p. ej. `URBANO · ESPAÑA`); si `country` está en blanco, solo `TAG`.
 - [ ] `FeaturedCard` muestra bajo el título la primera línea de `entry.description`
-      (mono o italic, `maxLines = 1`, ellipsis) solo si no está en blanco.
-- [ ] `FeaturedCard` muestra insignia `GPS LOCK` (pill oscura, mono) solo cuando
+      (mono o italic, `maxLines = 1`, ellipsis) solo si no está en blanco. — implementado,
+      NO observado en dispositivo (las entradas del diario de prueba no tienen descripción).
+- [x] `FeaturedCard` muestra insignia `GPS LOCK` (pill oscura, mono) solo cuando
       `entry.hasGps`; sin GPS no se renderiza.
-- [ ] `FeaturedCard` con GPS y conectividad muestra en la línea de telemetría el sufijo
-      `· NT°C · NH%` (temperatura y humedad reales de Open-Meteo para lat/lon/fecha de
+- [x] `FeaturedCard` con GPS y conectividad muestra en la línea de telemetría el prefijo
+      `NT°C · NH% ·` (prefijo, no sufijo, para que no se ellipsice: verificado online con
+      21°C·40% y 19°C·88% reales en evidencia-02/05/06, y offline en evidencia-08 donde
+      el meteo desaparece sin error) (temperatura y humedad reales de Open-Meteo para lat/lon/fecha de
       la entrada). Sin conectividad, sin GPS o ante error/timeout la línea queda como
       hoy, sin indicador de error ni reintentos visibles.
-- [ ] Cliente Open-Meteo en `data/remote`: elige `api.open-meteo.com/v1/forecast`
+- [x] Cliente Open-Meteo en `data/remote`: elige `api.open-meteo.com/v1/forecast`
       (`past_days` cubre ≤92 días) o `archive-api.open-meteo.com/v1/archive` (>92 días)
       según la fecha de la entrada; hora = la más cercana a `entry.date`. Timeout ≤5 s.
       Cache en memoria por (lat/lon redondeados a 2 decimales, fecha) para no repetir
       llamadas en rotación ni recomposition.
-- [ ] `AndroidManifest.xml` declara `<uses-permission android:name="android.permission.INTERNET" />`
+- [x] `AndroidManifest.xml` declara `<uses-permission android:name="android.permission.INTERNET" />`
       explícito (hoy llega por manifest merger de Maps).
-- [ ] Al final de `Todos los Viajes` se renderiza un pie de archivo: 2 líneas en mono
+- [x] Al final de `Todos los Viajes` se renderiza un pie de archivo: 2 líneas en mono
       caps pequeñas, centradas, color `onSurfaceVariant`, p. ej.
       `REGISTRO DE EXPEDICIONES — TODOS LOS DATOS PERMANECEN EN ESTE DISPOSITIVO` /
       `FOLIO NN · GENERADO OFFLINE`. NN = nº de entradas.
-- [ ] `BottomNavigationBar` renombra las etiquetas a `Cuaderno`, `Rutas`, `Satélite`,
+- [x] `BottomNavigationBar` renombra las etiquetas a `Cuaderno`, `Rutas`, `Satélite`,
       `Índice` (mismos iconos, mismo orden, mismos callbacks; el `contentDescription`
       del icono usa la nueva etiqueta).
-- [ ] Perfil: la tira telemétrica añade `NN DÍAS EN RUTA` (nº de días naturales
+- [x] Perfil: la tira telemétrica añade `NN DÍAS EN RUTA` (nº de días naturales
       distintos con al menos una entrada; función pura en domain) y bajo la grid de
       sellos un contador `NN VISADOS REGISTRADOS` (nº real de sellos generados, no el
       cap de 8 ni un total inventado).
 - [ ] Sin regresión: modo selección de exportación, navegación, temas claro/oscuro.
+      — navegación y temas OK en dispositivo; modo selección NO re-probado en esta sesión.
 
 ## Fuera de alcance
 
@@ -73,7 +77,7 @@ Sin estados nuevos. El meteo viaja como dato opcional aditivo:
 - `HomeViewModel` expone `featuredWeather: StateFlow<Map<Long, WeatherReading>>`
   (entryId -> lectura), poblado en segundo plano solo para las entradas destacadas con
   GPS; los fallos se tragan (mapa vacío).
-- `WeatherReading { tempC: Double, humidityPct: Int }` en `domain/model/`.
+- `WeatherReading { tempC: Double, humidityPct: Int? }` en `domain/model/`.
 - `chipCounts: Map<String, Int>` derivado en el ViewModel (o conteo en composable a
   partir del mismo predicado de filtro — decidir en implementación lo que ya use el VM
   para filtrar).
@@ -122,22 +126,23 @@ Sin rutas nuevas ni cambios de callbacks. Solo renombre de etiquetas del bottom 
 
 ## Plan de tests
 
-- [ ] build: `scripts/verify.sh`
-- [ ] unit `OpenMeteoTest` (JVM): URL elige forecast ≤92 días y archive >92 días; parser
+- [x] build: `scripts/verify.sh` — 156 tests, 0 fallos
+- [x] unit `OpenMeteoTest` (JVM): URL elige forecast ≤92 días y archive >92 días; parser
       extrae `temperature_2m`/`relative_humidity_2m` de la hora más cercana; JSON
       malformado/horas vacías -> `null`.
-- [ ] unit `DaysOnRouteTest` (JVM): 2 entradas el mismo día -> 1; días distintos -> N;
+- [x] unit `DaysOnRouteTest` (JVM): 2 entradas el mismo día -> 1; días distintos -> N;
       lista vacía -> 0.
-- [ ] unit `HomeViewModelTest` actualizado: `chipCounts` por chip correctos con búsqueda
+- [x] unit `HomeViewModelTest` actualizado: `chipCounts` por chip correctos con búsqueda
       activa; `featuredWeather` vacío ante repo que lanza excepción (fallo silencioso);
       entradas sin GPS no disparan fetch.
-- [ ] unit `WeatherFormatTest`: redondeo y formato `· NT°C · NH%`.
-- [ ] dispositivo `scripts/verify.sh --device` (Xiaomi 2412DPC0AG): telemetría de
-      cabecera con contador real, chips con `(NN)`, eyebrow en filas, destacada con
-      descripción/`GPS LOCK`/meteo con WiFi ON, avión ON -> meteo ausente sin error,
-      pie de archivo, nav con nuevas etiquetas, Perfil con `DÍAS EN RUTA` y contador de
-      visados; claro y oscuro.
-- [ ] evidencia: capturas en `docs/specs/ui-polish-concepts/`.
+- [x] unit `WeatherFormatTest` (WeatherTest): redondeo y formato `· NT°C · NH%`.
+- [x] dispositivo `scripts/verify.sh --device` (Xiaomi 2412DPC0AG): telemetría de
+      cabecera, chips con `(NN)`, eyebrow en filas, `GPS LOCK`, meteo real con WiFi ON
+      (evidencia-02/05/06), WiFi+datos OFF -> meteo ausente sin error (evidencia-08,
+      captura tomada on-device durante la ventana sin radio), pie de archivo, nav
+      metafórico, Perfil con `DÍAS EN RUTA` y `VISADOS REGISTRADOS`; claro y oscuro.
+      Descripción en destacada NO observada (entradas sin descripción).
+- [x] evidencia: capturas en `docs/specs/ui-polish-concepts/` (evidence_01..08).
 
 ## Edge cases
 
