@@ -171,11 +171,11 @@ fun FeaturedCard(
                     .padding(14.dp),
             ) {
                 Text(
-                    text = (if (entry.hasGps) {
+                    text = (weather?.formatWeatherTelemetry() ?: "") + if (entry.hasGps) {
                         "${entry.latitude!!.toCardinalLat()} · ${entry.longitude!!.toCardinalLon()} · ${entry.date.formatToCompact()}"
                     } else {
                         entry.date.formatToCompact()
-                    }) + (weather?.formatWeatherTelemetry() ?: ""),
+                    },
                     style = MonoTelemetry,
                     color = Color.White.copy(alpha = 0.85f),
                     maxLines = 1,

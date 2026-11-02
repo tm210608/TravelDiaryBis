@@ -9,5 +9,5 @@ data class WeatherReading(
 
 fun WeatherReading.formatWeatherTelemetry(): String {
     val temp = "${tempC.roundToInt()}°C"
-    return humidityPct?.let { "· $temp · $it%" } ?: "· $temp"
+    return humidityPct?.let { "$temp · $it% · " } ?: "$temp · "
 }

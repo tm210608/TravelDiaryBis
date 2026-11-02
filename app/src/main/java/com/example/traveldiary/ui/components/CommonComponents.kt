@@ -34,7 +34,7 @@ fun TopBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = "BITÁCORA DE VIAJE",
                 style = MonoEyebrow,
@@ -51,11 +51,14 @@ fun TopBar(
                 text = "ARCHIVO CARTOGRÁFICO · %02d EXPEDICIONES ACTIVAS".format(entryCount),
                 style = MonoStubMeta,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
             )
             Text(
                 text = "ESCALA 1:24.000 · FOLIO 001",
                 style = MonoStubMeta,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
