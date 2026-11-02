@@ -26,8 +26,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.traveldiary.domain.model.TravelEntry
+import com.example.traveldiary.domain.model.WeatherReading
 import com.example.traveldiary.domain.model.formatToCompact
 import com.example.traveldiary.domain.model.formatToTicket
+import com.example.traveldiary.domain.model.formatWeatherTelemetry
 import com.example.traveldiary.domain.model.hasGps
 import com.example.traveldiary.domain.model.telemetryLine
 import com.example.traveldiary.domain.model.toCardinalLat
@@ -41,6 +43,7 @@ import com.example.traveldiary.ui.theme.MonoTelemetry
 fun FeaturedEntriesRow(
     entries: List<TravelEntry>,
     onEntryClick: (TravelEntry) -> Unit,
+    weatherByEntryId: Map<Int, WeatherReading> = emptyMap(),
 ) {
     Row(
         modifier = Modifier
@@ -52,6 +55,7 @@ fun FeaturedEntriesRow(
         entries.forEach { entry ->
             FeaturedCard(
                 entry = entry,
+                weather = weatherByEntryId[entry.id],
                 onClick = { onEntryClick(entry) },
             )
         }
@@ -63,6 +67,7 @@ fun FeaturedEntriesRow(
 fun FeaturedCard(
     entry: TravelEntry,
     onClick: () -> Unit,
+    weather: WeatherReading? = null,
 ) {
     var favourite by remember { mutableStateOf(entry.isFavourite) }
     var isPressed by remember { mutableStateOf(false) }
@@ -75,7 +80,7 @@ fun FeaturedCard(
         onClick = onClick,
         modifier = Modifier
             .width(240.dp)
-            .height(190.dp)
+            .height(218.dp)
             .graphicsLayer(scaleX = scale, scaleY = scale)
             .pointerInput(Unit) {
                 detectTapGestures(
@@ -111,19 +116,36 @@ fun FeaturedCard(
                     )
             )
 
-            Surface(
-                color = Color.Black.copy(alpha = 0.35f),
-                shape = RoundedCornerShape(4.dp),
+            Row(
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                Text(
-                    text = "EXP · ${entry.tag.uppercase()}",
-                    style = MonoStubMeta,
-                    color = Color.White,
-                    modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
-                )
+                Surface(
+                    color = Color.Black.copy(alpha = 0.35f),
+                    shape = RoundedCornerShape(4.dp),
+                ) {
+                    Text(
+                        text = "EXP · ${entry.tag.uppercase()}",
+                        style = MonoStubMeta,
+                        color = Color.White,
+                        modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+                    )
+                }
+                if (entry.hasGps) {
+                    Surface(
+                        color = Color.Black.copy(alpha = 0.35f),
+                        shape = RoundedCornerShape(4.dp),
+                    ) {
+                        Text(
+                            text = "GPS LOCK",
+                            style = MonoStubMeta,
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+                        )
+                    }
+                }
             }
 
             IconButton(
@@ -149,11 +171,11 @@ fun FeaturedCard(
                     .padding(14.dp),
             ) {
                 Text(
-                    text = if (entry.hasGps) {
+                    text = (if (entry.hasGps) {
                         "${entry.latitude!!.toCardinalLat()} · ${entry.longitude!!.toCardinalLon()} · ${entry.date.formatToCompact()}"
                     } else {
                         entry.date.formatToCompact()
-                    },
+                    }) + (weather?.formatWeatherTelemetry() ?: ""),
                     style = MonoTelemetry,
                     color = Color.White.copy(alpha = 0.85f),
                     maxLines = 1,
@@ -167,6 +189,16 @@ fun FeaturedCard(
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                 )
+                if (entry.description.isNotBlank()) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = entry.description,
+                        style = MonoStubMeta,
+                        color = Color.White.copy(alpha = 0.78f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
         }
     }
@@ -212,7 +244,7 @@ fun EntryListCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Row(
-            modifier = Modifier.height(92.dp),
+            modifier = Modifier.height(106.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (selectionMode) {
@@ -242,6 +274,18 @@ fun EntryListCard(
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Column {
+                    Text(
+                        text = if (entry.country.isNotBlank()) {
+                            "${entry.tag.uppercase()} · ${entry.country.uppercase()}"
+                        } else {
+                            entry.tag.uppercase()
+                        },
+                        style = MonoStubMeta,
+                        color = MaterialTheme.colorScheme.primary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Spacer(Modifier.height(2.dp))
                     Text(
                         text = entry.title,
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),

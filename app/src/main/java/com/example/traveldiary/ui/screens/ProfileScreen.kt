@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.traveldiary.domain.model.PassportData
@@ -160,6 +161,14 @@ fun ProfileScreen(
                                 }
                             }
                         }
+                        Spacer(Modifier.height(10.dp))
+                        Text(
+                            text = "%02d VISADOS REGISTRADOS".format(state.stats.countries),
+                            style = MonoStubMeta,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
                         Spacer(Modifier.height(18.dp))
                         ExportImportCards(
                             importState = importState,
@@ -296,6 +305,19 @@ private fun TelemetryStrip(passport: PassportData) {
                     )
                 }
             }
+            Column(horizontalAlignment = Alignment.End) {
+                Text(
+                    text = "%02d".format(passport.daysOnRoute),
+                    style = MonoDisplay,
+                    color = MaterialTheme.colorScheme.tertiary,
+                )
+                Text(
+                    text = "DÍAS EN RUTA",
+                    style = MonoStubMeta,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Spacer(Modifier.width(22.dp))
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     text = "%02d".format(passport.legs),
