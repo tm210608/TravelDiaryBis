@@ -130,7 +130,7 @@ fun TravelDiaryHomeScreen(
         },
     ) { innerPadding ->
         val gridColor = MaterialTheme.colorScheme.onSurface.copy(
-            alpha = if (isSystemInDarkTheme()) 0.06f else 0.05f
+            alpha = if (isSystemInDarkTheme()) 0.12f else 0.14f
         )
         Box(
             modifier = Modifier

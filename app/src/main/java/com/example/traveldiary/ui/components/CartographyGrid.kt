@@ -12,10 +12,11 @@ fun Modifier.cartographyGrid(
     color: Color,
     cellSize: Dp = 48.dp,
     crossEvery: Int = 4,
+    strokeWidth: Dp = 1.dp,
 ): Modifier = this.drawBehind {
     val step = cellSize.toPx()
     if (step <= 0f) return@drawBehind
-    val stroke = 0.8f
+    val stroke = strokeWidth.toPx()
 
     var x = 0f
     while (x <= size.width) {

@@ -36,7 +36,6 @@ import com.example.traveldiary.ui.theme.MonoEyebrow
 import com.example.traveldiary.ui.theme.MonoStubDay
 import com.example.traveldiary.ui.theme.MonoStubMeta
 import com.example.traveldiary.ui.theme.MonoTelemetry
-import java.util.Locale
 
 @Composable
 fun FeaturedEntriesRow(
@@ -120,7 +119,7 @@ fun FeaturedCard(
                     .padding(10.dp),
             ) {
                 Text(
-                    text = "EXP · ${entry.tag.uppercase(Locale.getDefault())}",
+                    text = "EXP · ${entry.tag.uppercase()}",
                     style = MonoStubMeta,
                     color = Color.White,
                     modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
