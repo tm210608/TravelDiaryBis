@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -63,8 +64,12 @@ fun TravelDiaryHomeScreen(
         uri?.let { viewModel.exportSelectedTo(it.toString(), suggestedName) }
     }
 
+    var exportHandled by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(exportRequested) {
-        if (exportRequested) viewModel.enterSelectionMode()
+        if (exportRequested && !exportHandled) {
+            viewModel.enterSelectionMode()
+            exportHandled = true
+        }
     }
 
     BackHandler(enabled = selectionMode) {
