@@ -1,11 +1,13 @@
 package com.example.traveldiary.domain.model
 
 import java.time.Instant
+import java.time.ZoneId
 import java.util.Locale
 
 data class PassportData(
     val kmTotal: Double,
     val legs: Int,
+    val daysOnRoute: Int,
     val stamps: List<RouteStamp>,
 )
 
@@ -15,6 +17,11 @@ data class RouteStamp(
     val firstVisit: Instant,
     val rotation: Float,
 )
+
+fun daysWithEntries(
+    entries: List<TravelEntry>,
+    zone: ZoneId = ZoneId.systemDefault(),
+): Int = entries.map { it.date.atZone(zone).toLocalDate() }.distinct().size
 
 fun buildRouteStamps(entries: List<TravelEntry>, maxStamps: Int = 8): List<RouteStamp> =
     entries

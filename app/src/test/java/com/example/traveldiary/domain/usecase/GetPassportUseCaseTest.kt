@@ -29,6 +29,7 @@ class GetPassportUseCaseTest {
             val passport = awaitItem()
             assertEquals(505.0, passport.kmTotal, 12.0)
             assertEquals(1, passport.legs)
+            assertEquals(2, passport.daysOnRoute)
             assertEquals(2, passport.stamps.size)
             assertEquals("ESP", passport.stamps.first { it.code == "ESP" }.let { it.code })
             awaitComplete()
@@ -43,6 +44,7 @@ class GetPassportUseCaseTest {
             val passport = awaitItem()
             assertEquals(0.0, passport.kmTotal, 0.001)
             assertEquals(0, passport.legs)
+            assertEquals(0, passport.daysOnRoute)
             assertEquals(0, passport.stamps.size)
             awaitComplete()
         }

@@ -34,7 +34,7 @@ class ProfileViewModelTest {
 
     private fun viewModel(): ProfileViewModel {
         every { getTravelStatsUseCase() } returns flowOf(TravelStats(0, 0, 0, 0))
-        every { getPassportUseCase() } returns flowOf(PassportData(0.0, 0, emptyList()))
+        every { getPassportUseCase() } returns flowOf(PassportData(0.0, 0, 0, emptyList()))
         return ProfileViewModel(getTravelStatsUseCase, getPassportUseCase, importEntriesUseCase)
     }
 
@@ -47,7 +47,7 @@ class ProfileViewModelTest {
     @Test
     fun `uiState becomes Success with stats and passport`() = runTest {
         val stats = TravelStats(totalTrips = 5, favourites = 2, countries = 3, continents = 2)
-        val passport = PassportData(kmTotal = 1234.0, legs = 3, stamps = emptyList())
+        val passport = PassportData(kmTotal = 1234.0, legs = 3, daysOnRoute = 5, stamps = emptyList())
         every { getTravelStatsUseCase() } returns flowOf(stats)
         every { getPassportUseCase() } returns flowOf(passport)
 
