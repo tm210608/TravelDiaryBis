@@ -1,35 +1,53 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-10-29 | **Rama:** `feature/cuadricula-visible` (PR #31 abierto contra `develop`, CI verde) | 137 tests JVM verdes
+**Fecha:** 2026-11-02 | **Rama:** `develop` (`c96787f`, en sync con origin) | 156 tests JVM verdes
 
-## Hecho el 2026-10-29
-- `develop` local (76 commits sin subir) pusheado a `origin/develop`. PR #30 (filtro de chips rehecho en VM sobre base vieja) cerrado sin merge: duplicaba `feature/filter-chips`.
-- PR #31 `fix: cuadrícula cartográfica visible en Home y Detalle`:
-  - `gridColor` alpha 0.14 claro / 0.12 oscuro (antes 0.05/0.06) en `TravelDiaryHomeScreen` y `TravelDetailScreen`; `cartographyGrid(strokeWidth = 1.dp)` (antes 0.8px fijo).
-  - Lint de CI arreglado (fallaba en `develop`): `EntryCards.kt` usaba `uppercase(Locale.getDefault())` en composable (NonObservableLocale) → `uppercase()`.
-  - Verificado Home claro/oscuro en emulador Pixel 6 API 34 (VM). Sin ver en Xiaomi; Detalle sin captura en dispositivo.
-- (2026-10-26) **Spec 2 del plan Stitch mergeada a `develop`** (`ui-pasaporte-y-contactos`):
-  - `GeoFormat.kt` (haversine, km), `CountryCode.kt` (~150 alias es/en), `Passport.kt` + `GetPassportUseCase` + `ProfileViewModel`.
-  - `PassportStamp.kt`, `FilmStrip.kt`; `ProfileScreen` = Pasaporte; `MemoriesScreen` = hoja de contactos 35mm; `MapScreen` con `Polyline` por fecha.
-  - Verificado en Xiaomi (`2412DPC0AG`); capturas en `docs/specs/ui-pasaporte-y-contactos/`.
+## Hecho el 2026-11-02
+- **PR #31 mergeado a `develop`**: cuadrícula cartográfica verificada en Xiaomi físico
+  (`2412DPC0AG`, adb-WiFi): Home y Detalle, claro y oscuro — 4/4 capturas bien.
+  Merge local `9b98e54` + push (cierra el PR en GitHub).
+- 5 PNG de evidencias dark-mode commiteados a develop (`7c08202`).
+- **Spec 3 del plan Stitch `ui-polish-concepts` implementada, verificada y mergeada**
+  (`c96787f`). Pulido editorial completo sobre datos reales:
+  - Cabecera Home: `ARCHIVO CARTOGRÁFICO · NN EXPEDICIONES` + `ESCALA 1:24.000 · FOLIO 001`.
+  - Chips con contador real `(NN)` respetando búsqueda; placeholder nuevo.
+  - Filas: eyebrow `TAG · PAÍS`; destacada: `GPS LOCK`, descripción y **meteo real
+    Open-Meteo** (forecast ≤92d / archive >92d, sin key, cache en memoria, timeout 5s,
+    fallo silencioso offline — verificado: `21°C·40%`/`19°C·88%` online, ausente offline).
+  - Pie de archivo tipográfico; nav metafórico `Cuaderno/Rutas/Satélite/Índice`.
+  - Perfil: `NN DÍAS EN RUTA` + `NN VISADOS REGISTRADOS`.
+  - Fixes en ruta: avatar estrangulado por columna ancha (`weight(1f)`), meteo como
+    prefijo (el sufijo quedaba ellipsizado).
+  - Evidencia en `docs/specs/ui-polish-concepts/` (evidence_01..08).
 
-## Siguiente paso (al abrir sesión local con "Lee AGENTS.md y docs/STATE.md y continúa")
-1. Conectar el Xiaomi por adb, instalar la rama y comprobar la cuadrícula en Home y Detalle (claro/oscuro). Si se ve bien, mergear PR #31 en `develop` y hacer `git pull` en local.
-2. Después elegir: Spec 3 del plan Stitch (`docs/specs/ui-polish-concepts/`) o el bug `exportRequested` pegajoso.
-- 5 PNG sin commitear en `docs/specs/dark-mode/` (evidencias dark mode): decidir si se commitean.
-- Ramas `feature/ui-pasaporte-y-contactos`, `feature/filter-chips` y `feature/home-filter-chips` (la del PR #30 cerrado) siguen existiendo; no borrar sin confirmación.
+## Siguiente paso
+- Bug `exportRequested` pegajoso (deuda conocida): volver a Home re-activa el modo
+  selección. Fix candidato: consumir el arg de nav una vez (`savedStateHandle` remove
+  o `LaunchedEffect` con flag).
+- Si se quiere otra spec: ROADMAP pendiente = nav type-safe, sync backend, Play Store
+  release, PDF export, detekt/ktlint.
+- Ramas viejas existentes (`feature/cuadricula-visible`, `feature/ui-pasaporte-y-contactos`,
+  `feature/filter-chips`, `feature/home-filter-chips`): borrar SOLO con confirmación.
 
 ## Decisiones vigentes
-- Dualidad visual (sin dynamic color): Claro = Cuaderno de Campo (`#F4EFE6`/`#141B24`/`#C83E2B`); Oscuro = Atlas Nocturno (`#12121D`/`#FFDCA1`/`#B4C9DF`).
-- Metáfora física: billete + cuadrícula + telemetría mono + sellos/carrete, todo Compose puro sin dependencias.
-- Exportar/Importar ZIP (`formatVersion=1` con `uuid`) y migraciones Room (`v3`) activos.
-- `local.properties` no se commitea. Push solo con confirmación; mantener `origin/develop` al día con el local. Commits `feat|fix|test|docs|chore:`.
+- Dualidad visual (sin dynamic color): Claro = Cuaderno de Campo; Oscuro = Atlas Nocturno.
+- Metáfora física: billete + cuadrícula + telemetría mono + sellos/carrete + nav metafórico.
+- Meteo: Open-Meteo gratis sin key; aditivo opcional, nunca rompe offline-first.
+- `local.properties` no se commitea. Push solo con confirmación (salvo mantener
+  `origin/develop` al día tras merges de specs verificadas). Commits `feat|fix|test|docs|chore:`.
+- Usuario pidió: al ofrecer opciones, incluir siempre recomendación propia.
 
 ## Bloqueos
-- Ninguno. El Xiaomi no estaba conectado por adb en la sesión del 2026-10-29.
+- Ninguno. Nota operativa: `svc wifi disable` en el Xiaomi mata adb-WiFi Y apaga la
+  depuración inalámbrica (hay que reactivarla a mano y rota el puerto — leer IP:puerto
+  en Ajustes > Opciones de desarrollo > Depuración inalámbrica). Para pruebas offline:
+  script `nohup` on-device que desconecte radios, capture a /sdcard y reconecte WiFi.
 
 ## Deuda técnica
-- **Bug preexistente:** `exportRequested` es argumento de nav pegajoso — volver a Home re-activa el modo selección (`LaunchedEffect` se re-dispara). Fix candidato: consumir el arg una vez.
-- Placeholder de 0 sellos y estados Empty/Loading de Recuerdos: implementados, sin evidencia en dispositivo.
+- `exportRequested` arg pegajoso (ver arriba).
+- Descripción en FeaturedCard implementada pero no observada (entradas sin descripción).
+- Modo selección de exportación no re-probado tras el pulido editorial.
+- Placeholder de 0 sellos y Empty/Loading de Recuerdos: implementados, sin evidencia.
 - Pre-Play Store: privacidad/Data Safety, keystore/R8/AAB.
-- UI tests Compose, sync online, nav type-safe, CameraScreen (`LocalLifecycleOwner`), clustering, detekt/ktlint.
+- UI tests Compose, sync online, nav type-safe, CameraScreen (`LocalLifecycleOwner`),
+  clustering, detekt/ktlint.
