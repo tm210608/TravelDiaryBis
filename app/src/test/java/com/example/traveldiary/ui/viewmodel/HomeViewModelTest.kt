@@ -2,6 +2,8 @@ package com.example.traveldiary.ui.viewmodel
 
 import com.example.traveldiary.TestDispatcherRule
 import com.example.traveldiary.domain.model.TravelEntry
+import com.example.traveldiary.domain.model.WeatherReading
+import com.example.traveldiary.domain.repository.WeatherRepository
 import com.example.traveldiary.domain.usecase.ExportEntriesUseCase
 import com.example.traveldiary.domain.usecase.FilterEntriesByChipUseCase
 import com.example.traveldiary.domain.usecase.GetEntriesUseCase
@@ -31,14 +33,24 @@ class HomeViewModelTest {
     private val getEntriesUseCase: GetEntriesUseCase = mockk()
     private val filterEntriesByChipUseCase = FilterEntriesByChipUseCase()
     private val exportEntriesUseCase: ExportEntriesUseCase = mockk()
+    private val weatherRepository: WeatherRepository = mockk()
 
-    private fun entry(id: Int, title: String, country: String, isFavourite: Boolean = false) =
-        TravelEntry(id = id, title = title, location = "L", country = country,
-            tag = "X", imageUrl = "url", isFavourite = isFavourite)
+    private fun entry(
+        id: Int,
+        title: String,
+        country: String,
+        isFavourite: Boolean = false,
+        lat: Double? = null,
+        lon: Double? = null,
+    ) = TravelEntry(id = id, title = title, location = "L", country = country,
+        tag = "X", imageUrl = "url", isFavourite = isFavourite,
+        latitude = lat, longitude = lon)
 
     private fun viewModelWith(entries: List<TravelEntry>): HomeViewModel {
         every { getEntriesUseCase() } returns flowOf(entries)
-        return HomeViewModel(getEntriesUseCase, filterEntriesByChipUseCase, exportEntriesUseCase)
+        return HomeViewModel(
+            getEntriesUseCase, filterEntriesByChipUseCase, exportEntriesUseCase, weatherRepository
+        )
     }
 
     @Test
@@ -101,6 +113,93 @@ class HomeViewModelTest {
         advanceUntilIdle()
 
         assertEquals(listOf("Paris"), viewModel.entriesList.value.map { it.title })
+    }
+
+    @Test
+    fun `chipCounts counts each chip respecting search`() = runTest {
+        val entries = listOf(
+            entry(1, "Paris", "France"),
+            entry(2, "Tokyo", "Japan"),
+            entry(3, "Kyoto", "Japan", isFavourite = true),
+        )
+        val viewModel = viewModelWith(entries)
+        backgroundScope.launch { viewModel.chipCounts.collect {} }
+        advanceUntilIdle()
+
+        assertEquals(3, viewModel.chipCounts.value["Todo"])
+        assertEquals(1, viewModel.chipCounts.value["Europa"])
+        assertEquals(2, viewModel.chipCounts.value["Asia"])
+        assertEquals(0, viewModel.chipCounts.value["América"])
+        assertEquals(1, viewModel.chipCounts.value["Favoritos"])
+
+        viewModel.onSearchQueryChanged("Tokyo")
+        advanceUntilIdle()
+
+        assertEquals(1, viewModel.chipCounts.value["Todo"])
+        assertEquals(0, viewModel.chipCounts.value["Europa"])
+        assertEquals(1, viewModel.chipCounts.value["Asia"])
+        assertEquals(0, viewModel.chipCounts.value["Favoritos"])
+    }
+
+    @Test
+    fun `featuredEntries prefers favourites with fallback to recent`() = runTest {
+        val entries = listOf(
+            entry(1, "Paris", "France", isFavourite = true),
+            entry(2, "Tokyo", "Japan"),
+            entry(3, "Rome", "Italy"),
+            entry(4, "Berlin", "Germany"),
+        )
+        val viewModel = viewModelWith(entries)
+        backgroundScope.launch { viewModel.featuredEntries.collect {} }
+        advanceUntilIdle()
+
+        assertEquals(listOf("Paris"), viewModel.featuredEntries.value.map { it.title })
+
+        val viewModelNoFav = viewModelWith(entries.map { it.copy(isFavourite = false) })
+        backgroundScope.launch { viewModelNoFav.featuredEntries.collect {} }
+        advanceUntilIdle()
+
+        assertEquals(3, viewModelNoFav.featuredEntries.value.size)
+    }
+
+    @Test
+    fun `featuredWeather fetches only GPS featured entries`() = runTest {
+        coEvery { weatherRepository.weatherAt(any(), any(), any()) } returns
+            WeatherReading(16.4, 45)
+        val entries = listOf(
+            entry(1, "Con GPS", "Spain", isFavourite = true, lat = 40.4, lon = -3.7),
+            entry(2, "Sin GPS", "Japan", isFavourite = true),
+        )
+        val viewModel = viewModelWith(entries)
+        backgroundScope.launch { viewModel.featuredWeather.collect {} }
+        advanceUntilIdle()
+
+        assertEquals(mapOf(1 to WeatherReading(16.4, 45)), viewModel.featuredWeather.value)
+        coVerify(exactly = 1) { weatherRepository.weatherAt(40.4, -3.7, any()) }
+    }
+
+    @Test
+    fun `featuredWeather stays empty when repository throws`() = runTest {
+        coEvery { weatherRepository.weatherAt(any(), any(), any()) } throws
+            java.io.IOException("offline")
+        val entries = listOf(
+            entry(1, "Con GPS", "Spain", lat = 40.4, lon = -3.7),
+        )
+        val viewModel = viewModelWith(entries)
+        backgroundScope.launch { viewModel.featuredWeather.collect {} }
+        advanceUntilIdle()
+
+        assertTrue(viewModel.featuredWeather.value.isEmpty())
+    }
+
+    @Test
+    fun `featuredWeather does not fetch for entries without GPS`() = runTest {
+        val entries = listOf(entry(1, "Sin GPS", "Japan"))
+        val viewModel = viewModelWith(entries)
+        backgroundScope.launch { viewModel.featuredWeather.collect {} }
+        advanceUntilIdle()
+
+        coVerify(exactly = 0) { weatherRepository.weatherAt(any(), any(), any()) }
     }
 
     @Test

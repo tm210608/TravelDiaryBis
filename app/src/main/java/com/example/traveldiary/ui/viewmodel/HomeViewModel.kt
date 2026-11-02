@@ -6,13 +6,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.traveldiary.BuildConfig
 import com.example.traveldiary.domain.model.TravelEntry
+import com.example.traveldiary.domain.model.WeatherReading
+import com.example.traveldiary.domain.model.hasGps
+import com.example.traveldiary.domain.repository.WeatherRepository
 import com.example.traveldiary.domain.usecase.ExportEntriesUseCase
 import com.example.traveldiary.domain.usecase.FilterEntriesByChipUseCase
 import com.example.traveldiary.domain.usecase.GetEntriesUseCase
+import com.example.traveldiary.model.filterChips
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -32,6 +37,7 @@ class HomeViewModel @Inject constructor(
     getEntriesUseCase: GetEntriesUseCase,
     private val filterEntriesByChipUseCase: FilterEntriesByChipUseCase,
     private val exportEntriesUseCase: ExportEntriesUseCase,
+    private val weatherRepository: WeatherRepository,
 ) : ViewModel() {
 
     private val _selectedChip = MutableStateFlow(FilterEntriesByChipUseCase.CHIP_TODO)
@@ -50,13 +56,34 @@ class HomeViewModel @Inject constructor(
         _allEntries, _searchQuery, _selectedChip
     ) { entries, query, chip ->
         val byChip = filterEntriesByChipUseCase(entries, chip)
-        if (query.isBlank()) byChip
-        else byChip.filter {
-            it.title.contains(query, ignoreCase = true) ||
-            it.location.contains(query, ignoreCase = true) ||
-            it.country.contains(query, ignoreCase = true)
-        }
+        if (query.isBlank()) byChip else byChip.filter { matchesQuery(it, query) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val chipCounts: StateFlow<Map<String, Int>> = combine(
+        _allEntries, _searchQuery
+    ) { entries, query ->
+        val searched = if (query.isBlank()) entries else entries.filter { matchesQuery(it, query) }
+        filterChips.associateWith { chip -> filterEntriesByChipUseCase(searched, chip).size }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
+
+    val featuredEntries: StateFlow<List<TravelEntry>> = entriesList
+        .map { list -> list.filter { it.isFavourite }.take(3).ifEmpty { list.take(3) } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val featuredWeather: StateFlow<Map<Int, WeatherReading>> = featuredEntries
+        .map { featured ->
+            featured.filter { it.hasGps }.mapNotNull { entry ->
+                weatherRepository.weatherAt(entry.latitude!!, entry.longitude!!, entry.date)
+                    ?.let { entry.id to it }
+            }.toMap()
+        }
+        .catch { emit(emptyMap()) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
+
+    private fun matchesQuery(entry: TravelEntry, query: String): Boolean =
+        entry.title.contains(query, ignoreCase = true) ||
+        entry.location.contains(query, ignoreCase = true) ||
+        entry.country.contains(query, ignoreCase = true)
 
     fun onChipSelected(chip: String) {
         _selectedChip.value = chip
