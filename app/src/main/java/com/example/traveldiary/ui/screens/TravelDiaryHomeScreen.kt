@@ -49,6 +49,9 @@ fun TravelDiaryHomeScreen(
     val selectionMode by viewModel.selectionMode.collectAsState()
     val selectedIds by viewModel.selectedIds.collectAsState()
     val exportState by viewModel.exportState.collectAsState()
+    val chipCounts by viewModel.chipCounts.collectAsState()
+    val featuredEntries by viewModel.featuredEntries.collectAsState()
+    val featuredWeather by viewModel.featuredWeather.collectAsState()
 
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -157,6 +160,7 @@ fun TravelDiaryHomeScreen(
                     )
                 } else {
                     TopBar(
+                        entryCount = entriesList.size,
                         showExport = hasEntries,
                         onExportClick = { viewModel.enterSelectionMode() },
                     )
@@ -178,16 +182,15 @@ fun TravelDiaryHomeScreen(
                     chips = filterChips,
                     selectedChip = selectedChip,
                     onChipSelected = { viewModel.onChipSelected(it) },
+                    counts = chipCounts,
                 )
             }
 
-            val featured = entriesList.filter { it.isFavourite }.take(3)
-                .ifEmpty { entriesList.take(3) }
-            if (featured.isNotEmpty()) {
+            if (featuredEntries.isNotEmpty()) {
                 item {
                     SectionHeader(
                         title = "Registro Destacado",
-                        actionLabel = "%02d".format(featured.size),
+                        actionLabel = "%02d".format(featuredEntries.size),
                         eyebrow = "EXPEDICIÓN",
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
                     )
@@ -195,8 +198,9 @@ fun TravelDiaryHomeScreen(
 
                 item {
                     FeaturedEntriesRow(
-                        entries = featured,
+                        entries = featuredEntries,
                         onEntryClick = onEntryClick,
+                        weatherByEntryId = featuredWeather,
                     )
                 }
             }
@@ -224,6 +228,10 @@ fun TravelDiaryHomeScreen(
                         .padding(horizontal = 20.dp, vertical = 5.dp)
                         .animateItem(),
                 )
+            }
+
+            item {
+                ArchiveFooter(entryCount = entriesList.size)
             }
         }
         }

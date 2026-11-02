@@ -15,11 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.traveldiary.ui.theme.MonoEyebrow
+import com.example.traveldiary.ui.theme.MonoStubMeta
 
 @Composable
 fun TopBar(
+    entryCount: Int = 0,
     showExport: Boolean = false,
     onExportClick: () -> Unit = {},
 ) {
@@ -31,7 +34,7 @@ fun TopBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = "BITÁCORA DE VIAJE",
                 style = MonoEyebrow,
@@ -42,6 +45,20 @@ fun TopBar(
                 text = "Mi Diario de Viaje",
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface,
+            )
+            Spacer(Modifier.height(3.dp))
+            Text(
+                text = "ARCHIVO CARTOGRÁFICO · %02d EXPEDICIONES ACTIVAS".format(entryCount),
+                style = MonoStubMeta,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+            )
+            Text(
+                text = "ESCALA 1:24.000 · FOLIO 001",
+                style = MonoStubMeta,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
             )
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -99,7 +116,7 @@ fun SearchBar(
         modifier = modifier,
         placeholder = {
             Text(
-                "Buscar destinos, recuerdos...",
+                "Buscar expedición, coordenadas o recuerdo…",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -140,6 +157,7 @@ fun FilterChipsRow(
     chips: List<String>,
     selectedChip: String,
     onChipSelected: (String) -> Unit,
+    counts: Map<String, Int> = emptyMap(),
 ) {
     Row(
         modifier = Modifier
@@ -154,7 +172,7 @@ fun FilterChipsRow(
                 onClick = { onChipSelected(chip) },
                 label = {
                     Text(
-                        text = chip,
+                        text = "$chip (%02d)".format(counts[chip] ?: 0),
                         style = MaterialTheme.typography.labelMedium,
                     )
                 },
@@ -215,10 +233,10 @@ fun BottomNavigationBar(
 ) {
     NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest) {
         val items = listOf(
-            Triple("Inicio", Icons.Filled.Home, Icons.Outlined.Home),
-            Triple("Mapa", Icons.Filled.Map, Icons.Outlined.Map),
-            Triple("Recuerdos", Icons.Filled.PhotoLibrary, Icons.Outlined.PhotoLibrary),
-            Triple("Perfil", Icons.Filled.Person, Icons.Outlined.Person),
+            Triple("Cuaderno", Icons.Filled.Home, Icons.Outlined.Home),
+            Triple("Rutas", Icons.Filled.Map, Icons.Outlined.Map),
+            Triple("Satélite", Icons.Filled.PhotoLibrary, Icons.Outlined.PhotoLibrary),
+            Triple("Índice", Icons.Filled.Person, Icons.Outlined.Person),
         )
         items.forEachIndexed { index, (label, filledIcon, outlinedIcon) ->
             NavigationBarItem(
@@ -240,5 +258,32 @@ fun BottomNavigationBar(
                 ),
             )
         }
+    }
+}
+
+@Composable
+fun ArchiveFooter(
+    entryCount: Int,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 22.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = "REGISTRO DE EXPEDICIONES — TODOS LOS DATOS PERMANECEN EN ESTE DISPOSITIVO",
+            style = MonoStubMeta,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(3.dp))
+        Text(
+            text = "FOLIO %02d · GENERADO OFFLINE".format(entryCount),
+            style = MonoStubMeta,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
     }
 }

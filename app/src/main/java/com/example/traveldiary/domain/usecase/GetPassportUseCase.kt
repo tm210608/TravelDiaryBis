@@ -2,6 +2,7 @@ package com.example.traveldiary.domain.usecase
 
 import com.example.traveldiary.domain.model.PassportData
 import com.example.traveldiary.domain.model.buildRouteStamps
+import com.example.traveldiary.domain.model.daysWithEntries
 import com.example.traveldiary.domain.model.totalDistanceKm
 import com.example.traveldiary.domain.repository.TravelRepository
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +18,7 @@ class GetPassportUseCase @Inject constructor(
             PassportData(
                 kmTotal = km,
                 legs = legs,
+                daysOnRoute = daysWithEntries(entries),
                 stamps = buildRouteStamps(entries),
             )
         }
