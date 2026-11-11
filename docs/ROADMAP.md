@@ -17,9 +17,10 @@ Visión: app offline-first, estética premium, captura rápida, datos locales de
 - [x] Importar diario desde ZIP exportado (merge sin dedup, fotos copiadas, parseo tolerante), verificado en emulador y Xiaomi físico — `docs/specs/importar-entradas/SPEC.md`
 - [x] Migraciones Room reales: `exportSchema` + `MIGRATION_2_3` con uuid por entrada (identidad estable para futura sync) + `MigrationTestHelper` en androidTest, verificado en Xiaomi — `docs/specs/migraciones-room/SPEC.md`
 - [x] Pulido visual Fase 1 (`ui-cuaderno-campo-home`): tema claro de marca "Cuaderno de Campo" (sin dynamic color), billetes troquelados con talón de fecha, cuadrícula cartográfica y telemetría GPS en mono, claro y oscuro, verificado en Xiaomi — `docs/specs/ui-cuaderno-campo-home/SPEC.md`
+- [x] UI tests Compose: infra Hilt (`@TestInstallIn` Room in-memory, runner `TravelDiaryTestRunner`) + flujo Home -> AddEntry -> guardar -> Home, verificado en Xiaomi — rama `feature/ui-tests-compose`
 
 ## En curso
-- [ ] UI tests Compose (Home -> AddEntry -> guardar -> Home); hay `CONTEXT.md` viejo en el stash
+- [ ] —
 
 ## Siguiente (una spec SDMD cada uno)
 - [ ] Pulido visual Fase 2 (`ui-pasaporte-y-contactos`): Perfil "Pasaporte de Expedición" con sellos entintados dinámicos y KM Haversine + Recuerdos como "Hoja de Contactos 35mm" + hilo de ruta en Mapa — ref `docs/specs/ui-polish-concepts/stitch-02-pasaporte-y-contactos-dark.png`
