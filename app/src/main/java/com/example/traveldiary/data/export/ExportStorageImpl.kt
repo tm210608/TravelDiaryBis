@@ -15,6 +15,6 @@ class ExportStorageImpl @Inject constructor(
     override fun openOutputStream(destinationUri: String): OutputStream? =
         context.contentResolver.openOutputStream(Uri.parse(destinationUri))
 
-    override fun createTempZipFile(fileName: String): File =
+    override fun createTempExportFile(fileName: String): File =
         File(File(context.cacheDir, "exports").apply { mkdirs() }, fileName)
 }

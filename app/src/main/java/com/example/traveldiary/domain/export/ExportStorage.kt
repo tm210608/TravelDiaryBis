@@ -5,5 +5,5 @@ import java.io.OutputStream
 
 interface ExportStorage {
     fun openOutputStream(destinationUri: String): OutputStream?
-    fun createTempZipFile(fileName: String): File
+    fun createTempExportFile(fileName: String): File
 }

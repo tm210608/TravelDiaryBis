@@ -25,6 +25,7 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.domain.model.exportFileName
+import com.example.traveldiary.domain.model.exportPdfFileName
 import com.example.traveldiary.model.filterChips
 import com.example.traveldiary.ui.components.*
 import com.example.traveldiary.ui.viewmodel.ExportUiState
@@ -64,6 +65,12 @@ fun TravelDiaryHomeScreen(
         uri?.let { viewModel.exportSelectedTo(it.toString(), suggestedName) }
     }
 
+    val createPdfDocument = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/pdf")
+    ) { uri ->
+        uri?.let { viewModel.exportPdfSelectedTo(it.toString(), suggestedName) }
+    }
+
     var exportHandled by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(exportRequested) {
         if (exportRequested && !exportHandled) {
@@ -84,7 +91,7 @@ fun TravelDiaryHomeScreen(
                     context, "${context.packageName}.fileprovider", file
                 )
                 val intent = Intent(Intent.ACTION_SEND).apply {
-                    type = "application/zip"
+                    type = state.mimeType
                     putExtra(Intent.EXTRA_STREAM, uri)
                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 }
@@ -157,11 +164,16 @@ fun TravelDiaryHomeScreen(
                         exporting = exportState is ExportUiState.Exporting,
                         onClose = { viewModel.exitSelectionMode() },
                         onSelectAll = { viewModel.selectAll() },
-                        onSave = {
+                        onSaveZip = {
                             suggestedName = exportFileName()
                             createDocument.launch(suggestedName)
                         },
-                        onShare = { viewModel.shareSelected() },
+                        onSavePdf = {
+                            suggestedName = exportPdfFileName()
+                            createPdfDocument.launch(suggestedName)
+                        },
+                        onShareZip = { viewModel.shareSelected() },
+                        onSharePdf = { viewModel.sharePdfSelected() },
                     )
                 } else {
                     TopBar(
@@ -249,8 +261,10 @@ private fun SelectionTopBar(
     exporting: Boolean,
     onClose: () -> Unit,
     onSelectAll: () -> Unit,
-    onSave: () -> Unit,
-    onShare: () -> Unit,
+    onSaveZip: () -> Unit,
+    onSavePdf: () -> Unit,
+    onShareZip: () -> Unit,
+    onSharePdf: () -> Unit,
 ) {
     var exportMenuExpanded by remember { mutableStateOf(false) }
 
@@ -293,17 +307,31 @@ private fun SelectionTopBar(
                         onDismissRequest = { exportMenuExpanded = false },
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Guardar en dispositivo") },
+                            text = { Text("Guardar como ZIP") },
                             onClick = {
                                 exportMenuExpanded = false
-                                onSave()
+                                onSaveZip()
                             },
                         )
                         DropdownMenuItem(
-                            text = { Text("Compartir") },
+                            text = { Text("Guardar como PDF") },
                             onClick = {
                                 exportMenuExpanded = false
-                                onShare()
+                                onSavePdf()
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Compartir ZIP") },
+                            onClick = {
+                                exportMenuExpanded = false
+                                onShareZip()
+                            },
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Compartir PDF") },
+                            onClick = {
+                                exportMenuExpanded = false
+                                onSharePdf()
                             },
                         )
                     }

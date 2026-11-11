@@ -78,7 +78,7 @@ class ExportEntriesUseCaseTest {
     fun `toTempZip writes zip file to storage`() = runTest {
         every { repository.getAllEntriesStream() } returns flowOf(entries)
         val temp = File.createTempFile("export-test", ".zip").apply { deleteOnExit() }
-        every { storage.createTempZipFile(any()) } returns temp
+        every { storage.createTempExportFile(any()) } returns temp
 
         val file = useCase.toTempZip(setOf(1, 3), "1.0")
 

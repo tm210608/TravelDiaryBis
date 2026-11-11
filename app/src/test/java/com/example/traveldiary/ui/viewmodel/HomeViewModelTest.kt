@@ -5,6 +5,7 @@ import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.domain.model.WeatherReading
 import com.example.traveldiary.domain.repository.WeatherRepository
 import com.example.traveldiary.domain.usecase.ExportEntriesUseCase
+import com.example.traveldiary.domain.usecase.ExportPdfUseCase
 import com.example.traveldiary.domain.usecase.FilterEntriesByChipUseCase
 import com.example.traveldiary.domain.usecase.GetEntriesUseCase
 import io.mockk.coEvery
@@ -33,6 +34,7 @@ class HomeViewModelTest {
     private val getEntriesUseCase: GetEntriesUseCase = mockk()
     private val filterEntriesByChipUseCase = FilterEntriesByChipUseCase()
     private val exportEntriesUseCase: ExportEntriesUseCase = mockk()
+    private val exportPdfUseCase: ExportPdfUseCase = mockk()
     private val weatherRepository: WeatherRepository = mockk()
 
     private fun entry(
@@ -49,7 +51,8 @@ class HomeViewModelTest {
     private fun viewModelWith(entries: List<TravelEntry>): HomeViewModel {
         every { getEntriesUseCase() } returns flowOf(entries)
         return HomeViewModel(
-            getEntriesUseCase, filterEntriesByChipUseCase, exportEntriesUseCase, weatherRepository
+            getEntriesUseCase, filterEntriesByChipUseCase, exportEntriesUseCase,
+            exportPdfUseCase, weatherRepository
         )
     }
 
@@ -304,9 +307,45 @@ class HomeViewModelTest {
         viewModel.shareSelected()
         advanceUntilIdle()
 
-        assertEquals(ExportUiState.ShareReady("export.zip"), viewModel.exportState.value)
+        assertEquals(
+            ExportUiState.ShareReady("export.zip", "application/zip"),
+            viewModel.exportState.value,
+        )
         assertFalse(viewModel.selectionMode.value)
         coVerify { exportEntriesUseCase.toTempZip(setOf(2), any()) }
+    }
+
+    @Test
+    fun `exportPdfSelectedTo calls pdf use case and emits Success`() = runTest {
+        coEvery { exportPdfUseCase.saveToUri(any(), any()) } returns Unit
+        val viewModel = viewModelWith(emptyList())
+        viewModel.enterSelectionMode()
+        viewModel.toggleSelection(5)
+
+        viewModel.exportPdfSelectedTo("content://d", "diario.pdf")
+        advanceUntilIdle()
+
+        assertEquals(ExportUiState.Success("diario.pdf"), viewModel.exportState.value)
+        assertFalse(viewModel.selectionMode.value)
+        coVerify { exportPdfUseCase.saveToUri(setOf(5), "content://d") }
+    }
+
+    @Test
+    fun `sharePdfSelected emits ShareReady with pdf mime`() = runTest {
+        coEvery { exportPdfUseCase.toTempPdf(any()) } returns File("diario.pdf")
+        val viewModel = viewModelWith(emptyList())
+        viewModel.enterSelectionMode()
+        viewModel.toggleSelection(5)
+
+        viewModel.sharePdfSelected()
+        advanceUntilIdle()
+
+        assertEquals(
+            ExportUiState.ShareReady("diario.pdf", "application/pdf"),
+            viewModel.exportState.value,
+        )
+        assertFalse(viewModel.selectionMode.value)
+        coVerify { exportPdfUseCase.toTempPdf(setOf(5)) }
     }
 
     @Test

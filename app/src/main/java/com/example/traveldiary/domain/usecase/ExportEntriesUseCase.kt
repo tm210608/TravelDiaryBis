@@ -28,7 +28,7 @@ class ExportEntriesUseCase @Inject constructor(
 
     suspend fun toTempZip(ids: Set<Int>, appVersion: String): File =
         withContext(Dispatchers.IO) {
-            val file = storage.createTempZipFile(exportFileName())
+            val file = storage.createTempExportFile(exportFileName())
             file.outputStream().use {
                 exporter.export(selectedEntries(ids), appVersion, photoLoader::load, it)
             }

@@ -11,6 +11,18 @@ fun exportFileName(now: Instant = Instant.now()): String {
     return "traveldiary-export-${formatter.format(now)}.zip"
 }
 
+fun exportPdfFileName(now: Instant = Instant.now()): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HHmm")
+        .withZone(ZoneId.systemDefault())
+    return "traveldiary-diario-${formatter.format(now)}.pdf"
+}
+
+fun shareMimeType(fileName: String): String = when {
+    fileName.endsWith(".pdf", ignoreCase = true) -> "application/pdf"
+    fileName.endsWith(".zip", ignoreCase = true) -> "application/zip"
+    else -> "application/octet-stream"
+}
+
 @Serializable
 data class ExportDocument(
     val formatVersion: Int = 1,

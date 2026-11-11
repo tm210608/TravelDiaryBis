@@ -8,8 +8,10 @@ import com.example.traveldiary.BuildConfig
 import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.domain.model.WeatherReading
 import com.example.traveldiary.domain.model.hasGps
+import com.example.traveldiary.domain.model.shareMimeType
 import com.example.traveldiary.domain.repository.WeatherRepository
 import com.example.traveldiary.domain.usecase.ExportEntriesUseCase
+import com.example.traveldiary.domain.usecase.ExportPdfUseCase
 import com.example.traveldiary.domain.usecase.FilterEntriesByChipUseCase
 import com.example.traveldiary.domain.usecase.GetEntriesUseCase
 import com.example.traveldiary.model.filterChips
@@ -27,7 +29,7 @@ import javax.inject.Inject
 sealed interface ExportUiState {
     data object Idle : ExportUiState
     data object Exporting : ExportUiState
-    data class ShareReady(val fileName: String) : ExportUiState
+    data class ShareReady(val fileName: String, val mimeType: String) : ExportUiState
     data class Success(val fileName: String) : ExportUiState
     data class Error(val message: String) : ExportUiState
 }
@@ -37,6 +39,7 @@ class HomeViewModel @Inject constructor(
     getEntriesUseCase: GetEntriesUseCase,
     private val filterEntriesByChipUseCase: FilterEntriesByChipUseCase,
     private val exportEntriesUseCase: ExportEntriesUseCase,
+    private val exportPdfUseCase: ExportPdfUseCase,
     private val weatherRepository: WeatherRepository,
 ) : ViewModel() {
 
@@ -149,7 +152,37 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val file = exportEntriesUseCase.toTempZip(ids, BuildConfig.VERSION_NAME)
-                _exportState.value = ExportUiState.ShareReady(file.name)
+                _exportState.value = ExportUiState.ShareReady(file.name, shareMimeType(file.name))
+                exitSelectionMode()
+            } catch (e: Exception) {
+                _exportState.value = ExportUiState.Error(e.message ?: "Error al exportar")
+            }
+        }
+    }
+
+    fun exportPdfSelectedTo(destinationUri: String, suggestedName: String) {
+        val ids = _selectedIds.value
+        if (ids.isEmpty()) return
+        _exportState.value = ExportUiState.Exporting
+        viewModelScope.launch {
+            try {
+                exportPdfUseCase.saveToUri(ids, destinationUri)
+                _exportState.value = ExportUiState.Success(suggestedName)
+                exitSelectionMode()
+            } catch (e: Exception) {
+                _exportState.value = ExportUiState.Error(e.message ?: "Error al exportar")
+            }
+        }
+    }
+
+    fun sharePdfSelected() {
+        val ids = _selectedIds.value
+        if (ids.isEmpty()) return
+        _exportState.value = ExportUiState.Exporting
+        viewModelScope.launch {
+            try {
+                val file = exportPdfUseCase.toTempPdf(ids)
+                _exportState.value = ExportUiState.ShareReady(file.name, shareMimeType(file.name))
                 exitSelectionMode()
             } catch (e: Exception) {
                 _exportState.value = ExportUiState.Error(e.message ?: "Error al exportar")
