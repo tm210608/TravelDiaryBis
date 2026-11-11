@@ -16,32 +16,32 @@ Orden cronológico ascendente, como se lee un diario.
 
 ## Criterios de aceptación (testeables, sin ambigüedad)
 
-- [ ] El dropdown "Exportar" del modo selección ofrece 4 opciones:
+- [x] El dropdown "Exportar" del modo selección ofrece 4 opciones:
       "Guardar como ZIP", "Guardar como PDF", "Compartir ZIP", "Compartir PDF".
       Las dos de ZIP conservan exactamente el comportamiento actual.
-- [ ] "Guardar como PDF" abre el picker SAF con MIME `application/pdf` y nombre
+- [x] "Guardar como PDF" abre el picker SAF con MIME `application/pdf` y nombre
       sugerido `traveldiary-diario-<yyyyMMdd-HHmm>.pdf`; al elegir destino se
       escribe el PDF y aparece el snackbar "Diario exportado".
-- [ ] "Compartir PDF" genera el PDF en `cacheDir/exports`, lo comparte vía
+- [x] "Compartir PDF" genera el PDF en `cacheDir/exports`, lo comparte vía
       `FileProvider` con `Intent.ACTION_SEND` y MIME `application/pdf` (el ZIP
       sigue con `application/zip`).
-- [ ] Portada (página 1): eyebrow "REGISTRO EXPEDICIONARIO", título
+- [x] Portada (página 1): eyebrow "REGISTRO EXPEDICIONARIO", título
       "DIARIO DE VIAJE", línea de stats `VIAJES NN · FAV NN · PAÍSES NN ·
       CONT NN`, "KM RECORRIDOS" con `NN KM · NN TRAMOS` y fecha
       `GENERADO OFFLINE · dd MMM yyyy`. Las stats se calculan SOLO sobre las
       entradas seleccionadas (no todo el diario).
-- [ ] Una página por entrada, orden `date` ASC: foto en la mitad superior
+- [x] Una página por entrada, orden `date` ASC: foto en la mitad superior
       (escalada recortando al centro), eyebrow `ENTRADA NN · dd MMM yyyy ·
       PAÍS` (omite `· PAÍS` si `country` está en blanco), título, línea
       `UBICACIÓN · TAG`, descripción multilínea recortada con "…" si excede el
       espacio, y footer `PÁGINA NN DE NN`.
-- [ ] Entrada sin foto, foto `http(s)` o bytes no decodificables -> rectángulo
+- [x] Entrada sin foto, foto `http(s)` o bytes no decodificables -> rectángulo
       gris con texto "SIN FOTO" centrado (no bloquea el PDF).
-- [ ] `PdfExporter` escribe un PDF válido: test instrumentado lo reabre con
+- [x] `PdfExporter` escribe un PDF válido: test instrumentado lo reabre con
       `android.graphics.pdf.PdfRenderer` y afirma `pageCount == entradas + 1`.
-- [ ] `ExportUiState.ShareReady` lleva `mimeType` para que el intent use el tipo
+- [x] `ExportUiState.ShareReady` lleva `mimeType` para que el intent use el tipo
       correcto (derivado de `shareMimeType(fileName)` en domain).
-- [ ] Sin dependencias nuevas en `build.gradle.kts`; generación en
+- [x] Sin dependencias nuevas en `build.gradle.kts`; generación en
       `Dispatchers.IO`; el `LinearProgressIndicator` existente cubre el progreso.
 
 ## Fuera de alcance
@@ -95,22 +95,27 @@ SAF existentes + uno nuevo `CreateDocument("application/pdf")`.
 
 ## Plan de tests
 
-- [ ] build: `scripts/verify.sh` — BUILD+TESTS OK
-- [ ] unit `ExportPdfFileNameTest`: formato `traveldiary-diario-<ts>.pdf`,
+- [x] build: `scripts/verify.sh` — BUILD+TESTS OK (169 tests unitarios)
+- [x] unit `ExportPdfFileNameTest`: formato `traveldiary-diario-<ts>.pdf`,
       fecha fija determinista.
-- [ ] unit `ShareMimeTypeTest`: `.pdf`->`application/pdf`,
+- [x] unit `ShareMimeTypeTest`: `.pdf`->`application/pdf`,
       `.zip`->`application/zip`, otro->`application/octet-stream`.
-- [ ] unit `PdfCoverTest`: stats calculadas solo sobre la selección (2 países,
+- [x] unit `PdfCoverTest`: stats calculadas solo sobre la selección (2 países,
       km entre tramos con GPS consecutivos, días únicos).
-- [ ] unit `ExportPdfUseCaseTest`: exporter fake captura orden -> `date` asc y
+- [x] unit `ExportPdfUseCaseTest`: exporter fake captura orden -> `date` asc y
       solo ids seleccionados.
-- [ ] instrumentado `PdfDocumentExporterTest`: genera PDF con 2 entradas (1 sin
+- [x] instrumentado `PdfDocumentExporterTest`: genera PDF con 2 entradas (1 sin
       foto) -> `PdfRenderer.pageCount == 3`, página 1 renderiza bitmap no vacío.
-- [ ] dispositivo `scripts/verify.sh --device` (Xiaomi): seleccionar entradas ->
-      Guardar como PDF -> abrir desde el gestor de archivos -> captura portada
-      y una página de entrada; Compartir PDF -> chooser con apps; ZIP sigue
-      funcionando (regresión).
-- [ ] evidencia: capturas en `docs/specs/exportar-pdf/`.
+- [x] dispositivo (Xiaomi 2412DPC0AG): 2 entradas -> Guardar como PDF ->
+      `traveldiary-diario-20261111-2000.pdf` (37 KB, `%PDF-1.4`) en Descargas;
+      abierto en visor: portada (VIAJES 02 · FAV 00 · PAÍSES 02 · CONT 01,
+      612 KM, GENERADO OFFLINE), ENTRADA 01 "Prueba Mapa" pág 2, ENTRADA 02
+      "Con GPS" pág 3 (orden asc), ambas con bloque SIN FOTO (fotos
+      content:// no legibles -> fallback correcto). Compartir PDF -> chooser
+      con `traveldiary-diario-20261111-2014.pdf`; ZIP sigue funcionando
+      (`traveldiary-export-20261111-2017.zip`, regresión OK).
+- [x] evidencia: capturas en `docs/specs/exportar-pdf/` (evidencia-01..09 +
+      `diario-evidencia.pdf`).
 
 ## Edge cases
 

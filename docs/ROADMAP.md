@@ -20,12 +20,12 @@ Visión: app offline-first, estética premium, captura rápida, datos locales de
 - [x] UI tests Compose: infra Hilt (`@TestInstallIn` Room in-memory, runner `TravelDiaryTestRunner`) + flujo Home -> AddEntry -> guardar -> Home, verificado en Xiaomi — rama `feature/ui-tests-compose`
 - [x] Navegación type-safe: 8 destinos `@Serializable`, Navigation 2.8.9, comportamiento idéntico verificado en emulador (18 capturas) + instrumentados verdes — `docs/specs/nav-type-safe/SPEC.md`
 - [x] Pulido visual Fase 2 (`ui-pasaporte-y-contactos`): Perfil "Pasaporte de Expedición" con sellos entintados dinámicos y KM Haversine + Recuerdos como "Hoja de Contactos 35mm" + hilo de ruta en Mapa — `docs/specs/ui-pasaporte-y-contactos/SPEC.md` (placeholder sin sellos verificado en Xiaomi con `ProfilePassportPlaceholderTest`)
+- [x] Exportar diario a PDF (portada con stats + una página por entrada, `PdfDocument` nativo, guardar SAF + compartir FileProvider), verificado en Xiaomi — `docs/specs/exportar-pdf/SPEC.md`
 
 ## En curso
 - [ ] —
 
 ## Siguiente (una spec SDMD cada uno)
-- [ ] Exportar variante PDF/imagen (legible para humanos)
 - [ ] Sync online / backend (el sobre `ExportDocument` ya sirve de DTO; uuid por entrada listo)
 - [ ] Release Play Store: política de privacidad + Data Safety (fotos/ubicación),
   keystore, R8, AAB (migraciones Room ya resueltas)

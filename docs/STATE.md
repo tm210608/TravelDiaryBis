@@ -1,39 +1,53 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-11-11 | **Rama:** `develop` (pendiente push a origin, ~9 commits por delante) | 156 tests JVM verdes + instrumentados verdes en 2 emuladores
+**Fecha:** 2026-11-11 | **Rama:** `feature/exportar-pdf` (implementación mergeable a `develop`; pendiente push a origin, ~10 commits por delante) | 169 tests JVM verdes + instrumentados verdes en Xiaomi
 
 ## Hecho el 2026-11-11
-- **Navegación type-safe mergeada a `develop`** (`feature/nav-type-safe`, merge `22afc9b`):
-  rutas string -> `@Serializable` en `navigation/Destinations.kt` (8 destinos; args en
-  `Home(export)`, `Detail(entryId)`, `EditEntry(entryId)`). Navigation 2.7.7 -> 2.8.9.
-  `Screen.kt` eliminado. Mismo comportamiento: `savedStateHandle`, tabs `popUpTo`/`saveState`,
-  Profile -> `Home(export = true)`.
-- Verificado en emulador `SocialChef_Test` (API 36): flujo completo Add>Camera>Guardar>
-  Detail>Edit(refresh)>tabs>marker>export>rotación. 18 capturas en `docs/specs/nav-type-safe/`.
-  `connectedDebugAndroidTest` verde en 2 emuladores (HomeAddEntryFlowTest + MigrationTest).
-- `AGENTS.md`: preferencias del usuario (explicaciones no técnicas, opción recomendada en
-  cuestionarios, explicar pasos que requieren aprobación). Rama `feature/ui-tests-compose` borrada.
+- **Exportar a PDF implementado y verificado en Xiaomi** (`feature/exportar-pdf`, spec
+  `docs/specs/exportar-pdf/SPEC.md` con todos los criterios marcados):
+  - Menú Exportar: Guardar como ZIP / Guardar como PDF / Compartir ZIP / Compartir PDF.
+  - PDF nativo (`android.graphics.pdf.PdfDocument`, sin deps nuevas): portada
+    "REGISTRO EXPEDICIONARIO / DIARIO DE VIAJE" con stats de la selección
+    (VIAJES·FAV·PAÍSES·CONT, KM Haversine, TRAMOS, DÍAS EN RUTA, GENERADO OFFLINE)
+    + una página por entrada (foto mitad superior, eyebrow `ENTRADA NN · fecha · PAÍS`,
+    meta `UBICACIÓN · TAG`, descripción recortada, footer `PÁGINA NN DE NN`).
+    Orden `date` ASC. Foto ilegible/http -> bloque "SIN FOTO", el PDF no falla.
+  - Piezas: `PdfCoverData`+`buildPdfCover` (domain puro), `PdfExporter` (interfaz),
+    `ExportPdfUseCase` (saveToUri/toTempPdf), `PdfDocumentExporter` (Canvas/Paint/
+    StaticLayout/inSampleSize), `exportPdfFileName`+`shareMimeType` en
+    `ExportDocument`, `ShareReady(fileName, mimeType)`, launcher `CreateDocument("application/pdf")`.
+  - Evidencia en `docs/specs/exportar-pdf/` (evidencia-01..09 + `diario-evidencia.pdf`
+    real, `%PDF-1.4`, 37 KB). Compartir PDF -> chooser con nombre .pdf; ZIP sigue OK
+    (regresión verificada guardando `traveldiary-export-20261111-2017.zip`).
+- **Placeholder pasaporte verificado y mergeado** (`125eb05` -> develop):
+  `ProfilePassportPlaceholderTest` instrumentado + evidencia-10 en
+  `docs/specs/ui-pasaporte-y-contactos/`; ROADMAP fase 2 cerrada.
 
 ## Siguiente paso
-- ROADMAP: `ui-pasaporte-y-contactos` (pulido Fase 2), sync backend, Play Store release,
-  PDF export, detekt/ktlint.
-- Opcional: repetir `connectedDebugAndroidTest` en Xiaomi tras aprobar instalación en el teléfono.
+- Merge `feature/exportar-pdf` -> `develop` (todo verificado).
+- ROADMAP pendiente: sync backend, Play Store release, detekt/ktlint.
 
 ## Decisiones vigentes
-- Navigation fijada en **2.8.9** (no subir a 2.9+/2.10+ sin pedirlo: cambian requisitos de SDK).
-- Destinos type-safe en `navigation/Destinations.kt` (`data object` sin args, `data class` con args).
-- Emulador `SocialChef_Test`: IME stylus intercepta campos la 1ª vez (cancelar tutorial);
-  es AVD de otro proyecto: comprobar foreground antes de enviar taps.
-- Xiaomi/MIUI: `adb install` requiere "Instalar por USB" aprobado en el teléfono
-  (`INSTALL_FAILED_USER_RESTRICTED` si no).
-- Resto: sesiones anteriores (Cuaderno/Atlas, Open-Meteo, Medium_Phone inestable -> Xiaomi).
+- Navigation fijada en **2.8.9** (no subir sin pedirlo: cambian requisitos de SDK).
+- PDF sin librerías externas: `PdfDocument` del framework; páginas A4 595x842pt;
+  una página por entrada (descripción larga se recorta, no desborda).
+- Xiaomi/MIUI: `adb install` requiere "Instalar por USB" en el teléfono; los popups
+  Compose no aceptan `input tap`, sí `input swipe` corto (~120ms); el móvil aparece
+  duplicado en adb wireless (usar `-s <serial>`; desconectar el duplicado si molesta);
+  se suspende rápido durante verificación manual (`stay_on_while_plugged_in` ayuda,
+  ya restaurado a 0).
+- En modo selección, las tarjetas del carrusel "Registro Destacado" NAVEGAN al
+  detalle; la selección se hace en las filas de "Todos los Viajes" o con "Todo"
+  (que solo responde cuando el StateFlow ya emitió).
 
 ## Bloqueos
 - Ninguno.
 
 ## Deuda técnica
+- Descripción larga con "…" y foto real renderizada: cubiertos en código/test
+  instrumentado, sin evidencia visual (las 2 entradas reales no tienen descripción
+  y sus fotos content:// no son legibles -> SIN FOTO correcto).
 - `popBackStack<Home>` (tab Cuaderno), `onEntryNotFound`, `capturedImageUri`->EditEntry:
   compilados/verificados en código, sin ejercicio manual.
-- Descripción FeaturedCard sin observar; placeholder 0 sellos/Empty Recuerdos sin evidencia.
 - Pre-Play Store: privacidad/Data Safety, keystore/R8/AAB.
 - UI tests adicionales, CameraScreen, clustering, detekt/ktlint.
