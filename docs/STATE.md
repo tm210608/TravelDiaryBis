@@ -1,32 +1,35 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-11-11 | **Rama:** `develop` (`094fcdb`, pendiente push: 2 commits nuevos + los ~11 anteriores ya subidos) | 169 tests JVM verdes
+**Fecha:** 2026-11-11 | **Rama:** `feature/play-store-release` (2 commits locales, sin push) | 169 tests JVM verdes
 
-## Hecho el 2026-11-11
-- **`develop` subido a GitHub** (antes solo existía en local; ahora trackea `origin/develop`).
-- **detekt + ktlint configurados y en verde** (rama `chore/lint-detekt-ktlint` mergeada ff -> develop, sin borrar):
-  - Plugins en `libs.versions.toml`: detekt 1.23.8, ktlint-gradle 12.3.0. Aplicados en `:app`.
-  - Config: `.editorconfig` (ktlint_official, LF, 140 col, `ij_kotlin_packages_to_use_import_on_demand = androidx.compose.**,kotlinx.coroutines.**`,
-    excepción max-line-length en `SampleData.kt`) y `config/detekt/detekt.yml` (ver abajo).
-  - `verify.sh` ahora corre `ktlintCheck detekt compileDebugKotlin testDebugUnitTest`: el lint bloquea la verificación.
-  - ktlintFormat autorrregló ~1800 avisos; resto a mano (wildcards no-Compose, líneas largas, `Weather.kt` -> `WeatherReading.kt` por rule filename).
-  - detekt 253 avisos -> 0. Arreglos reales: log `Log.w` en `LocationHelper` (ya no traga excepciones), `writePhoto` extraído de
-    `DiaryExporterImpl.export` (NestedBlockDepth), `Instance` -> `instance`, `_allEntries` -> `allEntries`, imports explícitos en
-    `CameraScreen`/`TravelDiaryHomeScreen` (ojo: `cartographyGrid` es extensión de Modifier, se perdió al quitar el wildcard).
-- ROADMAP pendiente: **Play Store release** (siguiente recomendado) y **sync backend** (grande, requiere /spec).
+## Hecho el 2026-11-11 (tarde)
+- **Release Play Store preparado**: `applicationId` -> `com.traveldiary.app` (Play rechaza com.example.*).
+- **Keystore de subida generado**: `upload-keystore.jks` (alias `upload`, RSA 2048, 30 años) + `keystore.properties`
+  (contraseñas aleatorias). Ambos en `.gitignore`. **PENDIENTE: copia de seguridad por el usuario.**
+- `build.gradle.kts`: signingConfig release desde keystore.properties, `isShrinkResources = true`.
+- ProGuard corregido: entidad real `data.local.TravelEntryEntity` + keep RoomDatabase.
+- **Verificado**: `assembleRelease` + `bundleRelease` firmados OK (APK 4,5 MB / **AAB 8,1 MB** en
+  `app/build/outputs/bundle/release/`). verify.sh verde (169 tests, lint/detekt 0).
+- **Docs creados en `docs/play-store/`**: PLAY_STORE_GUIDE.md (guía paso a paso), PRIVACY_POLICY.md
+  (falta `[TU EMAIL DE CONTACTO]`), DATA_SAFETY.md (respuestas del cuestionario: ubicación "compartida"
+  con Open-Meteo + Maps, resto no), STORE_LISTING.md (textos ficha + gráficos pendientes).
 
-## Decisiones vigentes (detekt.yml)
-- Compose exime: FunctionNaming/LongParameterList `ignoreAnnotated Composable`; LongMethod/CyclomaticComplexMethod excluyen `**/ui/**` y `**/navigation/**` (umbral 100).
-- `MagicNumber` desactivado (en UI/dp/sp es ruido); `WildcardImport` excluye `androidx.compose.*`; `ReturnCount` max 5 + guard clauses;
-  `TooGenericExceptionCaught` permite `Exception`/`RuntimeException` (sigue prohibiendo `Throwable`/`Error`); `MaxLineLength` 140 menos `SampleData.kt`.
-- ktlint: no desactivar `discouraged-comment-location` (rompe `if-else-wrapping` y el worker falla con "failed to parse" engañoso).
-- Navigation fijada en **2.8.9**; PDF con `PdfDocument` del framework A4 595x842pt; Xiaomi: popups con `input swipe` corto, `adb -s <serial>`.
+## Siguiente paso
+Continuar guía Play Store: tomar capturas en el móvil para la ficha, que el usuario haga backup del
+keystore, cuenta de dev (25 USD), restricción de la MAPS_API_KEY, publicar política (GitHub Pages).
+Cuentas personales nuevas: ~12-20 testers x 14 días en prueba cerrada antes de producción.
+
+## Decisiones vigentes
+- Release APK tiene otra firma: probarlo en el móvil exige desinstalar debug = pierde datos locales.
+- Data Safety honesto: lat/lon SÍ se envían a api.open-meteo.com y Maps SDK a Google (funcionalidad).
+- detekt/ktlint en verde y en verify.sh; Navigation 2.8.9; Xiaomi popups con `input swipe`.
 - En modo selección, tarjetas del carrusel navegan; selección en filas "Todos los Viajes" o "Todo".
 
 ## Bloqueos
-- Ninguno.
+- Ninguno técnico. Pasos de Play Console son manuales del usuario (cuenta, pago, verificación).
 
 ## Deuda técnica
-- Rama `chore/lint-detekt-ktlint` sin borrar por referencia. `develop` sin push de los 2 commits de lint.
-- PDF: descripción larga con "…" y foto real sin evidencia visual. `popBackStack<Home>`, `onEntryNotFound`, `capturedImageUri` sin ejercicio manual.
-- Pre-Play Store: privacidad/Data Safety, keystore/R8/AAB. UI tests extra, CameraScreen, clustering.
+- `develop` y `feature/play-store-release` sin push. Rama `chore/lint-detekt-ktlint` sin borrar.
+- `kotlinOptions.jvmTarget` deprecated (warning, migrar a compilerOptions DSL algún día).
+- PDF: descripción larga con "…" y foto real sin evidencia visual; `popBackStack<Home>` etc. sin prueba manual.
+- Gráficos de tienda sin hacer: icono 512, feature graphic 1024x500, capturas.
