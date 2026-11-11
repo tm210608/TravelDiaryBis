@@ -1,37 +1,39 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-11-11 | **Rama:** `develop` (`701dcb3`, pendiente push a origin) | 156 tests JVM verdes + 2 instrumentados verdes
+**Fecha:** 2026-11-11 | **Rama:** `develop` (pendiente push a origin, ~9 commits por delante) | 156 tests JVM verdes + instrumentados verdes en 2 emuladores
 
 ## Hecho el 2026-11-11
-- **Infra de UI tests Compose creada y verificada en Xiaomi 2412DPC0AG (adb-WiFi `MVVSE6A6S4IVQ8MJ`)**:
-  `HomeAddEntryFlowTest` (Home > FAB "Nueva entrada" > formulario > Guardar > Home muestra entrada).
-- Nuevos archivos: `androidTest/.../TravelDiaryTestRunner.kt` (runner propio, devuelve
-  `dagger.hilt.android.testing.HiltTestApplication` — `HiltTestRunner` ya no existe en Hilt 2.57),
-  `di/TestDatabaseModule.kt` (`@TestInstallIn` reemplaza `DatabaseModule` con Room in-memory),
-  `ui/HomeAddEntryFlowTest.kt`.
-- Deps: `hilt-android-testing` (2.57.2), `ui-test-junit4-android` (BOM 1.11.4), `espresso-core 3.7.0`
-  explícito (el 3.5.0 transitivo crashea en API 36 por `InputManager.getInstance`),
-  `androidTestImplementation(platform(libs.compose.bom))`, `kspAndroidTest(hilt-compiler)`.
+- **Navegación type-safe mergeada a `develop`** (`feature/nav-type-safe`, merge `22afc9b`):
+  rutas string -> `@Serializable` en `navigation/Destinations.kt` (8 destinos; args en
+  `Home(export)`, `Detail(entryId)`, `EditEntry(entryId)`). Navigation 2.7.7 -> 2.8.9.
+  `Screen.kt` eliminado. Mismo comportamiento: `savedStateHandle`, tabs `popUpTo`/`saveState`,
+  Profile -> `Home(export = true)`.
+- Verificado en emulador `SocialChef_Test` (API 36): flujo completo Add>Camera>Guardar>
+  Detail>Edit(refresh)>tabs>marker>export>rotación. 18 capturas en `docs/specs/nav-type-safe/`.
+  `connectedDebugAndroidTest` verde en 2 emuladores (HomeAddEntryFlowTest + MigrationTest).
+- `AGENTS.md`: preferencias del usuario (explicaciones no técnicas, opción recomendada en
+  cuestionarios, explicar pasos que requieren aprobación). Rama `feature/ui-tests-compose` borrada.
 
 ## Siguiente paso
-- `feature/ui-tests-compose` ya mergeada a `develop`: borrarla SOLO con confirmación.
-- ROADMAP pendiente: nav type-safe, sync backend, Play Store release, PDF export, detekt/ktlint.
+- ROADMAP: `ui-pasaporte-y-contactos` (pulido Fase 2), sync backend, Play Store release,
+  PDF export, detekt/ktlint.
+- Opcional: repetir `connectedDebugAndroidTest` en Xiaomi tras aprobar instalación en el teléfono.
 
 ## Decisiones vigentes
-- androidTest corre con `HiltTestApplication` vía runner propio; NO poner un `@HiltAndroidApp`
-  propio en `androidTest` (error "test roots and app roots in the same compilation unit").
-- Emulador `Medium_Phone_API_36.1` inestable en este host (se ha cerrado solo); preferir Xiaomi.
-- Diálogo de permiso del sistema cubre la app y vacía la jerarquía Compose -> conceder permisos
-  con `uiAutomation.grantRuntimePermission` antes de la acción que los pide.
-- Resto de decisiones: ver sesión anterior (dualidad Cuaderno/Atlas, Open-Meteo, rememberSaveable,
-  ofrecer opciones con recomendación propia).
+- Navigation fijada en **2.8.9** (no subir a 2.9+/2.10+ sin pedirlo: cambian requisitos de SDK).
+- Destinos type-safe en `navigation/Destinations.kt` (`data object` sin args, `data class` con args).
+- Emulador `SocialChef_Test`: IME stylus intercepta campos la 1ª vez (cancelar tutorial);
+  es AVD de otro proyecto: comprobar foreground antes de enviar taps.
+- Xiaomi/MIUI: `adb install` requiere "Instalar por USB" aprobado en el teléfono
+  (`INSTALL_FAILED_USER_RESTRICTED` si no).
+- Resto: sesiones anteriores (Cuaderno/Atlas, Open-Meteo, Medium_Phone inestable -> Xiaomi).
 
 ## Bloqueos
 - Ninguno.
 
 ## Deuda técnica
-- Descripción en FeaturedCard implementada pero no observada.
-- Placeholder de 0 sellos y Empty/Loading de Recuerdos: implementados, sin evidencia.
+- `popBackStack<Home>` (tab Cuaderno), `onEntryNotFound`, `capturedImageUri`->EditEntry:
+  compilados/verificados en código, sin ejercicio manual.
+- Descripción FeaturedCard sin observar; placeholder 0 sellos/Empty Recuerdos sin evidencia.
 - Pre-Play Store: privacidad/Data Safety, keystore/R8/AAB.
-- UI tests adicionales (Detalle, Editar, selección/exportar), nav type-safe, CameraScreen,
-  clustering, detekt/ktlint.
+- UI tests adicionales, CameraScreen, clustering, detekt/ktlint.

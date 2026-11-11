@@ -26,11 +26,13 @@ ui/
   theme/                        Color.kt, Theme.kt
 utils/LocationHelper.kt         ubicacion via play-services-location
 model/SampleData.kt             solo `filterChips`; las listas de ejemplo ya no se usan
-navigation/                     Screen.kt (sealed class con rutas string), TravelDiaryNavGraph.kt
+navigation/                     Destinations.kt (@Serializable type-safe), TravelDiaryNavGraph.kt
 ```
 
 ## Navegación
-Rutas: `home`, `add_entry`, `detail/{entryId}`, `camera`, `map`.
+Destinos type-safe (`@Serializable` en Destinations.kt, Navigation 2.8.9):
+`Home(export=false)`, `AddEntry`, `Detail(entryId)`, `EditEntry(entryId)`, `Camera`,
+`Map`, `Memories`, `Profile`.
 - Home -> Detail / AddEntry / Map (tab "Mapa" del BottomNavigationBar llama `onMapClick`).
 - AddEntry -> Camera; resultado vía `savedStateHandle["capturedImageUri"]`.
 - Map -> Detail al tocar el info window de un marker.
@@ -45,6 +47,5 @@ Rutas: `home`, `add_entry`, `detail/{entryId}`, `camera`, `map`.
 ## Estado conocido / deuda
 - HomeViewModel: chips (Europa/Asia/América/Favoritos) seleccionables pero NO filtran; usa `mutableStateOf`.
 - `insertSampleEntry` sin uso en HomeViewModel.
-- Navegación aún con strings (no type-safe).
 - Iconos `Icons.Filled.ArrowBack` deprecados (usar AutoMirrored) en AddTravelEntry/TravelDetail.
 - CI: `.github/workflows/`.
