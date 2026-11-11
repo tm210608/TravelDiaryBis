@@ -6,7 +6,9 @@
 -keep class * extends dagger.hilt.android.internal.managers.ViewComponentManager$FragmentContextWrapper { *; }
 
 # Keep Room entities
--keep class com.example.traveldiary.model.TravelEntry { *; }
+-keep class com.example.traveldiary.data.local.TravelEntryEntity { *; }
+-keep class * extends androidx.room.RoomDatabase { *; }
+-dontwarn androidx.room.paging.**
 
 # Keep Kotlin Serialization
 -keepattributes *Annotation*, InnerClasses

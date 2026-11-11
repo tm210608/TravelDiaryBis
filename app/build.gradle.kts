@@ -15,8 +15,21 @@ android {
     namespace = "com.example.traveldiary"
     compileSdk = 36
 
+    signingConfigs {
+        create("release") {
+            val keystoreProperties = rootProject.file("keystore.properties")
+            if (keystoreProperties.exists()) {
+                val props = Properties().apply { keystoreProperties.inputStream().use { load(it) } }
+                storeFile = rootProject.file(props.getProperty("storeFile"))
+                storePassword = props.getProperty("storePassword")
+                keyAlias = props.getProperty("keyAlias")
+                keyPassword = props.getProperty("keyPassword")
+            }
+        }
+    }
+
     defaultConfig {
-        applicationId = "com.example.traveldiary"
+        applicationId = "com.traveldiary.app"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
@@ -38,6 +51,8 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }

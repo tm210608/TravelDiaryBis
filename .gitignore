@@ -4,6 +4,7 @@
 build
 captures
 local.properties
+keystore.properties
 *.apk
 *.ap_
 *.aab
