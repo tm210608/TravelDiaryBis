@@ -1,6 +1,6 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-11-11 | **Rama:** `feature/exportar-pdf` (implementación mergeable a `develop`; pendiente push a origin, ~10 commits por delante) | 169 tests JVM verdes + instrumentados verdes en Xiaomi
+**Fecha:** 2026-11-11 | **Rama:** `develop` (`6c90801`, pendiente push a origin, ~11 commits por delante) | 169 tests JVM verdes + instrumentados verdes en Xiaomi
 
 ## Hecho el 2026-11-11
 - **Exportar a PDF implementado y verificado en Xiaomi** (`feature/exportar-pdf`, spec
@@ -24,7 +24,7 @@
   `docs/specs/ui-pasaporte-y-contactos/`; ROADMAP fase 2 cerrada.
 
 ## Siguiente paso
-- Merge `feature/exportar-pdf` -> `develop` (todo verificado).
+- `feature/exportar-pdf` mergeada a `develop` (ff `6c90801`). Rama sin borrar por si hace falta referencia.
 - ROADMAP pendiente: sync backend, Play Store release, detekt/ktlint.
 
 ## Decisiones vigentes
