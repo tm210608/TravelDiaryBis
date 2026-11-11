@@ -34,9 +34,10 @@ orden de fecha ascendente.
       (mismo país => misma rotación entre ejecuciones), rango ±6°.
 - [x] Sellos dibujados en Compose puro: doble borde rectangular + texto mono en caps
       con alpha ~0.75 (efecto entintado), sin assets.
-- [ ] Si no hay sellos, la sección muestra un placeholder "Completa tu primer visado"
-      (no se oculta la cabecera). — implementado en `ProfileScreen` pero NO observado
-      en dispositivo (el diario de verificación tiene 2 países con sello).
+- [x] Si no hay sellos, la sección muestra un placeholder "Completa tu primer visado"
+      (no se oculta la cabecera). — verificado en Xiaomi con
+      `ProfilePassportPlaceholderTest` (BD en memoria vacía): cabecera
+      "Visados y Sellos de Ruta" + placeholder visibles (evidencia-10).
 - [x] Exportar/Importar conservan posición al final, iconos y comportamiento intactos.
 - [x] `MemoriesScreen` Success: grid de 3 columnas sobre fondo de carrete oscuro
       (`#0E0D12` o similar) con columnas de perforaciones (agujeros de carrete) a
