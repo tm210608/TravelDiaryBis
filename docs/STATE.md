@@ -1,6 +1,6 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-11-11 | **Rama:** `feature/ui-tests-compose` (`561cc88`, sin mergear a `develop`) | 156 tests JVM verdes + 2 instrumentados verdes
+**Fecha:** 2026-11-11 | **Rama:** `develop` (`701dcb3`, pendiente push a origin) | 156 tests JVM verdes + 2 instrumentados verdes
 
 ## Hecho el 2026-11-11
 - **Infra de UI tests Compose creada y verificada en Xiaomi 2412DPC0AG (adb-WiFi `MVVSE6A6S4IVQ8MJ`)**:
@@ -14,7 +14,7 @@
   `androidTestImplementation(platform(libs.compose.bom))`, `kspAndroidTest(hilt-compiler)`.
 
 ## Siguiente paso
-- Mergear `feature/ui-tests-compose` a `develop` si se aprueba el estado.
+- `feature/ui-tests-compose` ya mergeada a `develop`: borrarla SOLO con confirmación.
 - ROADMAP pendiente: nav type-safe, sync backend, Play Store release, PDF export, detekt/ktlint.
 
 ## Decisiones vigentes
