@@ -19,7 +19,7 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.traveldiary.TravelDiaryTestRunner"
 
         // Read MAPS_API_KEY from local.properties (gitignored)
         val localProperties = rootProject.file("local.properties")
@@ -115,7 +115,12 @@ dependencies {
     testImplementation(libs.turbine)
     testImplementation(libs.coroutines.test)
 
+    androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.room.testing)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.espresso)
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    androidTestImplementation(libs.hilt.android.testing)
+    kspAndroidTest(libs.hilt.compiler)
 }

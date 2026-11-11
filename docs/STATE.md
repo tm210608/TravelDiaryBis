@@ -1,44 +1,37 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-11-02 | **Rama:** `develop` (`eefb66d`, pendiente push a origin) | 156 tests JVM verdes
+**Fecha:** 2026-11-11 | **Rama:** `feature/ui-tests-compose` (`561cc88`, sin mergear a `develop`) | 156 tests JVM verdes + 2 instrumentados verdes
 
-## Hecho el 2026-11-02 (sesión 2)
-- **Bug `exportRequested` pegajoso corregido y verificado en Xiaomi físico** (merge `eefb66d`,
-  rama `fix/export-requested-sticky`). Causa: el arg nav `export=true` quedaba en el Bundle del
-  backStackEntry y `LaunchedEffect(exportRequested)` re-disparaba `enterSelectionMode()` cada vez
-  que Home re-entraba en composición. Fix: flag `exportHandled` con `rememberSaveable` en
-  `TravelDiaryHomeScreen` (una vez por entry; entry nuevo con export=true vuelve a disparar).
-- Verificación adb-WiFi (`adb-MVVSE6A6S4IVQ8MJ`): Perfil > Exportar diario > `seleccionadas`
-  FOUND > Cerrar selección > Rutas > Volver > ABSENT; y Exportar > Cerrar > abrir entrada
-  (Detalle) > Atrás > ABSENT. Antes del fix ese retorno re-activaba la selección.
-- Notas operativas: adb-WiFi del Xiaomi rota el serial entre conexiones (apareció como
-  `(2)._adb-tls-connect`); el patrón de bloqueo requiere al usuario; los emuladores 5554/5556
-  tenían otras apps del usuario en primer plano.
-- Helper adb útil: `export MSYS_NO_PATHCONV=1` (Git Bash rompe rutas /sdcard), `uiautomator dump`
-  + `exec-out cat`, tap por centro de `bounds`.
+## Hecho el 2026-11-11
+- **Infra de UI tests Compose creada y verificada en Xiaomi 2412DPC0AG (adb-WiFi `MVVSE6A6S4IVQ8MJ`)**:
+  `HomeAddEntryFlowTest` (Home > FAB "Nueva entrada" > formulario > Guardar > Home muestra entrada).
+- Nuevos archivos: `androidTest/.../TravelDiaryTestRunner.kt` (runner propio, devuelve
+  `dagger.hilt.android.testing.HiltTestApplication` — `HiltTestRunner` ya no existe en Hilt 2.57),
+  `di/TestDatabaseModule.kt` (`@TestInstallIn` reemplaza `DatabaseModule` con Room in-memory),
+  `ui/HomeAddEntryFlowTest.kt`.
+- Deps: `hilt-android-testing` (2.57.2), `ui-test-junit4-android` (BOM 1.11.4), `espresso-core 3.7.0`
+  explícito (el 3.5.0 transitivo crashea en API 36 por `InputManager.getInstance`),
+  `androidTestImplementation(platform(libs.compose.bom))`, `kspAndroidTest(hilt-compiler)`.
 
 ## Siguiente paso
+- Mergear `feature/ui-tests-compose` a `develop` si se aprueba el estado.
 - ROADMAP pendiente: nav type-safe, sync backend, Play Store release, PDF export, detekt/ktlint.
-- Ramas viejas existentes (`feature/cuadricula-visible`, `feature/ui-pasaporte-y-contactos`,
-  `feature/filter-chips`, `feature/home-filter-chips`): borrar SOLO con confirmación.
-- `fix/export-requested-sticky` ya mergeada: borrarla SOLO con confirmación.
 
 ## Decisiones vigentes
-- Dualidad visual (sin dynamic color): Claro = Cuaderno de Campo; Oscuro = Atlas Nocturno.
-- Metáfora física: billete + cuadrícula + telemetría mono + sellos/carrete + nav metafórico.
-- Meteo: Open-Meteo gratis sin key; aditivo opcional, nunca rompe offline-first.
-- `local.properties` no se commitea. Push solo con confirmación (salvo mantener
-  `origin/develop` al día tras merges verificados). Commits `feat|fix|test|docs|chore:`.
-- Args nav de un solo uso: consumir con flag `rememberSaveable` (patrón `exportHandled`).
-- Usuario pidió: al ofrecer opciones, incluir siempre recomendación propia.
+- androidTest corre con `HiltTestApplication` vía runner propio; NO poner un `@HiltAndroidApp`
+  propio en `androidTest` (error "test roots and app roots in the same compilation unit").
+- Emulador `Medium_Phone_API_36.1` inestable en este host (se ha cerrado solo); preferir Xiaomi.
+- Diálogo de permiso del sistema cubre la app y vacía la jerarquía Compose -> conceder permisos
+  con `uiAutomation.grantRuntimePermission` antes de la acción que los pide.
+- Resto de decisiones: ver sesión anterior (dualidad Cuaderno/Atlas, Open-Meteo, rememberSaveable,
+  ofrecer opciones con recomendación propia).
 
 ## Bloqueos
-- Ninguno. Para pruebas offline: script `nohup` on-device que desconecte radios, capture a
-  /sdcard y reconecte WiFi (`svc wifi disable` mata adb-WiFi y la depuración inalámbrica).
+- Ninguno.
 
 ## Deuda técnica
-- Descripción en FeaturedCard implementada pero no observada (entradas sin descripción).
+- Descripción en FeaturedCard implementada pero no observada.
 - Placeholder de 0 sellos y Empty/Loading de Recuerdos: implementados, sin evidencia.
 - Pre-Play Store: privacidad/Data Safety, keystore/R8/AAB.
-- UI tests Compose, sync online, nav type-safe, CameraScreen (`LocalLifecycleOwner`),
+- UI tests adicionales (Detalle, Editar, selección/exportar), nav type-safe, CameraScreen,
   clustering, detekt/ktlint.
