@@ -32,6 +32,11 @@ ViewModels con `stateIn(WhileSubscribed)`: usar `backgroundScope.launch { vm.sta
 
 ## Reglas
 - `local.properties` está ignorado: no leer ni commitear. Contiene `MAPS_API_KEY`.
+- Explicaciones para el usuario (poco perfil técnico): al resumir una SPEC, plan o
+  resultado, explicarlo en lenguaje sencillo, sin jerga. Todo paso que requiera su
+  aprobación se le explica bien antes de pedirla.
+- En los cuestionarios (ask_user_question), marcar siempre cuál es la opción
+  recomendada.
 - No hacer `git push`, borrar ramas/stash ni archivos existentes sin confirmación.
 - Commits: `feat|fix|test|docs|chore: mensaje`. Una rama por feature (`feature/...`) desde `develop`.
 - No añadir ni quitar comentarios en código salvo que se pida.
