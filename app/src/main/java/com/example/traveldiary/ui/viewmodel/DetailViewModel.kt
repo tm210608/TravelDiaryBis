@@ -14,41 +14,49 @@ import javax.inject.Inject
 
 sealed interface DetailUiState {
     data object Loading : DetailUiState
+
     data class Success(val entry: TravelEntry) : DetailUiState
+
     data class Error(val message: String) : DetailUiState
 }
 
 @HiltViewModel
-class DetailViewModel @Inject constructor(
-    private val getEntryByIdUseCase: GetEntryByIdUseCase,
-    private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
-) : ViewModel() {
+class DetailViewModel
+    @Inject
+    constructor(
+        private val getEntryByIdUseCase: GetEntryByIdUseCase,
+        private val toggleFavouriteUseCase: ToggleFavouriteUseCase,
+    ) : ViewModel() {
+        private val _uiState = MutableStateFlow<DetailUiState>(DetailUiState.Loading)
+        val uiState: StateFlow<DetailUiState> = _uiState.asStateFlow()
 
-    private val _uiState = MutableStateFlow<DetailUiState>(DetailUiState.Loading)
-    val uiState: StateFlow<DetailUiState> = _uiState.asStateFlow()
-
-    fun loadEntry(id: Int) {
-        viewModelScope.launch {
-            _uiState.value = DetailUiState.Loading
-            try {
-                val entry = getEntryByIdUseCase(id)
-                _uiState.value = if (entry != null) {
-                    DetailUiState.Success(entry)
-                } else {
-                    DetailUiState.Error("Entrada no encontrada")
+        fun loadEntry(id: Int) {
+            viewModelScope.launch {
+                _uiState.value = DetailUiState.Loading
+                try {
+                    val entry = getEntryByIdUseCase(id)
+                    _uiState.value =
+                        if (entry != null) {
+                            DetailUiState.Success(entry)
+                        } else {
+                            DetailUiState.Error("Entrada no encontrada")
+                        }
+                } catch (e: Exception) {
+                    _uiState.value = DetailUiState.Error("Error al cargar: ${e.message}")
                 }
-            } catch (e: Exception) {
-                _uiState.value = DetailUiState.Error("Error al cargar: ${e.message}")
+            }
+        }
+
+        fun toggleFavourite(
+            id: Int,
+            current: Boolean,
+        ) {
+            viewModelScope.launch {
+                try {
+                    toggleFavouriteUseCase(id, current)
+                    loadEntry(id)
+                } catch (_: Exception) {
+                }
             }
         }
     }
-
-    fun toggleFavourite(id: Int, current: Boolean) {
-        viewModelScope.launch {
-            try {
-                toggleFavouriteUseCase(id, current)
-                loadEntry(id)
-            } catch (_: Exception) { }
-        }
-    }
-}

@@ -9,23 +9,22 @@ import androidx.room.TypeConverters
 @Database(entities = [TravelEntryEntity::class], version = 3, exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class TravelDatabase : RoomDatabase() {
-
     abstract fun travelDao(): TravelDao
 
     companion object {
         @Volatile
-        private var Instance: TravelDatabase? = null
+        private var instance: TravelDatabase? = null
 
         fun getDatabase(context: Context): TravelDatabase {
-            return Instance ?: synchronized(this) {
+            return instance ?: synchronized(this) {
                 Room.databaseBuilder(
                     context,
                     TravelDatabase::class.java,
-                    "travel_database"
+                    "travel_database",
                 )
-                .addMigrations(MIGRATION_2_3)
-                .build()
-                .also { Instance = it }
+                    .addMigrations(MIGRATION_2_3)
+                    .build()
+                    .also { instance = it }
             }
         }
     }

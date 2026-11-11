@@ -11,7 +11,6 @@ import com.example.traveldiary.domain.usecase.ImportEntriesUseCase
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import java.io.IOException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -21,10 +20,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import java.io.IOException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProfileViewModelTest {
-
     @get:Rule
     val rule = TestDispatcherRule()
 
@@ -39,71 +38,77 @@ class ProfileViewModelTest {
     }
 
     @Test
-    fun `uiState is Loading initially`() = runTest {
-        val viewModel = viewModel()
-        assertEquals(ProfileUiState.Loading, viewModel.uiState.value)
-    }
+    fun `uiState is Loading initially`() =
+        runTest {
+            val viewModel = viewModel()
+            assertEquals(ProfileUiState.Loading, viewModel.uiState.value)
+        }
 
     @Test
-    fun `uiState becomes Success with stats and passport`() = runTest {
-        val stats = TravelStats(totalTrips = 5, favourites = 2, countries = 3, continents = 2)
-        val passport = PassportData(kmTotal = 1234.0, legs = 3, daysOnRoute = 5, stamps = emptyList())
-        every { getTravelStatsUseCase() } returns flowOf(stats)
-        every { getPassportUseCase() } returns flowOf(passport)
+    fun `uiState becomes Success with stats and passport`() =
+        runTest {
+            val stats = TravelStats(totalTrips = 5, favourites = 2, countries = 3, continents = 2)
+            val passport = PassportData(kmTotal = 1234.0, legs = 3, daysOnRoute = 5, stamps = emptyList())
+            every { getTravelStatsUseCase() } returns flowOf(stats)
+            every { getPassportUseCase() } returns flowOf(passport)
 
-        val viewModel = ProfileViewModel(getTravelStatsUseCase, getPassportUseCase, importEntriesUseCase)
-        backgroundScope.launch { viewModel.uiState.collect {} }
-        advanceUntilIdle()
+            val viewModel = ProfileViewModel(getTravelStatsUseCase, getPassportUseCase, importEntriesUseCase)
+            backgroundScope.launch { viewModel.uiState.collect {} }
+            advanceUntilIdle()
 
-        val state = viewModel.uiState.value
-        assertTrue(state is ProfileUiState.Success)
-        assertEquals(stats, (state as ProfileUiState.Success).stats)
-        assertEquals(passport, state.passport)
-    }
-
-    @Test
-    fun `importDiary emits Success with count`() = runTest {
-        val entry = TravelEntry(title = "T", location = "L", country = "C", tag = "t", imageUrl = "u")
-        coEvery { importEntriesUseCase(any()) } returns ImportResult.Success(listOf(entry, entry))
-        val viewModel = viewModel()
-
-        viewModel.importDiary("content://zip")
-        advanceUntilIdle()
-
-        assertEquals(ImportUiState.Success(2), viewModel.importState.value)
-    }
+            val state = viewModel.uiState.value
+            assertTrue(state is ProfileUiState.Success)
+            assertEquals(stats, (state as ProfileUiState.Success).stats)
+            assertEquals(passport, state.passport)
+        }
 
     @Test
-    fun `importDiary maps result errors to messages`() = runTest {
-        coEvery { importEntriesUseCase(any()) } returns ImportResult.UnsupportedVersion
-        val viewModel = viewModel()
+    fun `importDiary emits Success with count`() =
+        runTest {
+            val entry = TravelEntry(title = "T", location = "L", country = "C", tag = "t", imageUrl = "u")
+            coEvery { importEntriesUseCase(any()) } returns ImportResult.Success(listOf(entry, entry))
+            val viewModel = viewModel()
 
-        viewModel.importDiary("content://zip")
-        advanceUntilIdle()
+            viewModel.importDiary("content://zip")
+            advanceUntilIdle()
 
-        assertEquals(ImportUiState.Error("Versión de diario no soportada"), viewModel.importState.value)
-    }
-
-    @Test
-    fun `importDiary emits Error on exception`() = runTest {
-        coEvery { importEntriesUseCase(any()) } throws IOException("disk")
-        val viewModel = viewModel()
-
-        viewModel.importDiary("content://zip")
-        advanceUntilIdle()
-
-        assertEquals(ImportUiState.Error("disk"), viewModel.importState.value)
-    }
+            assertEquals(ImportUiState.Success(2), viewModel.importState.value)
+        }
 
     @Test
-    fun `onImportStateConsumed resets to Idle`() = runTest {
-        coEvery { importEntriesUseCase(any()) } returns ImportResult.Empty
-        val viewModel = viewModel()
-        viewModel.importDiary("content://zip")
-        advanceUntilIdle()
+    fun `importDiary maps result errors to messages`() =
+        runTest {
+            coEvery { importEntriesUseCase(any()) } returns ImportResult.UnsupportedVersion
+            val viewModel = viewModel()
 
-        viewModel.onImportStateConsumed()
+            viewModel.importDiary("content://zip")
+            advanceUntilIdle()
 
-        assertEquals(ImportUiState.Idle, viewModel.importState.value)
-    }
+            assertEquals(ImportUiState.Error("Versión de diario no soportada"), viewModel.importState.value)
+        }
+
+    @Test
+    fun `importDiary emits Error on exception`() =
+        runTest {
+            coEvery { importEntriesUseCase(any()) } throws IOException("disk")
+            val viewModel = viewModel()
+
+            viewModel.importDiary("content://zip")
+            advanceUntilIdle()
+
+            assertEquals(ImportUiState.Error("disk"), viewModel.importState.value)
+        }
+
+    @Test
+    fun `onImportStateConsumed resets to Idle`() =
+        runTest {
+            coEvery { importEntriesUseCase(any()) } returns ImportResult.Empty
+            val viewModel = viewModel()
+            viewModel.importDiary("content://zip")
+            advanceUntilIdle()
+
+            viewModel.onImportStateConsumed()
+
+            assertEquals(ImportUiState.Idle, viewModel.importState.value)
+        }
 }

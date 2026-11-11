@@ -21,7 +21,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object ExportModule {
-
     @Provides
     @Singleton
     fun provideDiaryExporter(): DiaryExporter = DiaryExporterImpl()

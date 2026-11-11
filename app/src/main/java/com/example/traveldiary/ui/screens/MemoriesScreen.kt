@@ -38,7 +38,7 @@ import com.example.traveldiary.ui.viewmodel.MemoriesViewModel
 fun MemoriesScreen(
     onEntryClick: (TravelEntry) -> Unit = {},
     onTabSelected: (Int) -> Unit = {},
-    viewModel: MemoriesViewModel = hiltViewModel()
+    viewModel: MemoriesViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -52,9 +52,10 @@ fun MemoriesScreen(
         },
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
         ) {
             Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)) {
                 Text(
@@ -87,17 +88,19 @@ fun MemoriesScreen(
                 }
                 is MemoriesUiState.Empty -> {
                     Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 32.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 32.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                     ) {
                         Box(
-                            modifier = Modifier
-                                .size(72.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f)),
+                            modifier =
+                                Modifier
+                                    .size(72.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f)),
                             contentAlignment = Alignment.Center,
                         ) {
                             Icon(
@@ -126,9 +129,13 @@ fun MemoriesScreen(
                     Box(modifier = Modifier.fillMaxSize().filmStrip()) {
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(3),
-                            contentPadding = PaddingValues(
-                                start = 22.dp, end = 22.dp, top = 14.dp, bottom = 14.dp,
-                            ),
+                            contentPadding =
+                                PaddingValues(
+                                    start = 22.dp,
+                                    end = 22.dp,
+                                    top = 14.dp,
+                                    bottom = 14.dp,
+                                ),
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalArrangement = Arrangement.spacedBy(14.dp),
                         ) {
@@ -149,13 +156,18 @@ fun MemoriesScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MemoryCell(entry: TravelEntry, frameNumber: String, onClick: () -> Unit) {
+private fun MemoryCell(
+    entry: TravelEntry,
+    frameNumber: String,
+    onClick: () -> Unit,
+) {
     Column {
         Card(
             onClick = onClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f),
             shape = RoundedCornerShape(4.dp),
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
@@ -166,17 +178,19 @@ private fun MemoryCell(entry: TravelEntry, frameNumber: String, onClick: () -> U
                     modifier = Modifier.fillMaxSize(),
                 )
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    MaterialTheme.colorScheme.scrim.copy(alpha = 0.8f),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors =
+                                        listOf(
+                                            Color.Transparent,
+                                            MaterialTheme.colorScheme.scrim.copy(alpha = 0.8f),
+                                        ),
+                                    startY = 120f,
                                 ),
-                                startY = 120f,
-                            )
-                        )
+                            ),
                 )
                 Text(
                     text = entry.title,
@@ -184,9 +198,10 @@ private fun MemoryCell(entry: TravelEntry, frameNumber: String, onClick: () -> U
                     color = Color.White,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(8.dp),
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(8.dp),
                 )
             }
         }

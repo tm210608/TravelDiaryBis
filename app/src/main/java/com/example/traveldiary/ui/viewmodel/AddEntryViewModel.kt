@@ -12,41 +12,46 @@ import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
-class AddEntryViewModel @Inject constructor(
-    private val addEntryUseCase: AddEntryUseCase
-) : ViewModel() {
+class AddEntryViewModel
+    @Inject
+    constructor(
+        private val addEntryUseCase: AddEntryUseCase,
+    ) : ViewModel() {
+        var uiState by mutableStateOf(AddEntryUiState())
+            private set
 
-    var uiState by mutableStateOf(AddEntryUiState())
-        private set
+        fun updateUiState(newDetails: EntryDetails) {
+            uiState = uiState.copy(entryDetails = newDetails, isEntryValid = validateInput(newDetails))
+        }
 
-    fun updateUiState(newDetails: EntryDetails) {
-        uiState = uiState.copy(entryDetails = newDetails, isEntryValid = validateInput(newDetails))
-    }
+        fun updateImageUrl(uri: String) {
+            uiState = uiState.copy(entryDetails = uiState.entryDetails.copy(imageUrl = uri))
+        }
 
-    fun updateImageUrl(uri: String) {
-        uiState = uiState.copy(entryDetails = uiState.entryDetails.copy(imageUrl = uri))
-    }
+        private fun validateInput(uiState: EntryDetails): Boolean {
+            return with(uiState) {
+                title.isNotBlank() && location.isNotBlank() && country.isNotBlank()
+            }
+        }
 
-    private fun validateInput(uiState: EntryDetails): Boolean {
-        return with(uiState) {
-            title.isNotBlank() && location.isNotBlank() && country.isNotBlank()
+        suspend fun saveEntry(
+            latitude: Double? = null,
+            longitude: Double? = null,
+        ) {
+            if (validateInput(uiState.entryDetails)) {
+                try {
+                    addEntryUseCase(
+                        uiState.entryDetails.copy(latitude = latitude, longitude = longitude).toTravelEntry(),
+                    )
+                } catch (_: Exception) {
+                }
+            }
         }
     }
-
-    suspend fun saveEntry(latitude: Double? = null, longitude: Double? = null) {
-        if (validateInput(uiState.entryDetails)) {
-            try {
-                addEntryUseCase(
-                    uiState.entryDetails.copy(latitude = latitude, longitude = longitude).toTravelEntry()
-                )
-            } catch (_: Exception) { }
-        }
-    }
-}
 
 data class AddEntryUiState(
     val entryDetails: EntryDetails = EntryDetails(),
-    val isEntryValid: Boolean = false
+    val isEntryValid: Boolean = false,
 )
 
 data class EntryDetails(
@@ -64,17 +69,18 @@ data class EntryDetails(
     val uuid: String = UUID.randomUUID().toString(),
 )
 
-fun EntryDetails.toTravelEntry(): TravelEntry = TravelEntry(
-    id = id,
-    title = title,
-    location = location,
-    country = country,
-    date = date,
-    tag = tag,
-    description = description,
-    imageUrl = imageUrl,
-    latitude = latitude,
-    longitude = longitude,
-    isFavourite = isFavourite,
-    uuid = uuid,
-)
+fun EntryDetails.toTravelEntry(): TravelEntry =
+    TravelEntry(
+        id = id,
+        title = title,
+        location = location,
+        country = country,
+        date = date,
+        tag = tag,
+        description = description,
+        imageUrl = imageUrl,
+        latitude = latitude,
+        longitude = longitude,
+        isFavourite = isFavourite,
+        uuid = uuid,
+    )

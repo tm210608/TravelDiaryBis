@@ -16,11 +16,11 @@ import javax.inject.Singleton
 @Module
 @TestInstallIn(components = [SingletonComponent::class], replaces = [DatabaseModule::class])
 object TestDatabaseModule {
-
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): TravelDatabase =
-        Room.inMemoryDatabaseBuilder(context, TravelDatabase::class.java).build()
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+    ): TravelDatabase = Room.inMemoryDatabaseBuilder(context, TravelDatabase::class.java).build()
 
     @Provides
     fun provideTravelDao(database: TravelDatabase): TravelDao = database.travelDao()

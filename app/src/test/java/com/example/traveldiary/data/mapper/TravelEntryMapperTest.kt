@@ -1,28 +1,27 @@
 package com.example.traveldiary.data.mapper
 
 import com.example.traveldiary.data.local.TravelEntryEntity
-import com.example.traveldiary.domain.model.TravelEntry
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.Instant
 
 class TravelEntryMapperTest {
-
     private val now = Instant.now()
 
-    private val entity = TravelEntryEntity(
-        id = 1,
-        title = "Test Trip",
-        location = "Barcelona",
-        country = "Spain",
-        date = now,
-        tag = "City",
-        imageUrl = "https://example.com/image.jpg",
-        description = "Amazing trip",
-        latitude = 41.3874,
-        longitude = 2.1686,
-        isFavourite = true,
-    )
+    private val entity =
+        TravelEntryEntity(
+            id = 1,
+            title = "Test Trip",
+            location = "Barcelona",
+            country = "Spain",
+            date = now,
+            tag = "City",
+            imageUrl = "https://example.com/image.jpg",
+            description = "Amazing trip",
+            latitude = 41.3874,
+            longitude = 2.1686,
+            isFavourite = true,
+        )
 
     @Test
     fun `entity to domain maps all fields correctly`() {
@@ -87,13 +86,14 @@ class TravelEntryMapperTest {
 
     @Test
     fun `maps default values correctly`() {
-        val defaultEntity = TravelEntryEntity(
-            title = "Minimal",
-            location = "X",
-            country = "Y",
-            tag = "Trip",
-            imageUrl = "url",
-        )
+        val defaultEntity =
+            TravelEntryEntity(
+                title = "Minimal",
+                location = "X",
+                country = "Y",
+                tag = "Trip",
+                imageUrl = "url",
+            )
         val domain = defaultEntity.toDomain()
 
         assertEquals(0, domain.id)

@@ -5,7 +5,6 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 
 class ContinentTest {
-
     @Test
     fun `continentOf maps european countries`() {
         assertEquals(Continent.EUROPE, continentOf("France"))

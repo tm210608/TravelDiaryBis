@@ -13,23 +13,26 @@ import javax.inject.Inject
 
 sealed interface MapUiState {
     data object Loading : MapUiState
+
     data class Success(val entries: List<TravelEntry>) : MapUiState
+
     data object Empty : MapUiState
 }
 
 @HiltViewModel
-class MapViewModel @Inject constructor(
-    private val getEntriesWithLocationUseCase: GetEntriesWithLocationUseCase
-) : ViewModel() {
-
-    val uiState: StateFlow<MapUiState> =
-        getEntriesWithLocationUseCase()
-            .map { entries ->
-                if (entries.isEmpty()) {
-                    MapUiState.Empty
-                } else {
-                    MapUiState.Success(entries)
+class MapViewModel
+    @Inject
+    constructor(
+        private val getEntriesWithLocationUseCase: GetEntriesWithLocationUseCase,
+    ) : ViewModel() {
+        val uiState: StateFlow<MapUiState> =
+            getEntriesWithLocationUseCase()
+                .map { entries ->
+                    if (entries.isEmpty()) {
+                        MapUiState.Empty
+                    } else {
+                        MapUiState.Success(entries)
+                    }
                 }
-            }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MapUiState.Loading)
-}
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MapUiState.Loading)
+    }

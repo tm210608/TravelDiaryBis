@@ -4,5 +4,9 @@ import java.io.InputStream
 
 interface ImportStorage {
     fun openInputStream(sourceUri: String): InputStream?
-    fun savePhoto(fileName: String, bytes: ByteArray): String?
+
+    fun savePhoto(
+        fileName: String,
+        bytes: ByteArray,
+    ): String?
 }

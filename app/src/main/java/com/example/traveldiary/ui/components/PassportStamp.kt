@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,13 +29,14 @@ fun PassportStamp(
 ) {
     val date = stamp.firstVisit.formatToTicket()
     Box(
-        modifier = modifier
-            .rotate(stamp.rotation)
-            .alpha(0.75f)
-            .border(2.dp, ink, RoundedCornerShape(6.dp))
-            .padding(3.dp)
-            .border(1.dp, ink, RoundedCornerShape(4.dp))
-            .padding(horizontal = 12.dp, vertical = 9.dp),
+        modifier =
+            modifier
+                .rotate(stamp.rotation)
+                .alpha(0.75f)
+                .border(2.dp, ink, RoundedCornerShape(6.dp))
+                .padding(3.dp)
+                .border(1.dp, ink, RoundedCornerShape(4.dp))
+                .padding(horizontal = 12.dp, vertical = 9.dp),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

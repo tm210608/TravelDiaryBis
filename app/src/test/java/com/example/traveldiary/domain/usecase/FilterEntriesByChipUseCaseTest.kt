@@ -5,20 +5,30 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class FilterEntriesByChipUseCaseTest {
-
     private val useCase = FilterEntriesByChipUseCase()
 
-    private fun entry(id: Int, country: String, isFavourite: Boolean = false) =
-        TravelEntry(id = id, title = "T$id", location = "L", country = country,
-            tag = "X", imageUrl = "url", isFavourite = isFavourite)
-
-    private val entries = listOf(
-        entry(1, "France", isFavourite = true),
-        entry(2, "Japan"),
-        entry(3, "Brazil"),
-        entry(4, "Atlantis", isFavourite = true),
-        entry(5, ""),
+    private fun entry(
+        id: Int,
+        country: String,
+        isFavourite: Boolean = false,
+    ) = TravelEntry(
+        id = id,
+        title = "T$id",
+        location = "L",
+        country = country,
+        tag = "X",
+        imageUrl = "url",
+        isFavourite = isFavourite,
     )
+
+    private val entries =
+        listOf(
+            entry(1, "France", isFavourite = true),
+            entry(2, "Japan"),
+            entry(3, "Brazil"),
+            entry(4, "Atlantis", isFavourite = true),
+            entry(5, ""),
+        )
 
     @Test
     fun `Todo returns all entries`() {

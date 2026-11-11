@@ -32,26 +32,27 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import java.io.File
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 import java.util.concurrent.Executor
 
 @Composable
 fun CameraScreen(
     onImageCaptured: (Uri) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
 ) {
     val context = LocalContext.current
     var hasCameraPermission by remember { mutableStateOf(checkCameraPermission(context)) }
 
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        hasCameraPermission = granted
-        if (!granted) {
-            Toast.makeText(context, "Permiso de c\u00e1mara requerido", Toast.LENGTH_LONG).show()
-            onClose()
+    val permissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission(),
+        ) { granted ->
+            hasCameraPermission = granted
+            if (!granted) {
+                Toast.makeText(context, "Permiso de c\u00e1mara requerido", Toast.LENGTH_LONG).show()
+                onClose()
+            }
         }
-    }
 
     LaunchedEffect(Unit) {
         if (!hasCameraPermission) {
@@ -62,7 +63,7 @@ fun CameraScreen(
     if (hasCameraPermission) {
         CameraPreview(
             onImageCaptured = onImageCaptured,
-            onClose = onClose
+            onClose = onClose,
         )
     } else {
         Box(modifier = Modifier.fillMaxSize().background(Color.Black), contentAlignment = Alignment.Center) {
@@ -78,7 +79,7 @@ fun CameraScreen(
 @Composable
 private fun CameraPreview(
     onImageCaptured: (Uri) -> Unit,
-    onClose: () -> Unit
+    onClose: () -> Unit,
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -91,9 +92,10 @@ private fun CameraPreview(
         val cameraProviderFuture = ProcessCameraProvider.getInstance(context)
         cameraProviderFuture.addListener({
             val cameraProvider = cameraProviderFuture.get()
-            val preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(previewView.surfaceProvider)
-            }
+            val preview =
+                Preview.Builder().build().also {
+                    it.setSurfaceProvider(previewView.surfaceProvider)
+                }
             try {
                 cameraProvider.unbindAll()
                 cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageCapture)
@@ -106,57 +108,60 @@ private fun CameraPreview(
     Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
         AndroidView(
             factory = { previewView },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         )
 
         IconButton(
             onClick = onClose,
-            modifier = Modifier
-                .padding(top = 48.dp, start = 16.dp)
-                .background(Color.Black.copy(alpha = 0.5f), CircleShape)
+            modifier =
+                Modifier
+                    .padding(top = 48.dp, start = 16.dp)
+                    .background(Color.Black.copy(alpha = 0.5f), CircleShape),
         ) {
             Icon(Icons.Default.Close, contentDescription = "Cerrar", tint = Color.White)
         }
 
         Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 48.dp)
-                .size(80.dp)
-                .border(4.dp, Color.White, CircleShape)
-                .padding(6.dp)
-                .background(Color.White, CircleShape)
-                .size(60.dp)
-                .clickable {
-                    takePhoto(
-                        imageCapture = imageCapture,
-                        context = context,
-                        executor = ContextCompat.getMainExecutor(context),
-                        onImageCaptured = onImageCaptured
-                    )
-                }
+            modifier =
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 48.dp)
+                    .size(80.dp)
+                    .border(4.dp, Color.White, CircleShape)
+                    .padding(6.dp)
+                    .background(Color.White, CircleShape)
+                    .size(60.dp)
+                    .clickable {
+                        takePhoto(
+                            imageCapture = imageCapture,
+                            context = context,
+                            executor = ContextCompat.getMainExecutor(context),
+                            onImageCaptured = onImageCaptured,
+                        )
+                    },
         )
     }
 }
 
 private fun checkCameraPermission(context: Context): Boolean {
     return ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==
-            android.content.pm.PackageManager.PERMISSION_GRANTED
+        android.content.pm.PackageManager.PERMISSION_GRANTED
 }
 
 private fun takePhoto(
     imageCapture: ImageCapture,
     context: Context,
     executor: Executor,
-    onImageCaptured: (Uri) -> Unit
+    onImageCaptured: (Uri) -> Unit,
 ) {
     val photoDir = File(context.filesDir, "photos")
     if (!photoDir.exists()) photoDir.mkdirs()
 
-    val photoFile = File(
-        photoDir,
-        SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US).format(System.currentTimeMillis()) + ".jpg"
-    )
+    val photoFile =
+        File(
+            photoDir,
+            SimpleDateFormat("yyyyMMdd-HHmmss", Locale.US).format(System.currentTimeMillis()) + ".jpg",
+        )
 
     val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
@@ -172,6 +177,6 @@ private fun takePhoto(
             override fun onError(exception: ImageCaptureException) {
                 Log.e("CameraScreen", "Fallo al capturar la foto: ${exception.message}", exception)
             }
-        }
+        },
     )
 }

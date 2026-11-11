@@ -34,7 +34,6 @@ import com.example.traveldiary.domain.model.hasGps
 import com.example.traveldiary.domain.model.telemetryLine
 import com.example.traveldiary.domain.model.toCardinalLat
 import com.example.traveldiary.domain.model.toCardinalLon
-import com.example.traveldiary.ui.theme.MonoEyebrow
 import com.example.traveldiary.ui.theme.MonoStubDay
 import com.example.traveldiary.ui.theme.MonoStubMeta
 import com.example.traveldiary.ui.theme.MonoTelemetry
@@ -46,10 +45,11 @@ fun FeaturedEntriesRow(
     weatherByEntryId: Map<Int, WeatherReading> = emptyMap(),
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         entries.forEach { entry ->
@@ -78,19 +78,20 @@ fun FeaturedCard(
 
     Card(
         onClick = onClick,
-        modifier = Modifier
-            .width(240.dp)
-            .height(218.dp)
-            .graphicsLayer(scaleX = scale, scaleY = scale)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = {
-                        isPressed = true
-                        tryAwaitRelease()
-                        isPressed = false
-                    }
-                )
-            },
+        modifier =
+            Modifier
+                .width(240.dp)
+                .height(218.dp)
+                .graphicsLayer(scaleX = scale, scaleY = scale)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onPress = {
+                            isPressed = true
+                            tryAwaitRelease()
+                            isPressed = false
+                        },
+                    )
+                },
         shape = ticketShape(),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
@@ -103,23 +104,26 @@ fun FeaturedCard(
             )
 
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(
-                                Color.Transparent,
-                                MaterialTheme.colorScheme.scrim.copy(alpha = 0.82f),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                colors =
+                                    listOf(
+                                        Color.Transparent,
+                                        MaterialTheme.colorScheme.scrim.copy(alpha = 0.82f),
+                                    ),
+                                startY = 100f,
                             ),
-                            startY = 100f,
-                        )
-                    )
+                        ),
             )
 
             Row(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(10.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.TopStart)
+                        .padding(10.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 Surface(
@@ -150,12 +154,13 @@ fun FeaturedCard(
 
             IconButton(
                 onClick = { favourite = !favourite },
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.20f)),
+                modifier =
+                    Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(8.dp)
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.20f)),
             ) {
                 Icon(
                     imageVector = if (favourite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
@@ -166,16 +171,20 @@ fun FeaturedCard(
             }
 
             Column(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(14.dp),
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(14.dp),
             ) {
                 Text(
-                    text = (weather?.formatWeatherTelemetry() ?: "") + if (entry.hasGps) {
-                        "${entry.latitude!!.toCardinalLat()} · ${entry.longitude!!.toCardinalLon()} · ${entry.date.formatToCompact()}"
-                    } else {
-                        entry.date.formatToCompact()
-                    },
+                    text =
+                        (weather?.formatWeatherTelemetry() ?: "") +
+                            if (entry.hasGps) {
+                                "${entry.latitude!!.toCardinalLat()} · ${entry.longitude!!.toCardinalLon()} · " +
+                                    entry.date.formatToCompact()
+                            } else {
+                                entry.date.formatToCompact()
+                            },
                     style = MonoTelemetry,
                     color = Color.White.copy(alpha = 0.85f),
                     maxLines = 1,
@@ -222,25 +231,28 @@ fun EntryListCard(
 
     Card(
         onClick = onClick,
-        modifier = modifier
-            .graphicsLayer(scaleX = scale, scaleY = scale)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = {
-                        isPressed = true
-                        tryAwaitRelease()
-                        isPressed = false
-                    }
-                )
-            },
+        modifier =
+            modifier
+                .graphicsLayer(scaleX = scale, scaleY = scale)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onPress = {
+                            isPressed = true
+                            tryAwaitRelease()
+                            isPressed = false
+                        },
+                    )
+                },
         shape = ticketShape(),
-        colors = CardDefaults.cardColors(
-            containerColor = if (selected) {
-                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
-            } else {
-                MaterialTheme.colorScheme.surfaceContainer
-            }
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor =
+                    if (selected) {
+                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
+                    } else {
+                        MaterialTheme.colorScheme.surfaceContainer
+                    },
+            ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
     ) {
         Row(
@@ -258,28 +270,31 @@ fun EntryListCard(
                 model = entry.imageUrl,
                 contentDescription = entry.title,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .padding(start = if (selectionMode) 4.dp else 14.dp)
-                    .width(72.dp)
-                    .fillMaxHeight()
-                    .padding(vertical = 10.dp)
-                    .clip(RoundedCornerShape(10.dp)),
+                modifier =
+                    Modifier
+                        .padding(start = if (selectionMode) 4.dp else 14.dp)
+                        .width(72.dp)
+                        .fillMaxHeight()
+                        .padding(vertical = 10.dp)
+                        .clip(RoundedCornerShape(10.dp)),
             )
 
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                modifier =
+                    Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(horizontal = 12.dp, vertical = 10.dp),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
                 Column {
                     Text(
-                        text = if (entry.country.isNotBlank()) {
-                            "${entry.tag.uppercase()} · ${entry.country.uppercase()}"
-                        } else {
-                            entry.tag.uppercase()
-                        },
+                        text =
+                            if (entry.country.isNotBlank()) {
+                                "${entry.tag.uppercase()} · ${entry.country.uppercase()}"
+                            } else {
+                                entry.tag.uppercase()
+                            },
                         style = MonoStubMeta,
                         color = MaterialTheme.colorScheme.primary,
                         maxLines = 1,
@@ -297,11 +312,12 @@ fun EntryListCard(
                     Text(
                         text = entry.telemetryLine(),
                         style = MonoTelemetry,
-                        color = if (entry.hasGps) {
-                            MaterialTheme.colorScheme.tertiary
-                        } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
+                        color =
+                            if (entry.hasGps) {
+                                MaterialTheme.colorScheme.tertiary
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -319,10 +335,11 @@ fun EntryListCard(
                             modifier = Modifier.weight(1f, fill = false),
                         ) {
                             Box(
-                                modifier = Modifier
-                                    .size(6.dp)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.primary),
+                                modifier =
+                                    Modifier
+                                        .size(6.dp)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.primary),
                             )
                             Text(
                                 text = "${entry.location}, ${entry.country}",
@@ -356,9 +373,10 @@ fun EntryListCard(
             )
 
             Column(
-                modifier = Modifier
-                    .width(54.dp)
-                    .fillMaxHeight(),
+                modifier =
+                    Modifier
+                        .width(54.dp)
+                        .fillMaxHeight(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {

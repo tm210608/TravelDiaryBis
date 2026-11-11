@@ -13,7 +13,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class AddEntryViewModelTest {
-
     @get:Rule
     val rule = TestDispatcherRule()
 
@@ -31,41 +30,46 @@ class AddEntryViewModelTest {
 
     @Test
     fun `updateUiState changes entry details`() {
-        val details = EntryDetails(
-            title = "My Trip",
-            location = "Paris",
-            country = "France",
-            tag = "City",
-            imageUrl = "url",
-        )
+        val details =
+            EntryDetails(
+                title = "My Trip",
+                location = "Paris",
+                country = "France",
+                tag = "City",
+                imageUrl = "url",
+            )
         viewModel.updateUiState(details)
         assertEquals("My Trip", viewModel.uiState.entryDetails.title)
         assertTrue(viewModel.uiState.isEntryValid)
     }
 
     @Test
-    fun `saveEntry calls use case when valid`() = runTest {
-        coEvery { addEntryUseCase(any()) } returns Unit
+    fun `saveEntry calls use case when valid`() =
+        runTest {
+            coEvery { addEntryUseCase(any()) } returns Unit
 
-        viewModel.updateUiState(EntryDetails(
-            title = "Trip",
-            location = "Rome",
-            country = "Italy",
-            tag = "City",
-            imageUrl = "url",
-        ))
-        viewModel.saveEntry()
+            viewModel.updateUiState(
+                EntryDetails(
+                    title = "Trip",
+                    location = "Rome",
+                    country = "Italy",
+                    tag = "City",
+                    imageUrl = "url",
+                ),
+            )
+            viewModel.saveEntry()
 
-        coVerify(atLeast = 1) { addEntryUseCase(any()) }
-    }
+            coVerify(atLeast = 1) { addEntryUseCase(any()) }
+        }
 
     @Test
-    fun `saveEntry does not call use case when invalid`() = runTest {
-        val viewModel = AddEntryViewModel(addEntryUseCase)
-        viewModel.saveEntry()
+    fun `saveEntry does not call use case when invalid`() =
+        runTest {
+            val viewModel = AddEntryViewModel(addEntryUseCase)
+            viewModel.saveEntry()
 
-        coVerify(exactly = 0) { addEntryUseCase(any()) }
-    }
+            coVerify(exactly = 0) { addEntryUseCase(any()) }
+        }
 
     @Test
     fun `updateImageUrl updates the image URL`() {

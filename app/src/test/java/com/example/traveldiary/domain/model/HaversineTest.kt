@@ -5,7 +5,6 @@ import org.junit.Test
 import java.time.Instant
 
 class HaversineTest {
-
     @Test
     fun `haversineKm madrid to barcelona is about 505 km`() {
         val km = haversineKm(40.4168, -3.7038, 41.3851, 2.1734)
@@ -26,8 +25,12 @@ class HaversineTest {
         val (km, legs) = totalDistanceKm(listOf(paris, madrid, barcelona))
 
         assertEquals(2, legs)
-        assertEquals(haversineKm(40.4168, -3.7038, 41.3851, 2.1734) +
-            haversineKm(41.3851, 2.1734, 48.8566, 2.3522), km, 0.001)
+        assertEquals(
+            haversineKm(40.4168, -3.7038, 41.3851, 2.1734) +
+                haversineKm(41.3851, 2.1734, 48.8566, 2.3522),
+            km,
+            0.001,
+        )
     }
 
     @Test
@@ -57,7 +60,11 @@ class HaversineTest {
         assertEquals("12.346", formatKm(12345.6))
     }
 
-    private fun entry(daysAgo: Int = 0, lat: Double?, lon: Double?) = TravelEntry(
+    private fun entry(
+        daysAgo: Int = 0,
+        lat: Double?,
+        lon: Double?,
+    ) = TravelEntry(
         id = 0,
         title = "T",
         location = "L",

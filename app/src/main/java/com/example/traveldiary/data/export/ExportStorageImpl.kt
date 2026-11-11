@@ -8,13 +8,13 @@ import java.io.File
 import java.io.OutputStream
 import javax.inject.Inject
 
-class ExportStorageImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
-) : ExportStorage {
+class ExportStorageImpl
+    @Inject
+    constructor(
+        @ApplicationContext private val context: Context,
+    ) : ExportStorage {
+        override fun openOutputStream(destinationUri: String): OutputStream? =
+            context.contentResolver.openOutputStream(Uri.parse(destinationUri))
 
-    override fun openOutputStream(destinationUri: String): OutputStream? =
-        context.contentResolver.openOutputStream(Uri.parse(destinationUri))
-
-    override fun createTempExportFile(fileName: String): File =
-        File(File(context.cacheDir, "exports").apply { mkdirs() }, fileName)
-}
+        override fun createTempExportFile(fileName: String): File = File(File(context.cacheDir, "exports").apply { mkdirs() }, fileName)
+    }

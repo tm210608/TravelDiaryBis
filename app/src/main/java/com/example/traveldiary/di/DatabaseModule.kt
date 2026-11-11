@@ -15,11 +15,11 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
-
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): TravelDatabase =
-        TravelDatabase.getDatabase(context)
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+    ): TravelDatabase = TravelDatabase.getDatabase(context)
 
     @Provides
     fun provideTravelDao(database: TravelDatabase): TravelDao = database.travelDao()

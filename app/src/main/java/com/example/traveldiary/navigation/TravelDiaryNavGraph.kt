@@ -11,8 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.traveldiary.ui.screens.AddTravelEntryScreen
-import com.example.traveldiary.ui.screens.EditTravelEntryScreen
 import com.example.traveldiary.ui.screens.CameraScreen
+import com.example.traveldiary.ui.screens.EditTravelEntryScreen
 import com.example.traveldiary.ui.screens.MapScreen
 import com.example.traveldiary.ui.screens.MemoriesScreen
 import com.example.traveldiary.ui.screens.ProfileScreen
@@ -21,16 +21,17 @@ import com.example.traveldiary.ui.screens.TravelDiaryHomeScreen
 import com.example.traveldiary.ui.viewmodel.AddEntryViewModel
 import com.example.traveldiary.ui.viewmodel.EditEntryViewModel
 
-private fun NavController.navigateTab(route: Any) = navigate(route) {
-    launchSingleTop = true
-    popUpTo<Home> { saveState = true }
-}
+private fun NavController.navigateTab(route: Any) =
+    navigate(route) {
+        launchSingleTop = true
+        popUpTo<Home> { saveState = true }
+    }
 
 @Composable
 fun TravelDiaryNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Home()
+        startDestination = Home(),
     ) {
         val onTabNavigate: (Int) -> Unit = { index ->
             when (index) {
@@ -53,7 +54,7 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                 },
                 onMapClick = { onTabNavigate(1) },
                 onMemoriesClick = { onTabNavigate(2) },
-                onProfileClick = { onTabNavigate(3) }
+                onProfileClick = { onTabNavigate(3) },
             )
         }
 
@@ -68,7 +69,7 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
             AddTravelEntryScreen(
                 navigateBack = { navController.popBackStack() },
                 onCameraClick = { navController.navigate(Camera) },
-                viewModel = viewModel
+                viewModel = viewModel,
             )
         }
 
@@ -121,7 +122,7 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                     navController.previousBackStackEntry?.savedStateHandle?.set("capturedImageUri", uri.toString())
                     navController.popBackStack()
                 },
-                onClose = { navController.popBackStack() }
+                onClose = { navController.popBackStack() },
             )
         }
 
@@ -130,7 +131,7 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                 onEntryClick = { entryId ->
                     navController.navigate(Detail(entryId))
                 },
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
             )
         }
 
@@ -139,7 +140,7 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                 onEntryClick = { entry ->
                     navController.navigate(Detail(entry.id))
                 },
-                onTabSelected = onTabNavigate
+                onTabSelected = onTabNavigate,
             )
         }
 
@@ -151,7 +152,7 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                         popUpTo<Home> { inclusive = true }
                         launchSingleTop = true
                     }
-                }
+                },
             )
         }
     }

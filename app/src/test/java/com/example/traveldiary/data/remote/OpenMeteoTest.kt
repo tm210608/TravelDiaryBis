@@ -1,14 +1,13 @@
 package com.example.traveldiary.data.remote
 
-import java.time.Instant
-import java.time.ZoneOffset
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.Instant
+import java.time.ZoneOffset
 
 class OpenMeteoTest {
-
     private val now: Instant = Instant.parse("2026-11-02T12:00:00Z")
 
     @Test
@@ -42,7 +41,8 @@ class OpenMeteoTest {
 
     @Test
     fun `parseHourly returns nearest hour with utc offset applied`() {
-        val json = """
+        val json =
+            """
             {
               "utc_offset_seconds": 3600,
               "hourly": {
@@ -51,7 +51,7 @@ class OpenMeteoTest {
                 "relative_humidity_2m": [50, 45, 40]
               }
             }
-        """.trimIndent()
+            """.trimIndent()
         val target = Instant.parse("2024-05-01T13:10:00Z").epochSecond
 
         val reading = parseHourly(json, target)!!
@@ -62,7 +62,8 @@ class OpenMeteoTest {
 
     @Test
     fun `parseHourly tolerates missing humidity`() {
-        val json = """
+        val json =
+            """
             {
               "utc_offset_seconds": 0,
               "hourly": {
@@ -70,7 +71,7 @@ class OpenMeteoTest {
                 "temperature_2m": [16.4]
               }
             }
-        """.trimIndent()
+            """.trimIndent()
         val target = Instant.parse("2024-05-01T14:00:00Z").epochSecond
 
         val reading = parseHourly(json, target)!!
@@ -88,9 +89,10 @@ class OpenMeteoTest {
 
     @Test
     fun `parseHourly returns null when temperatures are missing`() {
-        val json = """
+        val json =
+            """
             {"hourly": {"time": ["2024-05-01T14:00"]}}
-        """.trimIndent()
+            """.trimIndent()
         assertNull(parseHourly(json, Instant.parse("2024-05-01T14:00:00Z").epochSecond))
     }
 }

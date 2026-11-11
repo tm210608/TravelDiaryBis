@@ -4,7 +4,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class ShareMimeTypeTest {
-
     @Test
     fun `pdf extension maps to application pdf`() {
         assertEquals("application/pdf", shareMimeType("traveldiary-diario-20261111-1830.pdf"))

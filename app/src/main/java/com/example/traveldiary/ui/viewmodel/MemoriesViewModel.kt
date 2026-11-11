@@ -13,20 +13,26 @@ import javax.inject.Inject
 
 sealed interface MemoriesUiState {
     data object Loading : MemoriesUiState
+
     data class Success(val entries: List<TravelEntry>) : MemoriesUiState
+
     data object Empty : MemoriesUiState
 }
 
 @HiltViewModel
-class MemoriesViewModel @Inject constructor(
-    getMemoriesUseCase: GetMemoriesUseCase
-) : ViewModel() {
-
-    val uiState: StateFlow<MemoriesUiState> =
-        getMemoriesUseCase()
-            .map { entries ->
-                if (entries.isEmpty()) MemoriesUiState.Empty
-                else MemoriesUiState.Success(entries)
-            }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MemoriesUiState.Loading)
-}
+class MemoriesViewModel
+    @Inject
+    constructor(
+        getMemoriesUseCase: GetMemoriesUseCase,
+    ) : ViewModel() {
+        val uiState: StateFlow<MemoriesUiState> =
+            getMemoriesUseCase()
+                .map { entries ->
+                    if (entries.isEmpty()) {
+                        MemoriesUiState.Empty
+                    } else {
+                        MemoriesUiState.Success(entries)
+                    }
+                }
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), MemoriesUiState.Loading)
+    }

@@ -17,16 +17,15 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.example.traveldiary.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import java.io.File
-import java.io.FileOutputStream
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.File
+import java.io.FileOutputStream
 
 @RunWith(AndroidJUnit4::class)
 @HiltAndroidTest
 class ProfilePassportPlaceholderTest {
-
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
 

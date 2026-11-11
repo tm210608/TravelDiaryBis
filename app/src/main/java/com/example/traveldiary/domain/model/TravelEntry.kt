@@ -7,9 +7,10 @@ import java.util.Locale
 import java.util.UUID
 
 fun Instant.formatToDisplay(): String {
-    val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
-        .withLocale(Locale.getDefault())
-        .withZone(ZoneId.systemDefault())
+    val formatter =
+        DateTimeFormatter.ofPattern("MMM dd, yyyy")
+            .withLocale(Locale.getDefault())
+            .withZone(ZoneId.systemDefault())
     return formatter.format(this)
 }
 

@@ -9,28 +9,31 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import javax.inject.Inject
 
-class ContentResolverPhotoLoader @Inject constructor(
-    @ApplicationContext private val context: Context,
-) : PhotoLoader {
+class ContentResolverPhotoLoader
+    @Inject
+    constructor(
+        @ApplicationContext private val context: Context,
+    ) : PhotoLoader {
+        override fun load(imageUrl: String): LoadedPhoto? =
+            runCatching {
+                when {
+                    imageUrl.startsWith("http://") || imageUrl.startsWith("https://") -> null
+                    imageUrl.startsWith("content://") -> loadFromUri(Uri.parse(imageUrl))
+                    imageUrl.startsWith("file://") -> Uri.parse(imageUrl).path?.let { File(it).toLoadedPhoto() }
+                    else -> File(imageUrl).toLoadedPhoto()
+                }
+            }.getOrNull()
 
-    override fun load(imageUrl: String): LoadedPhoto? = runCatching {
-        when {
-            imageUrl.startsWith("http://") || imageUrl.startsWith("https://") -> null
-            imageUrl.startsWith("content://") -> loadFromUri(Uri.parse(imageUrl))
-            imageUrl.startsWith("file://") -> Uri.parse(imageUrl).path?.let { File(it).toLoadedPhoto() }
-            else -> File(imageUrl).toLoadedPhoto()
+        private fun loadFromUri(uri: Uri): LoadedPhoto? {
+            val extension =
+                context.contentResolver.getType(uri)
+                    ?.let { MimeTypeMap.getSingleton().getExtensionFromMimeType(it) }
+                    ?: "jpg"
+            val bytes =
+                context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                    ?: return null
+            return LoadedPhoto(bytes, extension)
         }
-    }.getOrNull()
 
-    private fun loadFromUri(uri: Uri): LoadedPhoto? {
-        val extension = context.contentResolver.getType(uri)
-            ?.let { MimeTypeMap.getSingleton().getExtensionFromMimeType(it) }
-            ?: "jpg"
-        val bytes = context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
-            ?: return null
-        return LoadedPhoto(bytes, extension)
+        private fun File.toLoadedPhoto(): LoadedPhoto? = takeIf { isFile }?.let { LoadedPhoto(it.readBytes(), extension.ifBlank { "jpg" }) }
     }
-
-    private fun File.toLoadedPhoto(): LoadedPhoto? =
-        takeIf { isFile }?.let { LoadedPhoto(it.readBytes(), extension.ifBlank { "jpg" }) }
-}

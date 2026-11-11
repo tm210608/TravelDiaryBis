@@ -8,7 +8,6 @@ import java.time.Instant
 import java.time.ZoneId
 
 class GeoFormatTest {
-
     private val utc = ZoneId.of("UTC")
 
     @Test
@@ -101,7 +100,10 @@ class GeoFormatTest {
         assertEquals("08", instant.formatToTicket(utc).day)
     }
 
-    private fun entry(lat: Double?, lon: Double?) = TravelEntry(
+    private fun entry(
+        lat: Double?,
+        lon: Double?,
+    ) = TravelEntry(
         id = 1,
         title = "Prueba",
         location = "Barcelona",

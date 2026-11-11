@@ -1,18 +1,18 @@
 package com.example.traveldiary.domain.model
 
-import java.time.Instant
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.time.Instant
 
 class PdfCoverTest {
-
     @Test
     fun `buildPdfCover computes stats over given entries only`() {
-        val entries = listOf(
-            entry(daysAgo = 3, country = "España", lat = 40.4168, lon = -3.7038),
-            entry(daysAgo = 2, country = "Japón", lat = 35.6762, lon = 139.6503),
-            entry(daysAgo = 1, country = "España", lat = null, lon = null, favourite = true),
-        )
+        val entries =
+            listOf(
+                entry(daysAgo = 3, country = "España", lat = 40.4168, lon = -3.7038),
+                entry(daysAgo = 2, country = "Japón", lat = 35.6762, lon = 139.6503),
+                entry(daysAgo = 1, country = "España", lat = null, lon = null, favourite = true),
+            )
 
         val cover = buildPdfCover(entries)
 
@@ -37,10 +37,11 @@ class PdfCoverTest {
 
     @Test
     fun `buildPdfCover ignores blank countries`() {
-        val entries = listOf(
-            entry(daysAgo = 1, country = "  "),
-            entry(daysAgo = 2, country = "Perú"),
-        )
+        val entries =
+            listOf(
+                entry(daysAgo = 1, country = "  "),
+                entry(daysAgo = 2, country = "Perú"),
+            )
         assertEquals(1, buildPdfCover(entries).countries)
     }
 

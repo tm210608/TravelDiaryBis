@@ -5,7 +5,6 @@ import org.junit.Assert.assertNull
 import org.junit.Test
 
 class CountryCodeTest {
-
     @Test
     fun `countryCodeOf maps common countries in spanish and english`() {
         assertEquals("ESP", countryCodeOf("España"))

@@ -4,7 +4,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class WeatherTest {
-
     @Test
     fun `formatWeatherTelemetry rounds temp and shows humidity`() {
         assertEquals("16°C · 45% · ", WeatherReading(16.4, 45).formatWeatherTelemetry())

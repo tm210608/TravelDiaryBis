@@ -6,11 +6,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class GetMemoriesUseCase @Inject constructor(
-    private val repository: TravelRepository
-) {
-    operator fun invoke(): Flow<List<TravelEntry>> =
-        repository.getAllEntriesStream().map { entries ->
-            entries.filter { it.imageUrl.isNotBlank() }
-        }
-}
+class GetMemoriesUseCase
+    @Inject
+    constructor(
+        private val repository: TravelRepository,
+    ) {
+        operator fun invoke(): Flow<List<TravelEntry>> =
+            repository.getAllEntriesStream().map { entries ->
+                entries.filter { it.imageUrl.isNotBlank() }
+            }
+    }

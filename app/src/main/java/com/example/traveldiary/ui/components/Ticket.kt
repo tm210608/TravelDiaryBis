@@ -21,28 +21,34 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
-fun ticketShape(cornerRadius: Dp = 14.dp, notchRadius: Dp = 8.dp): Shape =
+fun ticketShape(
+    cornerRadius: Dp = 14.dp,
+    notchRadius: Dp = 8.dp,
+): Shape =
     object : Shape {
         override fun createOutline(
             size: Size,
             layoutDirection: LayoutDirection,
             density: Density,
-        ): Outline = with(density) {
-            val cr = cornerRadius.toPx()
-            val nr = notchRadius.toPx()
-            val cy = size.height / 2f
+        ): Outline =
+            with(density) {
+                val cr = cornerRadius.toPx()
+                val nr = notchRadius.toPx()
+                val cy = size.height / 2f
 
-            val punched = Path().apply {
-                addRoundRect(RoundRect(Rect(Offset.Zero, size), CornerRadius(cr)))
-            }
-            listOf(0f, size.width).forEach { cx ->
-                val bite = Path().apply {
-                    addOval(Rect(Offset(cx - nr, cy - nr), Size(nr * 2f, nr * 2f)))
+                val punched =
+                    Path().apply {
+                        addRoundRect(RoundRect(Rect(Offset.Zero, size), CornerRadius(cr)))
+                    }
+                listOf(0f, size.width).forEach { cx ->
+                    val bite =
+                        Path().apply {
+                            addOval(Rect(Offset(cx - nr, cy - nr), Size(nr * 2f, nr * 2f)))
+                        }
+                    punched.op(punched, bite, PathOperation.Difference)
                 }
-                punched.op(punched, bite, PathOperation.Difference)
+                Outline.Generic(punched)
             }
-            Outline.Generic(punched)
-        }
     }
 
 @Composable

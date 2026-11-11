@@ -1,11 +1,10 @@
 package com.example.traveldiary.domain.model
 
-import java.time.Instant
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.Instant
 
 class ExportPdfFileNameTest {
-
     @Test
     fun `exportPdfFileName uses diary prefix and pdf extension`() {
         val name = exportPdfFileName(Instant.parse("2026-11-11T18:30:00Z"))

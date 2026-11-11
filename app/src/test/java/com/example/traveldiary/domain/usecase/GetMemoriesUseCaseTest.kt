@@ -12,36 +12,39 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class GetMemoriesUseCaseTest {
-
     private val repository: TravelRepository = mockk()
     private val useCase = GetMemoriesUseCase(repository)
 
     @Test
-    fun `invoke returns only entries with non-blank imageUrl`() = runTest {
-        val entries = listOf(
-            TravelEntry(id = 1, title = "ConFoto", location = "X", country = "Y", tag = "Z", imageUrl = "file:///a.jpg"),
-            TravelEntry(id = 2, title = "SinFoto", location = "X", country = "Y", tag = "Z", imageUrl = ""),
-            TravelEntry(id = 3, title = "Blanco", location = "X", country = "Y", tag = "Z", imageUrl = "   "),
-        )
-        every { repository.getAllEntriesStream() } returns flowOf(entries)
+    fun `invoke returns only entries with non-blank imageUrl`() =
+        runTest {
+            val entries =
+                listOf(
+                    TravelEntry(id = 1, title = "ConFoto", location = "X", country = "Y", tag = "Z", imageUrl = "file:///a.jpg"),
+                    TravelEntry(id = 2, title = "SinFoto", location = "X", country = "Y", tag = "Z", imageUrl = ""),
+                    TravelEntry(id = 3, title = "Blanco", location = "X", country = "Y", tag = "Z", imageUrl = "   "),
+                )
+            every { repository.getAllEntriesStream() } returns flowOf(entries)
 
-        useCase().test {
-            val result = awaitItem()
-            assertEquals(1, result.size)
-            assertEquals("ConFoto", result[0].title)
-            awaitComplete()
+            useCase().test {
+                val result = awaitItem()
+                assertEquals(1, result.size)
+                assertEquals("ConFoto", result[0].title)
+                awaitComplete()
+            }
         }
-    }
 
     @Test
-    fun `invoke returns empty when no entry has a photo`() = runTest {
-        every { repository.getAllEntriesStream() } returns flowOf(
-            listOf(TravelEntry(id = 1, title = "A", location = "X", country = "Y", tag = "Z", imageUrl = ""))
-        )
+    fun `invoke returns empty when no entry has a photo`() =
+        runTest {
+            every { repository.getAllEntriesStream() } returns
+                flowOf(
+                    listOf(TravelEntry(id = 1, title = "A", location = "X", country = "Y", tag = "Z", imageUrl = "")),
+                )
 
-        useCase().test {
-            assertTrue(awaitItem().isEmpty())
-            awaitComplete()
+            useCase().test {
+                assertTrue(awaitItem().isEmpty())
+                awaitComplete()
+            }
         }
-    }
 }

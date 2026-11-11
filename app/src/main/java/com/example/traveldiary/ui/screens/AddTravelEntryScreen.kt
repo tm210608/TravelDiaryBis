@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 fun AddTravelEntryScreen(
     navigateBack: () -> Unit,
     onCameraClick: () -> Unit,
-    viewModel: AddEntryViewModel
+    viewModel: AddEntryViewModel,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val uiState = viewModel.uiState
@@ -36,11 +36,12 @@ fun AddTravelEntryScreen(
         mutableStateOf(LocationHelper.hasLocationPermissions(context))
     }
 
-    val locationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        hasLocationPermission = permissions.values.any { it }
-    }
+    val locationPermissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestMultiplePermissions(),
+        ) { permissions ->
+            hasLocationPermission = permissions.values.any { it }
+        }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -60,42 +61,47 @@ fun AddTravelEntryScreen(
                                     locationPermissionLauncher.launch(
                                         arrayOf(
                                             Manifest.permission.ACCESS_FINE_LOCATION,
-                                            Manifest.permission.ACCESS_COARSE_LOCATION
-                                        )
+                                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                                        ),
                                     )
                                 }
-                                val location = if (hasLocationPermission) {
-                                    locationHelper.getCurrentLocation()
-                                } else null
+                                val location =
+                                    if (hasLocationPermission) {
+                                        locationHelper.getCurrentLocation()
+                                    } else {
+                                        null
+                                    }
                                 viewModel.saveEntry(
                                     latitude = location?.latitude,
-                                    longitude = location?.longitude
+                                    longitude = location?.longitude,
                                 )
                                 snackbarHostState.showSnackbar("Entrada guardada correctamente")
                                 navigateBack()
                             }
                         },
                         enabled = uiState.isEntryValid,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        ),
-                        modifier = Modifier.padding(end = 8.dp)
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            ),
+                        modifier = Modifier.padding(end = 8.dp),
                     ) {
                         Icon(Icons.Default.Save, contentDescription = null)
                         Spacer(Modifier.width(8.dp))
                         Text("Guardar")
                     }
-                }
+                },
             )
-        }
+        },
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(16.dp)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
         ) {
             TravelEntryFormFields(
                 form = uiState.entryDetails,
@@ -108,7 +114,7 @@ fun AddTravelEntryScreen(
             Text(
                 text = "Las coordenadas GPS se añadirán automáticamente si están disponibles.",
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }

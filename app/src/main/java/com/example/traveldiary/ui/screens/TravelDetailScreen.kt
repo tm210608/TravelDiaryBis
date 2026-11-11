@@ -48,7 +48,7 @@ fun TravelDetailScreen(
     onBackClick: () -> Unit,
     onEditClick: () -> Unit = {},
     refreshKey: Int = 0,
-    viewModel: DetailViewModel = hiltViewModel()
+    viewModel: DetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -76,22 +76,23 @@ fun TravelDetailScreen(
         is DetailUiState.Success -> {
             val entry = state.entry
             TravelDetailContent(
-                entry = com.example.traveldiary.ui.viewmodel.EntryDetails(
-                    id = entry.id,
-                    title = entry.title,
-                    location = entry.location,
-                    country = entry.country,
-                    date = entry.date,
-                    tag = entry.tag,
-                    description = entry.description,
-                    imageUrl = entry.imageUrl,
-                    latitude = entry.latitude,
-                    longitude = entry.longitude,
-                    isFavourite = entry.isFavourite
-                ),
+                entry =
+                    com.example.traveldiary.ui.viewmodel.EntryDetails(
+                        id = entry.id,
+                        title = entry.title,
+                        location = entry.location,
+                        country = entry.country,
+                        date = entry.date,
+                        tag = entry.tag,
+                        description = entry.description,
+                        imageUrl = entry.imageUrl,
+                        latitude = entry.latitude,
+                        longitude = entry.longitude,
+                        isFavourite = entry.isFavourite,
+                    ),
                 onBackClick = onBackClick,
                 onEditClick = onEditClick,
-                onFavouriteClick = { viewModel.toggleFavourite(entry.id, entry.isFavourite) }
+                onFavouriteClick = { viewModel.toggleFavourite(entry.id, entry.isFavourite) },
             )
         }
     }
@@ -102,110 +103,127 @@ private fun TravelDetailContent(
     entry: com.example.traveldiary.ui.viewmodel.EntryDetails,
     onBackClick: () -> Unit,
     onEditClick: () -> Unit,
-    onFavouriteClick: () -> Unit
+    onFavouriteClick: () -> Unit,
 ) {
     val context = LocalContext.current
-    val gridColor = MaterialTheme.colorScheme.onSurface.copy(
-        alpha = if (isSystemInDarkTheme()) 0.12f else 0.14f
-    )
+    val gridColor =
+        MaterialTheme.colorScheme.onSurface.copy(
+            alpha = if (isSystemInDarkTheme()) 0.12f else 0.14f,
+        )
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .cartographyGrid(gridColor)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .cartographyGrid(gridColor),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(400.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(400.dp),
             ) {
                 AsyncImage(
                     model = entry.imageUrl,
                     contentDescription = entry.title,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 )
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim.copy(alpha = 0.65f)),
-                                startY = 600f
-                            )
-                        )
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim.copy(alpha = 0.65f)),
+                                    startY = 600f,
+                                ),
+                            ),
                 )
 
                 Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(24.dp)
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomStart)
+                            .padding(24.dp),
                 ) {
                     Surface(
                         color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = MaterialTheme.shapes.small
+                        shape = MaterialTheme.shapes.small,
                     ) {
                         Text(
                             text = entry.tag,
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                         )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
                         text = entry.title,
-                        style = MaterialTheme.typography.headlineLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
+                        style =
+                            MaterialTheme.typography.headlineLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                            ),
                     )
                 }
             }
 
             Column(
-                modifier = Modifier
-                    .padding(24.dp)
-                    .fillMaxWidth()
+                modifier =
+                    Modifier
+                        .padding(24.dp)
+                        .fillMaxWidth(),
             ) {
                 val ticket = entry.date.formatToTicket()
                 Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .then(
-                            if (entry.latitude != null && entry.longitude != null) {
-                                Modifier.clickable {
-                                    val gmmIntentUri = Uri.parse("geo:${entry.latitude},${entry.longitude}?q=${entry.latitude},${entry.longitude}")
-                                    val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-                                    mapIntent.setPackage("com.google.android.apps.maps")
-                                    if (mapIntent.resolveActivity(context.packageManager) != null) {
-                                        context.startActivity(mapIntent)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .then(
+                                if (entry.latitude != null && entry.longitude != null) {
+                                    Modifier.clickable {
+                                        val gmmIntentUri =
+                                            Uri.parse(
+                                                "geo:${entry.latitude},${entry.longitude}?q=${entry.latitude},${entry.longitude}",
+                                            )
+                                        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                                        mapIntent.setPackage("com.google.android.apps.maps")
+                                        if (mapIntent.resolveActivity(context.packageManager) != null) {
+                                            context.startActivity(mapIntent)
+                                        }
                                     }
-                                }
-                            } else Modifier
-                        ),
+                                } else {
+                                    Modifier
+                                },
+                            ),
                     shape = ticketShape(),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainer
-                    ),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                 ) {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 14.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 14.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Column(
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(start = 16.dp),
+                            modifier =
+                                Modifier
+                                    .weight(1f)
+                                    .padding(start = 16.dp),
                         ) {
                             Text(
                                 text = "TALÓN DE EXPEDICIÓN",
@@ -266,15 +284,16 @@ private fun TravelDetailContent(
                 Text(
                     text = "La Historia",
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = entry.description,
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        lineHeight = 28.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    style =
+                        MaterialTheme.typography.bodyLarge.copy(
+                            lineHeight = 28.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
                 )
 
                 Spacer(modifier = Modifier.height(40.dp))
@@ -282,22 +301,22 @@ private fun TravelDetailContent(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)),
-                    shape = MaterialTheme.shapes.medium
+                    shape = MaterialTheme.shapes.medium,
                 ) {
                     Row(
                         modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Icon(
                             Icons.Default.Share,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = MaterialTheme.colorScheme.primary,
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(
                             text = "Comparte este recuerdo con tus amigos",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
                         )
                     }
                 }
@@ -307,27 +326,28 @@ private fun TravelDetailContent(
         }
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 48.dp, start = 16.dp, end = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 48.dp, start = 16.dp, end = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             GlassActionButton(
                 icon = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Atrás",
-                onClick = onBackClick
+                onClick = onBackClick,
             )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 GlassActionButton(
                     icon = Icons.Default.Edit,
                     contentDescription = "Editar entrada",
-                    onClick = onEditClick
+                    onClick = onEditClick,
                 )
                 GlassActionButton(
                     icon = if (entry.isFavourite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
                     contentDescription = if (entry.isFavourite) "Quitar de favoritos" else "Añadir a favoritos",
                     tint = if (entry.isFavourite) MaterialTheme.colorScheme.error else Color.White,
-                    onClick = onFavouriteClick
+                    onClick = onFavouriteClick,
                 )
             }
         }
@@ -339,19 +359,20 @@ fun GlassActionButton(
     icon: ImageVector,
     contentDescription: String,
     tint: Color = Color.White,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     IconButton(
         onClick = onClick,
-        modifier = Modifier
-            .size(48.dp)
-            .clip(CircleShape)
-            .background(Color.Black.copy(alpha = 0.3f))
+        modifier =
+            Modifier
+                .size(48.dp)
+                .clip(CircleShape)
+                .background(Color.Black.copy(alpha = 0.3f)),
     ) {
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
-            tint = tint
+            tint = tint,
         )
     }
 }

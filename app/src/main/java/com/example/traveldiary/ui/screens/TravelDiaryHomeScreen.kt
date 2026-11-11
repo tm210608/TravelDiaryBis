@@ -27,7 +27,15 @@ import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.domain.model.exportFileName
 import com.example.traveldiary.domain.model.exportPdfFileName
 import com.example.traveldiary.model.filterChips
-import com.example.traveldiary.ui.components.*
+import com.example.traveldiary.ui.components.ArchiveFooter
+import com.example.traveldiary.ui.components.BottomNavigationBar
+import com.example.traveldiary.ui.components.EntryListCard
+import com.example.traveldiary.ui.components.FeaturedEntriesRow
+import com.example.traveldiary.ui.components.FilterChipsRow
+import com.example.traveldiary.ui.components.SearchBar
+import com.example.traveldiary.ui.components.SectionHeader
+import com.example.traveldiary.ui.components.TopBar
+import com.example.traveldiary.ui.components.cartographyGrid
 import com.example.traveldiary.ui.viewmodel.ExportUiState
 import com.example.traveldiary.ui.viewmodel.HomeViewModel
 import java.io.File
@@ -41,7 +49,7 @@ fun TravelDiaryHomeScreen(
     onMemoriesClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
     exportRequested: Boolean = false,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val entriesList by viewModel.entriesList.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
@@ -59,17 +67,19 @@ fun TravelDiaryHomeScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     var suggestedName by remember { mutableStateOf("") }
 
-    val createDocument = rememberLauncherForActivityResult(
-        ActivityResultContracts.CreateDocument("application/zip")
-    ) { uri ->
-        uri?.let { viewModel.exportSelectedTo(it.toString(), suggestedName) }
-    }
+    val createDocument =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.CreateDocument("application/zip"),
+        ) { uri ->
+            uri?.let { viewModel.exportSelectedTo(it.toString(), suggestedName) }
+        }
 
-    val createPdfDocument = rememberLauncherForActivityResult(
-        ActivityResultContracts.CreateDocument("application/pdf")
-    ) { uri ->
-        uri?.let { viewModel.exportPdfSelectedTo(it.toString(), suggestedName) }
-    }
+    val createPdfDocument =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.CreateDocument("application/pdf"),
+        ) { uri ->
+            uri?.let { viewModel.exportPdfSelectedTo(it.toString(), suggestedName) }
+        }
 
     var exportHandled by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(exportRequested) {
@@ -87,14 +97,18 @@ fun TravelDiaryHomeScreen(
         when (val state = exportState) {
             is ExportUiState.ShareReady -> {
                 val file = File(File(context.cacheDir, "exports"), state.fileName)
-                val uri = FileProvider.getUriForFile(
-                    context, "${context.packageName}.fileprovider", file
-                )
-                val intent = Intent(Intent.ACTION_SEND).apply {
-                    type = state.mimeType
-                    putExtra(Intent.EXTRA_STREAM, uri)
-                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                }
+                val uri =
+                    FileProvider.getUriForFile(
+                        context,
+                        "${context.packageName}.fileprovider",
+                        file,
+                    )
+                val intent =
+                    Intent(Intent.ACTION_SEND).apply {
+                        type = state.mimeType
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    }
                 context.startActivity(Intent.createChooser(intent, "Compartir diario"))
                 viewModel.onExportStateConsumed()
             }
@@ -144,113 +158,120 @@ fun TravelDiaryHomeScreen(
             )
         },
     ) { innerPadding ->
-        val gridColor = MaterialTheme.colorScheme.onSurface.copy(
-            alpha = if (isSystemInDarkTheme()) 0.12f else 0.14f
-        )
+        val gridColor =
+            MaterialTheme.colorScheme.onSurface.copy(
+                alpha = if (isSystemInDarkTheme()) 0.12f else 0.14f,
+            )
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .cartographyGrid(gridColor)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .cartographyGrid(gridColor),
         ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 24.dp),
-        ) {
-            item {
-                if (selectionMode) {
-                    SelectionTopBar(
-                        count = selectedIds.size,
-                        exporting = exportState is ExportUiState.Exporting,
-                        onClose = { viewModel.exitSelectionMode() },
-                        onSelectAll = { viewModel.selectAll() },
-                        onSaveZip = {
-                            suggestedName = exportFileName()
-                            createDocument.launch(suggestedName)
-                        },
-                        onSavePdf = {
-                            suggestedName = exportPdfFileName()
-                            createPdfDocument.launch(suggestedName)
-                        },
-                        onShareZip = { viewModel.shareSelected() },
-                        onSharePdf = { viewModel.sharePdfSelected() },
-                    )
-                } else {
-                    TopBar(
-                        entryCount = entriesList.size,
-                        showExport = hasEntries,
-                        onExportClick = { viewModel.enterSelectionMode() },
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(bottom = 24.dp),
+            ) {
+                item {
+                    if (selectionMode) {
+                        SelectionTopBar(
+                            count = selectedIds.size,
+                            exporting = exportState is ExportUiState.Exporting,
+                            onClose = { viewModel.exitSelectionMode() },
+                            onSelectAll = { viewModel.selectAll() },
+                            onSaveZip = {
+                                suggestedName = exportFileName()
+                                createDocument.launch(suggestedName)
+                            },
+                            onSavePdf = {
+                                suggestedName = exportPdfFileName()
+                                createPdfDocument.launch(suggestedName)
+                            },
+                            onShareZip = { viewModel.shareSelected() },
+                            onSharePdf = { viewModel.sharePdfSelected() },
+                        )
+                    } else {
+                        TopBar(
+                            entryCount = entriesList.size,
+                            showExport = hasEntries,
+                            onExportClick = { viewModel.enterSelectionMode() },
+                        )
+                    }
+                }
+
+                item {
+                    SearchBar(
+                        query = searchQuery,
+                        onQueryChanged = { viewModel.onSearchQueryChanged(it) },
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp, vertical = 12.dp),
                     )
                 }
-            }
 
-            item {
-                SearchBar(
-                    query = searchQuery,
-                    onQueryChanged = { viewModel.onSearchQueryChanged(it) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 12.dp),
-                )
-            }
+                item {
+                    FilterChipsRow(
+                        chips = filterChips,
+                        selectedChip = selectedChip,
+                        onChipSelected = { viewModel.onChipSelected(it) },
+                        counts = chipCounts,
+                    )
+                }
 
-            item {
-                FilterChipsRow(
-                    chips = filterChips,
-                    selectedChip = selectedChip,
-                    onChipSelected = { viewModel.onChipSelected(it) },
-                    counts = chipCounts,
-                )
-            }
+                if (featuredEntries.isNotEmpty()) {
+                    item {
+                        SectionHeader(
+                            title = "Registro Destacado",
+                            actionLabel = "%02d".format(featuredEntries.size),
+                            eyebrow = "EXPEDICIÓN",
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
+                        )
+                    }
 
-            if (featuredEntries.isNotEmpty()) {
+                    item {
+                        FeaturedEntriesRow(
+                            entries = featuredEntries,
+                            onEntryClick = onEntryClick,
+                            weatherByEntryId = featuredWeather,
+                        )
+                    }
+                }
+
                 item {
                     SectionHeader(
-                        title = "Registro Destacado",
-                        actionLabel = "%02d".format(featuredEntries.size),
-                        eyebrow = "EXPEDICIÓN",
+                        title = "Todos los Viajes",
+                        actionLabel = "%02d".format(entriesList.size),
+                        eyebrow = "HOJA DE RUTA",
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
                     )
                 }
 
-                item {
-                    FeaturedEntriesRow(
-                        entries = featuredEntries,
-                        onEntryClick = onEntryClick,
-                        weatherByEntryId = featuredWeather,
+                items(entriesList, key = { it.id }) { entry ->
+                    EntryListCard(
+                        entry = entry,
+                        selectionMode = selectionMode,
+                        selected = entry.id in selectedIds,
+                        onClick = {
+                            if (selectionMode) {
+                                viewModel.toggleSelection(entry.id)
+                            } else {
+                                onEntryClick(entry)
+                            }
+                        },
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 20.dp, vertical = 5.dp)
+                                .animateItem(),
                     )
                 }
-            }
 
-            item {
-                SectionHeader(
-                    title = "Todos los Viajes",
-                    actionLabel = "%02d".format(entriesList.size),
-                    eyebrow = "HOJA DE RUTA",
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
-                )
+                item {
+                    ArchiveFooter(entryCount = entriesList.size)
+                }
             }
-
-            items(entriesList, key = { it.id }) { entry ->
-                EntryListCard(
-                    entry = entry,
-                    selectionMode = selectionMode,
-                    selected = entry.id in selectedIds,
-                    onClick = {
-                        if (selectionMode) viewModel.toggleSelection(entry.id)
-                        else onEntryClick(entry)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 20.dp, vertical = 5.dp)
-                        .animateItem(),
-                )
-            }
-
-            item {
-                ArchiveFooter(entryCount = entriesList.size)
-            }
-        }
         }
     }
 }
@@ -270,10 +291,11 @@ private fun SelectionTopBar(
 
     Column {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-                .padding(horizontal = 8.dp, vertical = 14.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .padding(horizontal = 8.dp, vertical = 14.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {

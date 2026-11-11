@@ -5,8 +5,10 @@ import com.example.traveldiary.domain.repository.TravelRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class GetEntriesUseCase @Inject constructor(
-    private val repository: TravelRepository
-) {
-    operator fun invoke(): Flow<List<TravelEntry>> = repository.getAllEntriesStream()
-}
+class GetEntriesUseCase
+    @Inject
+    constructor(
+        private val repository: TravelRepository,
+    ) {
+        operator fun invoke(): Flow<List<TravelEntry>> = repository.getAllEntriesStream()
+    }

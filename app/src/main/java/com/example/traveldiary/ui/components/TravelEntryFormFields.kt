@@ -49,39 +49,42 @@ fun TravelEntryFormFields(
     var showDatePicker by remember { mutableStateOf(false) }
     val hasPhoto = form.imageUrl.isNotBlank() && (allowPhotoRemoval || !form.imageUrl.startsWith("http"))
     val fieldShape = RoundedCornerShape(16.dp)
-    val fieldColors = TextFieldDefaults.colors(
-        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-        focusedIndicatorColor = Color.Transparent,
-        unfocusedIndicatorColor = Color.Transparent,
-        cursorColor = MaterialTheme.colorScheme.primary,
-        focusedLabelColor = MaterialTheme.colorScheme.primary,
-        unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
-    )
+    val fieldColors =
+        TextFieldDefaults.colors(
+            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            cursorColor = MaterialTheme.colorScheme.primary,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     val dashedStroke = MaterialTheme.colorScheme.outlineVariant
     val cornerRadius = 24.dp
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .clip(RoundedCornerShape(cornerRadius))
-                .background(MaterialTheme.colorScheme.surfaceContainerLow)
-                .drawBehind {
-                    if (!hasPhoto) {
-                        val stroke = Stroke(
-                            width = 1.5.dp.toPx(),
-                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(14f, 14f)),
-                        )
-                        drawRoundRect(
-                            color = dashedStroke,
-                            style = stroke,
-                            cornerRadius = CornerRadius(cornerRadius.toPx()),
-                        )
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(cornerRadius))
+                    .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                    .drawBehind {
+                        if (!hasPhoto) {
+                            val stroke =
+                                Stroke(
+                                    width = 1.5.dp.toPx(),
+                                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(14f, 14f)),
+                                )
+                            drawRoundRect(
+                                color = dashedStroke,
+                                style = stroke,
+                                cornerRadius = CornerRadius(cornerRadius.toPx()),
+                            )
+                        }
                     }
-                }
-                .clickable(onClick = onCameraClick),
+                    .clickable(onClick = onCameraClick),
             contentAlignment = Alignment.Center,
         ) {
             if (hasPhoto) {
@@ -94,10 +97,11 @@ fun TravelEntryFormFields(
             } else {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Box(
-                        modifier = Modifier
-                            .size(56.dp)
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.18f)),
+                        modifier =
+                            Modifier
+                                .size(56.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.18f)),
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
@@ -118,11 +122,12 @@ fun TravelEntryFormFields(
             if (allowPhotoRemoval && hasPhoto) {
                 IconButton(
                     onClick = onRemovePhoto,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .clip(CircleShape)
-                        .background(Color.Black.copy(alpha = 0.55f)),
+                    modifier =
+                        Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(8.dp)
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.55f)),
                 ) {
                     Icon(
                         imageVector = Icons.Filled.DeleteOutline,
@@ -178,9 +183,10 @@ fun TravelEntryFormFields(
             value = form.description,
             onValueChange = { onFormChange(form.copy(description = it)) },
             label = { Text("Cuéntanos tu historia...") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 150.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 150.dp),
             shape = fieldShape,
             colors = fieldColors,
         )
@@ -227,11 +233,12 @@ fun TravelEntryFormFields(
             Switch(
                 checked = form.isFavourite,
                 onCheckedChange = { onFormChange(form.copy(isFavourite = it)) },
-                colors = SwitchDefaults.colors(
-                    checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-                    checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    checkedBorderColor = Color.Transparent,
-                ),
+                colors =
+                    SwitchDefaults.colors(
+                        checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
+                        checkedThumbColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        checkedBorderColor = Color.Transparent,
+                    ),
             )
         }
     }
@@ -244,11 +251,12 @@ fun TravelEntryFormFields(
                 TextButton(
                     onClick = {
                         datePickerState.selectedDateMillis?.let { millis ->
-                            val date = Instant.ofEpochMilli(millis)
-                                .atZone(ZoneOffset.UTC)
-                                .toLocalDate()
-                                .atStartOfDay(ZoneId.systemDefault())
-                                .toInstant()
+                            val date =
+                                Instant.ofEpochMilli(millis)
+                                    .atZone(ZoneOffset.UTC)
+                                    .toLocalDate()
+                                    .atStartOfDay(ZoneId.systemDefault())
+                                    .toInstant()
                             onFormChange(form.copy(date = date))
                         }
                         showDatePicker = false

@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Map
@@ -36,6 +34,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -46,14 +46,14 @@ import com.example.traveldiary.ui.viewmodel.MapViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.Dash
+import com.google.android.gms.maps.model.Gap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
-import com.google.android.gms.maps.model.Dash
-import com.google.android.gms.maps.model.Gap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -72,17 +72,19 @@ fun MapScreen(
         when (val state = uiState) {
             is MapUiState.Loading -> LoadingState()
             is MapUiState.Empty -> EmptyState()
-            is MapUiState.Success -> MapContent(
-                entries = state.entries,
-                onEntryClick = onEntryClick,
-            )
+            is MapUiState.Success ->
+                MapContent(
+                    entries = state.entries,
+                    onEntryClick = onEntryClick,
+                )
         }
 
         Surface(
-            modifier = Modifier
-                .statusBarsPadding()
-                .padding(horizontal = 20.dp, vertical = 10.dp)
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .statusBarsPadding()
+                    .padding(horizontal = 20.dp, vertical = 10.dp)
+                    .fillMaxWidth(),
             shape = CircleShape,
             color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.92f),
             shadowElevation = 4.dp,
@@ -123,10 +125,11 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
     ) {
         Box(
-            modifier = Modifier
-                .size(72.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f)),
+            modifier =
+                Modifier
+                    .size(72.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f)),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
@@ -163,25 +166,29 @@ private fun MapContent(
     val isDarkTheme = isSystemInDarkTheme()
     val density = LocalDensity.current
     val paddingPx = with(density) { 100.dp.roundToPx() }
-    val mapProperties = remember(isDarkTheme) {
-        MapProperties(
-            mapStyleOptions = if (isDarkTheme) {
-                MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style_dark)
-            } else {
-                null
-            },
-        )
-    }
+    val mapProperties =
+        remember(isDarkTheme) {
+            MapProperties(
+                mapStyleOptions =
+                    if (isDarkTheme) {
+                        MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style_dark)
+                    } else {
+                        null
+                    },
+            )
+        }
 
-    val cameraPositionState: CameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(
-            LatLng(
-                entries.first().latitude ?: 0.0,
-                entries.first().longitude ?: 0.0,
-            ),
-            10f,
-        )
-    }
+    val cameraPositionState: CameraPositionState =
+        rememberCameraPositionState {
+            position =
+                CameraPosition.fromLatLngZoom(
+                    LatLng(
+                        entries.first().latitude ?: 0.0,
+                        entries.first().longitude ?: 0.0,
+                    ),
+                    10f,
+                )
+        }
 
     LaunchedEffect(entries) {
         if (entries.size == 1) {
@@ -193,23 +200,25 @@ private fun MapContent(
                 ),
             )
         } else if (entries.size > 1) {
-            val bounds = LatLngBounds.builder().apply {
-                entries.forEach { entry ->
-                    include(LatLng(entry.latitude ?: 0.0, entry.longitude ?: 0.0))
-                }
-            }.build()
+            val bounds =
+                LatLngBounds.builder().apply {
+                    entries.forEach { entry ->
+                        include(LatLng(entry.latitude ?: 0.0, entry.longitude ?: 0.0))
+                    }
+                }.build()
             cameraPositionState.animate(
                 CameraUpdateFactory.newLatLngBounds(bounds, paddingPx),
             )
         }
     }
 
-    val routePoints = remember(entries) {
-        entries
-            .filter { it.latitude != null && it.longitude != null }
-            .sortedBy { it.date }
-            .map { LatLng(it.latitude!!, it.longitude!!) }
-    }
+    val routePoints =
+        remember(entries) {
+            entries
+                .filter { it.latitude != null && it.longitude != null }
+                .sortedBy { it.date }
+                .map { LatLng(it.latitude!!, it.longitude!!) }
+        }
     val routeColor = MaterialTheme.colorScheme.primary
     val routeWidth = with(density) { 4.dp.toPx() }
 

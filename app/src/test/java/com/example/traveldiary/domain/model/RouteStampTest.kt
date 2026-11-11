@@ -6,20 +6,20 @@ import org.junit.Test
 import java.time.Instant
 
 class RouteStampTest {
-
     private val day0 = Instant.parse("2026-01-01T12:00:00Z")
     private val day1 = Instant.parse("2026-02-01T12:00:00Z")
     private val day2 = Instant.parse("2026-03-01T12:00:00Z")
 
     @Test
     fun `buildRouteStamps dedupes countries and keeps earliest visit`() {
-        val stamps = buildRouteStamps(
-            listOf(
-                entry("España", day2),
-                entry("espana", day0),
-                entry("Japan", day1),
+        val stamps =
+            buildRouteStamps(
+                listOf(
+                    entry("España", day2),
+                    entry("espana", day0),
+                    entry("Japan", day1),
+                ),
             )
-        )
 
         assertEquals(2, stamps.size)
         val esp = stamps.first { it.code == "ESP" }
@@ -30,13 +30,14 @@ class RouteStampTest {
 
     @Test
     fun `buildRouteStamps sorts by first visit descending`() {
-        val stamps = buildRouteStamps(
-            listOf(
-                entry("France", day1),
-                entry("Japan", day2),
-                entry("Spain", day0),
+        val stamps =
+            buildRouteStamps(
+                listOf(
+                    entry("France", day1),
+                    entry("Japan", day2),
+                    entry("Spain", day0),
+                ),
             )
-        )
 
         assertEquals(listOf("JPN", "FRA", "ESP"), stamps.map { it.code })
     }
@@ -49,9 +50,10 @@ class RouteStampTest {
 
     @Test
     fun `buildRouteStamps ignores blank countries`() {
-        val stamps = buildRouteStamps(
-            listOf(entry("  ", day0), entry("", day1), entry("Spain", day2))
-        )
+        val stamps =
+            buildRouteStamps(
+                listOf(entry("  ", day0), entry("", day1), entry("Spain", day2)),
+            )
         assertEquals(1, stamps.size)
         assertEquals("ESP", stamps.first().code)
     }
@@ -72,7 +74,10 @@ class RouteStampTest {
         assertEquals("ESPAÑA", stamps.first().label)
     }
 
-    private fun entry(country: String, date: Instant) = TravelEntry(
+    private fun entry(
+        country: String,
+        date: Instant,
+    ) = TravelEntry(
         id = 0,
         title = "T",
         location = "L",

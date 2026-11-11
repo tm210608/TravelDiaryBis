@@ -54,27 +54,29 @@ fun EditTravelEntryScreen(
         }
     }
 
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions()
-    ) { permissions ->
-        if (permissions.values.any { it }) {
-            coroutineScope.launch {
-                val location = locationHelper.getFreshLocation()
-                viewModel.saveWithUpdatedLocation(location?.latitude, location?.longitude)
+    val permissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestMultiplePermissions(),
+        ) { permissions ->
+            if (permissions.values.any { it }) {
+                coroutineScope.launch {
+                    val location = locationHelper.getFreshLocation()
+                    viewModel.saveWithUpdatedLocation(location?.latitude, location?.longitude)
+                }
+            } else {
+                viewModel.locationUpdateFailed()
             }
-        } else {
-            viewModel.locationUpdateFailed()
         }
-    }
 
     fun requestBack() {
-        val hasUnsavedChanges = when (val state = uiState) {
-            is EditEntryUiState.Editing -> state.isDirty
-            is EditEntryUiState.ConfirmingLocation -> state.form.toTravelEntry() != state.entry
-            is EditEntryUiState.UpdatingLocation -> state.form.toTravelEntry() != state.entry
-            is EditEntryUiState.Saving -> true
-            else -> false
-        }
+        val hasUnsavedChanges =
+            when (val state = uiState) {
+                is EditEntryUiState.Editing -> state.isDirty
+                is EditEntryUiState.ConfirmingLocation -> state.form.toTravelEntry() != state.entry
+                is EditEntryUiState.UpdatingLocation -> state.form.toTravelEntry() != state.entry
+                is EditEntryUiState.Saving -> true
+                else -> false
+            }
         if (hasUnsavedChanges) showDiscardConfirmation = true else onBackClick()
     }
 
@@ -90,7 +92,7 @@ fun EditTravelEntryScreen(
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION,
-                )
+                ),
             )
         }
     }
@@ -116,10 +118,11 @@ fun EditTravelEntryScreen(
                     Button(
                         onClick = viewModel::onSaveClicked,
                         enabled = uiState is EditEntryUiState.Editing,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                        ),
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            ),
                         modifier = Modifier.padding(end = 8.dp),
                     ) {
                         Icon(Icons.Default.Save, contentDescription = null)
@@ -133,7 +136,8 @@ fun EditTravelEntryScreen(
         when (val state = uiState) {
             EditEntryUiState.Loading,
             is EditEntryUiState.Saving,
-            is EditEntryUiState.UpdatingLocation -> {
+            is EditEntryUiState.UpdatingLocation,
+            -> {
                 Box(
                     modifier = Modifier.fillMaxSize().padding(innerPadding),
                     contentAlignment = Alignment.Center,
@@ -143,11 +147,12 @@ fun EditTravelEntryScreen(
             }
             is EditEntryUiState.Editing -> {
                 Column(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .padding(16.dp)
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState()),
+                    modifier =
+                        Modifier
+                            .padding(innerPadding)
+                            .padding(16.dp)
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState()),
                 ) {
                     TravelEntryFormFields(
                         form = state.form,
@@ -177,7 +182,8 @@ fun EditTravelEntryScreen(
                 }
             }
             EditEntryUiState.NotFound,
-            is EditEntryUiState.Saved -> Unit
+            is EditEntryUiState.Saved,
+            -> Unit
         }
     }
 
@@ -189,7 +195,7 @@ fun EditTravelEntryScreen(
             text = {
                 Text(
                     "¿La ubicación registrada sigue siendo correcta?\n" +
-                        "${state.entry.latitude}, ${state.entry.longitude}"
+                        "${state.entry.latitude}, ${state.entry.longitude}",
                 )
             },
             confirmButton = {

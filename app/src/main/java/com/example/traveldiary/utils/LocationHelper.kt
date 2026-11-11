@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.CurrentLocationRequest
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -20,12 +21,14 @@ class LocationHelper(context: Context) {
     @SuppressLint("MissingPermission")
     suspend fun getFreshLocation(): Location? {
         return try {
-            val request = CurrentLocationRequest.Builder()
-                .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
-                .setMaxUpdateAgeMillis(0)
-                .build()
+            val request =
+                CurrentLocationRequest.Builder()
+                    .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+                    .setMaxUpdateAgeMillis(0)
+                    .build()
             fusedLocationClient.getCurrentLocation(request, CancellationTokenSource().token).await()
         } catch (e: Exception) {
+            Log.w(TAG, "getFreshLocation failed", e)
             null
         }
     }
@@ -35,16 +38,19 @@ class LocationHelper(context: Context) {
         return try {
             fusedLocationClient.lastLocation.await()
         } catch (e: Exception) {
+            Log.w(TAG, "getCurrentLocation failed", e)
             null
         }
     }
 
     companion object {
+        private const val TAG = "LocationHelper"
+
         fun hasLocationPermissions(context: Context): Boolean {
             return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
-                    PackageManager.PERMISSION_GRANTED ||
-                    ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) ==
-                    PackageManager.PERMISSION_GRANTED
+                PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED
         }
     }
 }

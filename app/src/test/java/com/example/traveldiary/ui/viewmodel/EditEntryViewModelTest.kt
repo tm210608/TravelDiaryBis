@@ -19,7 +19,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class EditEntryViewModelTest {
-
     @get:Rule
     val rule = TestDispatcherRule()
 
@@ -44,172 +43,188 @@ class EditEntryViewModelTest {
         isFavourite = true,
     )
 
-    private suspend fun load(scope: TestScope, viewModel: EditEntryViewModel, entry: TravelEntry?) {
+    private suspend fun load(
+        scope: TestScope,
+        viewModel: EditEntryViewModel,
+        entry: TravelEntry?,
+    ) {
         coEvery { getEntryByIdUseCase(3) } returns entry
         viewModel.loadEntry(3)
         scope.advanceUntilIdle()
     }
 
     @Test
-    fun `load precarga todos los campos and favourite state`() = runTest {
-        val entry = entry(latitude = 35.0, longitude = 135.0)
-        val viewModel = viewModel()
-        load(this, viewModel, entry)
+    fun `load precarga todos los campos and favourite state`() =
+        runTest {
+            val entry = entry(latitude = 35.0, longitude = 135.0)
+            val viewModel = viewModel()
+            load(this, viewModel, entry)
 
-        val state = viewModel.uiState.value as EditEntryUiState.Editing
-        assertEquals(entry, state.entry)
-        assertEquals(entry.toEntryDetails(), state.form)
-        assertFalse(state.isDirty)
-        assertTrue(state.isValid)
-    }
-
-    @Test
-    fun `loading same entry again does not discard unsaved form changes`() = runTest {
-        val entry = entry()
-        val viewModel = viewModel()
-        load(this, viewModel, entry)
-        viewModel.updateForm((viewModel.uiState.value as EditEntryUiState.Editing).form.copy(title = "Unsaved"))
-
-        viewModel.loadEntry(entry.id)
-        advanceUntilIdle()
-
-        assertEquals("Unsaved", (viewModel.uiState.value as EditEntryUiState.Editing).form.title)
-    }
+            val state = viewModel.uiState.value as EditEntryUiState.Editing
+            assertEquals(entry, state.entry)
+            assertEquals(entry.toEntryDetails(), state.form)
+            assertFalse(state.isDirty)
+            assertTrue(state.isValid)
+        }
 
     @Test
-    fun `load reports NotFound when entry does not exist`() = runTest {
-        val viewModel = viewModel()
-        load(this, viewModel, null)
+    fun `loading same entry again does not discard unsaved form changes`() =
+        runTest {
+            val entry = entry()
+            val viewModel = viewModel()
+            load(this, viewModel, entry)
+            viewModel.updateForm((viewModel.uiState.value as EditEntryUiState.Editing).form.copy(title = "Unsaved"))
 
-        assertEquals(EditEntryUiState.NotFound, viewModel.uiState.value)
-    }
+            viewModel.loadEntry(entry.id)
+            advanceUntilIdle()
 
-    @Test
-    fun `save without complete coordinates updates same id and preserves coordinates`() = runTest {
-        val entry = entry(latitude = null, longitude = 135.0)
-        val viewModel = viewModel()
-        load(this, viewModel, entry)
-        coEvery { updateEntryUseCase(any()) } returns true
-
-        viewModel.updateForm((viewModel.uiState.value as EditEntryUiState.Editing).form.copy(title = "Updated"))
-        viewModel.onSaveClicked()
-        advanceUntilIdle()
-
-        val saved = viewModel.uiState.value as EditEntryUiState.Saved
-        assertEquals(entry.id, saved.entry.id)
-        assertEquals("Updated", saved.entry.title)
-        assertEquals(entry.latitude, saved.entry.latitude)
-        assertEquals(entry.longitude, saved.entry.longitude)
-        coVerify(exactly = 1) { updateEntryUseCase(saved.entry) }
-    }
+            assertEquals("Unsaved", (viewModel.uiState.value as EditEntryUiState.Editing).form.title)
+        }
 
     @Test
-    fun `save asks for confirmation when both coordinates exist`() = runTest {
-        val entry = entry(latitude = 35.0, longitude = 135.0)
-        val viewModel = viewModel()
-        load(this, viewModel, entry)
-        viewModel.onSaveClicked()
+    fun `load reports NotFound when entry does not exist`() =
+        runTest {
+            val viewModel = viewModel()
+            load(this, viewModel, null)
 
-        assertTrue(viewModel.uiState.value is EditEntryUiState.ConfirmingLocation)
-        coVerify(exactly = 0) { updateEntryUseCase(any()) }
-    }
+            assertEquals(EditEntryUiState.NotFound, viewModel.uiState.value)
+        }
 
     @Test
-    fun `confirming current location saves original coordinates`() = runTest {
-        val entry = entry(latitude = 35.0, longitude = 135.0)
-        val viewModel = viewModel()
-        load(this, viewModel, entry)
-        coEvery { updateEntryUseCase(any()) } returns true
-        viewModel.onSaveClicked()
-        viewModel.keepLocationAndSave()
-        advanceUntilIdle()
+    fun `save without complete coordinates updates same id and preserves coordinates`() =
+        runTest {
+            val entry = entry(latitude = null, longitude = 135.0)
+            val viewModel = viewModel()
+            load(this, viewModel, entry)
+            coEvery { updateEntryUseCase(any()) } returns true
 
-        val saved = viewModel.uiState.value as EditEntryUiState.Saved
-        assertEquals(35.0, saved.entry.latitude)
-        assertEquals(135.0, saved.entry.longitude)
-    }
+            viewModel.updateForm((viewModel.uiState.value as EditEntryUiState.Editing).form.copy(title = "Updated"))
+            viewModel.onSaveClicked()
+            advanceUntilIdle()
 
-    @Test
-    fun `choosing location update saves new coordinate pair`() = runTest {
-        val entry = entry(latitude = 35.0, longitude = 135.0)
-        val viewModel = viewModel()
-        load(this, viewModel, entry)
-        coEvery { updateEntryUseCase(any()) } returns true
-        viewModel.onSaveClicked()
-        viewModel.requestLocationUpdate()
-        viewModel.saveWithUpdatedLocation(40.0, -3.0)
-        advanceUntilIdle()
-
-        val saved = viewModel.uiState.value as EditEntryUiState.Saved
-        assertEquals(40.0, saved.entry.latitude)
-        assertEquals(-3.0, saved.entry.longitude)
-    }
+            val saved = viewModel.uiState.value as EditEntryUiState.Saved
+            assertEquals(entry.id, saved.entry.id)
+            assertEquals("Updated", saved.entry.title)
+            assertEquals(entry.latitude, saved.entry.latitude)
+            assertEquals(entry.longitude, saved.entry.longitude)
+            coVerify(exactly = 1) { updateEntryUseCase(saved.entry) }
+        }
 
     @Test
-    fun `failed permission keeps form and does not update`() = runTest {
-        val entry = entry(latitude = 35.0, longitude = 135.0)
-        val viewModel = viewModel()
-        load(this, viewModel, entry)
-        viewModel.onSaveClicked()
-        viewModel.requestLocationUpdate()
-        viewModel.locationUpdateFailed()
+    fun `save asks for confirmation when both coordinates exist`() =
+        runTest {
+            val entry = entry(latitude = 35.0, longitude = 135.0)
+            val viewModel = viewModel()
+            load(this, viewModel, entry)
+            viewModel.onSaveClicked()
 
-        val state = viewModel.uiState.value as EditEntryUiState.Editing
-        assertEquals(entry.toEntryDetails(), state.form)
-        assertTrue(state.error!!.contains("permiso"))
-        coVerify(exactly = 0) { updateEntryUseCase(any()) }
-    }
+            assertTrue(viewModel.uiState.value is EditEntryUiState.ConfirmingLocation)
+            coVerify(exactly = 0) { updateEntryUseCase(any()) }
+        }
 
     @Test
-    fun `location unavailable keeps form and does not update`() = runTest {
-        val entry = entry(latitude = 35.0, longitude = 135.0)
-        val viewModel = viewModel()
-        load(this, viewModel, entry)
-        viewModel.onSaveClicked()
-        viewModel.requestLocationUpdate()
-        viewModel.saveWithUpdatedLocation(null, null)
+    fun `confirming current location saves original coordinates`() =
+        runTest {
+            val entry = entry(latitude = 35.0, longitude = 135.0)
+            val viewModel = viewModel()
+            load(this, viewModel, entry)
+            coEvery { updateEntryUseCase(any()) } returns true
+            viewModel.onSaveClicked()
+            viewModel.keepLocationAndSave()
+            advanceUntilIdle()
 
-        val state = viewModel.uiState.value as EditEntryUiState.Editing
-        assertEquals(entry.toEntryDetails(), state.form)
-        assertTrue(state.error!!.contains("GPS"))
-        coVerify(exactly = 0) { updateEntryUseCase(any()) }
-    }
-
-    @Test
-    fun `failed update reports NotFound`() = runTest {
-        val entry = entry()
-        val viewModel = viewModel()
-        load(this, viewModel, entry)
-        coEvery { updateEntryUseCase(any()) } returns false
-        viewModel.updateForm((viewModel.uiState.value as EditEntryUiState.Editing).form.copy(title = "Updated"))
-        viewModel.onSaveClicked()
-        advanceUntilIdle()
-
-        assertEquals(EditEntryUiState.NotFound, viewModel.uiState.value)
-    }
+            val saved = viewModel.uiState.value as EditEntryUiState.Saved
+            assertEquals(35.0, saved.entry.latitude)
+            assertEquals(135.0, saved.entry.longitude)
+        }
 
     @Test
-    fun `invalid form does not update`() = runTest {
-        val entry = entry()
-        val viewModel = viewModel()
-        load(this, viewModel, entry)
-        viewModel.updateForm((viewModel.uiState.value as EditEntryUiState.Editing).form.copy(title = " "))
-        viewModel.onSaveClicked()
+    fun `choosing location update saves new coordinate pair`() =
+        runTest {
+            val entry = entry(latitude = 35.0, longitude = 135.0)
+            val viewModel = viewModel()
+            load(this, viewModel, entry)
+            coEvery { updateEntryUseCase(any()) } returns true
+            viewModel.onSaveClicked()
+            viewModel.requestLocationUpdate()
+            viewModel.saveWithUpdatedLocation(40.0, -3.0)
+            advanceUntilIdle()
 
-        val state = viewModel.uiState.value as EditEntryUiState.Editing
-        assertTrue(state.error!!.contains("Completa"))
-        coVerify(exactly = 0) { updateEntryUseCase(any()) }
-    }
+            val saved = viewModel.uiState.value as EditEntryUiState.Saved
+            assertEquals(40.0, saved.entry.latitude)
+            assertEquals(-3.0, saved.entry.longitude)
+        }
 
     @Test
-    fun `removeImage clears image while preserving edit state`() = runTest {
-        val entry = entry()
-        val viewModel = viewModel()
-        load(this, viewModel, entry)
-        viewModel.removeImage()
+    fun `failed permission keeps form and does not update`() =
+        runTest {
+            val entry = entry(latitude = 35.0, longitude = 135.0)
+            val viewModel = viewModel()
+            load(this, viewModel, entry)
+            viewModel.onSaveClicked()
+            viewModel.requestLocationUpdate()
+            viewModel.locationUpdateFailed()
 
-        val state = viewModel.uiState.value as EditEntryUiState.Editing
-        assertEquals("", state.form.imageUrl)
-        assertTrue(state.isDirty)
-    }
+            val state = viewModel.uiState.value as EditEntryUiState.Editing
+            assertEquals(entry.toEntryDetails(), state.form)
+            assertTrue(state.error!!.contains("permiso"))
+            coVerify(exactly = 0) { updateEntryUseCase(any()) }
+        }
+
+    @Test
+    fun `location unavailable keeps form and does not update`() =
+        runTest {
+            val entry = entry(latitude = 35.0, longitude = 135.0)
+            val viewModel = viewModel()
+            load(this, viewModel, entry)
+            viewModel.onSaveClicked()
+            viewModel.requestLocationUpdate()
+            viewModel.saveWithUpdatedLocation(null, null)
+
+            val state = viewModel.uiState.value as EditEntryUiState.Editing
+            assertEquals(entry.toEntryDetails(), state.form)
+            assertTrue(state.error!!.contains("GPS"))
+            coVerify(exactly = 0) { updateEntryUseCase(any()) }
+        }
+
+    @Test
+    fun `failed update reports NotFound`() =
+        runTest {
+            val entry = entry()
+            val viewModel = viewModel()
+            load(this, viewModel, entry)
+            coEvery { updateEntryUseCase(any()) } returns false
+            viewModel.updateForm((viewModel.uiState.value as EditEntryUiState.Editing).form.copy(title = "Updated"))
+            viewModel.onSaveClicked()
+            advanceUntilIdle()
+
+            assertEquals(EditEntryUiState.NotFound, viewModel.uiState.value)
+        }
+
+    @Test
+    fun `invalid form does not update`() =
+        runTest {
+            val entry = entry()
+            val viewModel = viewModel()
+            load(this, viewModel, entry)
+            viewModel.updateForm((viewModel.uiState.value as EditEntryUiState.Editing).form.copy(title = " "))
+            viewModel.onSaveClicked()
+
+            val state = viewModel.uiState.value as EditEntryUiState.Editing
+            assertTrue(state.error!!.contains("Completa"))
+            coVerify(exactly = 0) { updateEntryUseCase(any()) }
+        }
+
+    @Test
+    fun `removeImage clears image while preserving edit state`() =
+        runTest {
+            val entry = entry()
+            val viewModel = viewModel()
+            load(this, viewModel, entry)
+            viewModel.removeImage()
+
+            val state = viewModel.uiState.value as EditEntryUiState.Editing
+            assertEquals("", state.form.imageUrl)
+            assertTrue(state.isDirty)
+        }
 }

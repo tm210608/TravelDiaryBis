@@ -23,7 +23,10 @@ fun daysWithEntries(
     zone: ZoneId = ZoneId.systemDefault(),
 ): Int = entries.map { it.date.atZone(zone).toLocalDate() }.distinct().size
 
-fun buildRouteStamps(entries: List<TravelEntry>, maxStamps: Int = 8): List<RouteStamp> =
+fun buildRouteStamps(
+    entries: List<TravelEntry>,
+    maxStamps: Int = 8,
+): List<RouteStamp> =
     entries
         .filter { it.country.isNotBlank() }
         .groupBy { it.country.normalized() }

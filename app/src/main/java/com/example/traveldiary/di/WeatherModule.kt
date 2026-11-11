@@ -11,7 +11,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object WeatherModule {
-
     @Provides
     @Singleton
     fun provideWeatherRepository(impl: WeatherRepositoryImpl): WeatherRepository = impl

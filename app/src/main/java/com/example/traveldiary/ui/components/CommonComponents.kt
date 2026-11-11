@@ -27,10 +27,11 @@ fun TopBar(
     onExportClick: () -> Unit = {},
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .statusBarsPadding()
-            .padding(horizontal = 20.dp, vertical = 14.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .padding(horizontal = 20.dp, vertical = 14.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -72,34 +73,37 @@ fun TopBar(
                 }
             }
             Box(
-            modifier = Modifier
-                .size(44.dp)
-                .clip(CircleShape)
-                .background(
-                    Brush.linearGradient(
-                        colors = listOf(
-                            MaterialTheme.colorScheme.primaryContainer,
-                            MaterialTheme.colorScheme.secondary,
+                modifier =
+                    Modifier
+                        .size(44.dp)
+                        .clip(CircleShape)
+                        .background(
+                            Brush.linearGradient(
+                                colors =
+                                    listOf(
+                                        MaterialTheme.colorScheme.primaryContainer,
+                                        MaterialTheme.colorScheme.secondary,
+                                    ),
+                            ),
                         )
-                    )
-                )
-                .padding(2.5.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surfaceContainerLowest),
+                        .padding(2.5.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                Text(
-                    text = "AL",
-                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.primary,
-                )
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceContainerLowest),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(
+                        text = "AL",
+                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
             }
-        }
         }
     }
 }
@@ -108,7 +112,7 @@ fun TopBar(
 fun SearchBar(
     query: String = "",
     onQueryChanged: (String) -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     TextField(
         value = query,
@@ -140,13 +144,14 @@ fun SearchBar(
             }
         },
         shape = CircleShape,
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-            focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
-            unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
-            cursorColor = MaterialTheme.colorScheme.primary,
-        ),
+        colors =
+            TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                focusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                unfocusedIndicatorColor = androidx.compose.ui.graphics.Color.Transparent,
+                cursorColor = MaterialTheme.colorScheme.primary,
+            ),
         singleLine = true,
     )
 }
@@ -160,10 +165,11 @@ fun FilterChipsRow(
     counts: Map<String, Int> = emptyMap(),
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .horizontalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         chips.forEach { chip ->
@@ -176,16 +182,18 @@ fun FilterChipsRow(
                         style = MaterialTheme.typography.labelMedium,
                     )
                 },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-                    selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                ),
-                border = FilterChipDefaults.filterChipBorder(
-                    enabled = true,
-                    selected = chip == selectedChip,
-                    borderColor = MaterialTheme.colorScheme.outlineVariant,
-                    selectedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
-                ),
+                colors =
+                    FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ),
+                border =
+                    FilterChipDefaults.filterChipBorder(
+                        enabled = true,
+                        selected = chip == selectedChip,
+                        borderColor = MaterialTheme.colorScheme.outlineVariant,
+                        selectedBorderColor = androidx.compose.ui.graphics.Color.Transparent,
+                    ),
             )
         }
     }
@@ -232,12 +240,13 @@ fun BottomNavigationBar(
     onTabSelected: (Int) -> Unit,
 ) {
     NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest) {
-        val items = listOf(
-            Triple("Cuaderno", Icons.Filled.Home, Icons.Outlined.Home),
-            Triple("Rutas", Icons.Filled.Map, Icons.Outlined.Map),
-            Triple("Satélite", Icons.Filled.PhotoLibrary, Icons.Outlined.PhotoLibrary),
-            Triple("Índice", Icons.Filled.Person, Icons.Outlined.Person),
-        )
+        val items =
+            listOf(
+                Triple("Cuaderno", Icons.Filled.Home, Icons.Outlined.Home),
+                Triple("Rutas", Icons.Filled.Map, Icons.Outlined.Map),
+                Triple("Satélite", Icons.Filled.PhotoLibrary, Icons.Outlined.PhotoLibrary),
+                Triple("Índice", Icons.Filled.Person, Icons.Outlined.Person),
+            )
         items.forEachIndexed { index, (label, filledIcon, outlinedIcon) ->
             NavigationBarItem(
                 selected = selectedTab == index,
@@ -249,13 +258,14 @@ fun BottomNavigationBar(
                     )
                 },
                 label = { Text(label, style = MaterialTheme.typography.labelSmall) },
-                colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
-                    selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                ),
+                colors =
+                    NavigationBarItemDefaults.colors(
+                        indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                        selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
             )
         }
     }
@@ -267,9 +277,10 @@ fun ArchiveFooter(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 22.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 22.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(

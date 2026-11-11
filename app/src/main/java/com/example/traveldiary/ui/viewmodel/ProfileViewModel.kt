@@ -20,48 +20,54 @@ import javax.inject.Inject
 
 sealed interface ProfileUiState {
     data object Loading : ProfileUiState
+
     data class Success(val stats: TravelStats, val passport: PassportData) : ProfileUiState
 }
 
 sealed interface ImportUiState {
     data object Idle : ImportUiState
+
     data object Importing : ImportUiState
+
     data class Success(val count: Int) : ImportUiState
+
     data class Error(val message: String) : ImportUiState
 }
 
 @HiltViewModel
-class ProfileViewModel @Inject constructor(
-    getTravelStatsUseCase: GetTravelStatsUseCase,
-    getPassportUseCase: GetPassportUseCase,
-    private val importEntriesUseCase: ImportEntriesUseCase,
-) : ViewModel() {
+class ProfileViewModel
+    @Inject
+    constructor(
+        getTravelStatsUseCase: GetTravelStatsUseCase,
+        getPassportUseCase: GetPassportUseCase,
+        private val importEntriesUseCase: ImportEntriesUseCase,
+    ) : ViewModel() {
+        val uiState: StateFlow<ProfileUiState> =
+            combine(getTravelStatsUseCase(), getPassportUseCase()) { stats, passport ->
+                ProfileUiState.Success(stats, passport)
+            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProfileUiState.Loading)
 
-    val uiState: StateFlow<ProfileUiState> =
-        combine(getTravelStatsUseCase(), getPassportUseCase()) { stats, passport ->
-            ProfileUiState.Success(stats, passport)
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProfileUiState.Loading)
+        private val _importState = MutableStateFlow<ImportUiState>(ImportUiState.Idle)
+        val importState: StateFlow<ImportUiState> = _importState.asStateFlow()
 
-    private val _importState = MutableStateFlow<ImportUiState>(ImportUiState.Idle)
-    val importState: StateFlow<ImportUiState> = _importState.asStateFlow()
-
-    fun importDiary(sourceUri: String) {
-        _importState.value = ImportUiState.Importing
-        viewModelScope.launch {
-            _importState.value = try {
-                when (val result = importEntriesUseCase(sourceUri)) {
-                    is ImportResult.Success -> ImportUiState.Success(result.entries.size)
-                    ImportResult.InvalidFile -> ImportUiState.Error("No es un archivo de diario válido")
-                    ImportResult.UnsupportedVersion -> ImportUiState.Error("Versión de diario no soportada")
-                    ImportResult.Empty -> ImportUiState.Error("El archivo no contiene entradas")
-                }
-            } catch (e: Exception) {
-                ImportUiState.Error(e.message ?: "Error al importar")
+        fun importDiary(sourceUri: String) {
+            _importState.value = ImportUiState.Importing
+            viewModelScope.launch {
+                _importState.value =
+                    try {
+                        when (val result = importEntriesUseCase(sourceUri)) {
+                            is ImportResult.Success -> ImportUiState.Success(result.entries.size)
+                            ImportResult.InvalidFile -> ImportUiState.Error("No es un archivo de diario válido")
+                            ImportResult.UnsupportedVersion -> ImportUiState.Error("Versión de diario no soportada")
+                            ImportResult.Empty -> ImportUiState.Error("El archivo no contiene entradas")
+                        }
+                    } catch (e: Exception) {
+                        ImportUiState.Error(e.message ?: "Error al importar")
+                    }
             }
         }
-    }
 
-    fun onImportStateConsumed() {
-        _importState.value = ImportUiState.Idle
+        fun onImportStateConsumed() {
+            _importState.value = ImportUiState.Idle
+        }
     }
-}

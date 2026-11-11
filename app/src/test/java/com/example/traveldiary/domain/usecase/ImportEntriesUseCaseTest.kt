@@ -8,23 +8,23 @@ import com.example.traveldiary.domain.repository.TravelRepository
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.util.zip.ZipEntry
-import java.util.zip.ZipOutputStream
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 class ImportEntriesUseCaseTest {
-
     private val repository: TravelRepository = mockk(relaxed = true)
     private val storage: ImportStorage = mockk()
     private val useCase = ImportEntriesUseCase(repository, DiaryImporterImpl(), storage)
 
     private fun validZip(): ByteArray {
-        val doc = """
+        val doc =
+            """
             {
               "formatVersion": 1, "app": "TravelDiaryBis", "appVersion": "1.0",
               "exportedAt": "2026-10-15T10:00:00Z", "entryCount": 2,
@@ -39,7 +39,7 @@ class ImportEntriesUseCaseTest {
                  "imageUrl": "orig://b", "photoFile": null}
               ]
             }
-        """.trimIndent()
+            """.trimIndent()
         val out = ByteArrayOutputStream()
         ZipOutputStream(out).use { zip ->
             zip.putNextEntry(ZipEntry("diary.json"))
@@ -50,25 +50,27 @@ class ImportEntriesUseCaseTest {
     }
 
     @Test
-    fun `invoke inserts every imported entry`() = runTest {
-        every { storage.openInputStream("content://zip") } returns
-            ByteArrayInputStream(validZip())
-        every { storage.savePhoto(any(), any()) } returns "file:///new/x.jpg"
+    fun `invoke inserts every imported entry`() =
+        runTest {
+            every { storage.openInputStream("content://zip") } returns
+                ByteArrayInputStream(validZip())
+            every { storage.savePhoto(any(), any()) } returns "file:///new/x.jpg"
 
-        val result = useCase("content://zip")
+            val result = useCase("content://zip")
 
-        assertTrue(result is ImportResult.Success)
-        assertEquals(2, (result as ImportResult.Success).entries.size)
-        coVerify(exactly = 2) { repository.insertEntry(any<TravelEntry>()) }
-    }
+            assertTrue(result is ImportResult.Success)
+            assertEquals(2, (result as ImportResult.Success).entries.size)
+            coVerify(exactly = 2) { repository.insertEntry(any<TravelEntry>()) }
+        }
 
     @Test
-    fun `invoke returns InvalidFile when stream cannot be opened`() = runTest {
-        every { storage.openInputStream("content://zip") } returns null
+    fun `invoke returns InvalidFile when stream cannot be opened`() =
+        runTest {
+            every { storage.openInputStream("content://zip") } returns null
 
-        val result = useCase("content://zip")
+            val result = useCase("content://zip")
 
-        assertEquals(ImportResult.InvalidFile, result)
-        coVerify(exactly = 0) { repository.insertEntry(any<TravelEntry>()) }
-    }
+            assertEquals(ImportResult.InvalidFile, result)
+            coVerify(exactly = 0) { repository.insertEntry(any<TravelEntry>()) }
+        }
 }

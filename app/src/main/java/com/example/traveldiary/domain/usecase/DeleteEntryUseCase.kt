@@ -4,8 +4,10 @@ import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.domain.repository.TravelRepository
 import javax.inject.Inject
 
-class DeleteEntryUseCase @Inject constructor(
-    private val repository: TravelRepository
-) {
-    suspend operator fun invoke(entry: TravelEntry) = repository.deleteEntry(entry)
-}
+class DeleteEntryUseCase
+    @Inject
+    constructor(
+        private val repository: TravelRepository,
+    ) {
+        suspend operator fun invoke(entry: TravelEntry) = repository.deleteEntry(entry)
+    }

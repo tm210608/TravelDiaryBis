@@ -1,5 +1,7 @@
 package com.example.traveldiary.ui.screens
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -11,8 +13,6 @@ import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.FileUpload
 import androidx.compose.material3.*
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -43,17 +43,18 @@ import com.example.traveldiary.ui.viewmodel.ProfileViewModel
 fun ProfileScreen(
     onTabSelected: (Int) -> Unit = {},
     onExportClick: () -> Unit = {},
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val importState by viewModel.importState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val importLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.OpenDocument()
-    ) { uri ->
-        uri?.let { viewModel.importDiary(it.toString()) }
-    }
+    val importLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.OpenDocument(),
+        ) { uri ->
+            uri?.let { viewModel.importDiary(it.toString()) }
+        }
 
     LaunchedEffect(importState) {
         when (val state = importState) {
@@ -80,9 +81,10 @@ fun ProfileScreen(
         },
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
         ) {
             Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)) {
                 Text(
@@ -106,10 +108,11 @@ fun ProfileScreen(
                 }
                 is ProfileUiState.Success -> {
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .verticalScroll(rememberScrollState())
-                            .padding(horizontal = 20.dp),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .verticalScroll(rememberScrollState())
+                                .padding(horizontal = 20.dp),
                     ) {
                         PassportCover(stats = state.stats)
                         Spacer(Modifier.height(14.dp))
@@ -124,36 +127,40 @@ fun ProfileScreen(
                         if (state.passport.stamps.isEmpty()) {
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
-                                colors = CardDefaults.cardColors(
-                                    containerColor = MaterialTheme.colorScheme.surfaceContainer
-                                ),
+                                colors =
+                                    CardDefaults.cardColors(
+                                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                    ),
                             ) {
                                 Text(
                                     text = "COMPLETA TU PRIMER VISADO",
                                     style = MonoTelemetry,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 22.dp)
-                                        .wrapContentWidth(Alignment.CenterHorizontally),
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 22.dp)
+                                            .wrapContentWidth(Alignment.CenterHorizontally),
                                 )
                             }
                         } else {
                             state.passport.stamps.chunked(2).forEach { row ->
                                 Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 7.dp),
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 7.dp),
                                     horizontalArrangement = Arrangement.spacedBy(14.dp),
                                 ) {
                                     row.forEach { stamp ->
                                         PassportStamp(
                                             stamp = stamp,
-                                            ink = if (state.passport.stamps.indexOf(stamp) % 2 == 0) {
-                                                MaterialTheme.colorScheme.primary
-                                            } else {
-                                                MaterialTheme.colorScheme.tertiary
-                                            },
+                                            ink =
+                                                if (state.passport.stamps.indexOf(stamp) % 2 == 0) {
+                                                    MaterialTheme.colorScheme.primary
+                                                } else {
+                                                    MaterialTheme.colorScheme.tertiary
+                                                },
                                             modifier = Modifier.weight(1f),
                                         )
                                     }
@@ -180,7 +187,7 @@ fun ProfileScreen(
                                             "application/zip",
                                             "application/x-zip-compressed",
                                             "application/octet-stream",
-                                        )
+                                        ),
                                     )
                                 }
                             },
@@ -199,16 +206,18 @@ private fun PassportCover(stats: TravelStats) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        border = CardDefaults.outlinedCardBorder().copy(
-            brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant)
-        ),
+        border =
+            CardDefaults.outlinedCardBorder().copy(
+                brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant),
+            ),
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp)),
+                    modifier =
+                        Modifier
+                            .size(56.dp)
+                            .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp)),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
@@ -257,9 +266,13 @@ private fun PassportCover(stats: TravelStats) {
             )
             Spacer(Modifier.height(12.dp))
             Text(
-                text = "VIAJES %02d · FAV %02d · PAÍSES %02d · CONT %02d".format(
-                    stats.totalTrips, stats.favourites, stats.countries, stats.continents
-                ),
+                text =
+                    "VIAJES %02d · FAV %02d · PAÍSES %02d · CONT %02d".format(
+                        stats.totalTrips,
+                        stats.favourites,
+                        stats.countries,
+                        stats.continents,
+                    ),
                 style = MonoTelemetry,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -273,14 +286,16 @@ private fun TelemetryStrip(passport: PassportData) {
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        border = CardDefaults.outlinedCardBorder().copy(
-            brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant)
-        ),
+        border =
+            CardDefaults.outlinedCardBorder().copy(
+                brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant),
+            ),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(modifier = Modifier.weight(1f)) {
@@ -344,14 +359,16 @@ private fun ExportImportCards(
         onClick = onExportClick,
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            ),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 14.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
@@ -385,14 +402,16 @@ private fun ExportImportCards(
         onClick = onImportClick,
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer
-        ),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            ),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 14.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
