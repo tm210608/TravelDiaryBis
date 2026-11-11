@@ -1,0 +1,46 @@
+build:
+  maxIssues: 0
+
+complexity:
+  LongMethod:
+    threshold: 100
+    excludes: [ '**/ui/**', '**/navigation/**' ]
+  LongParameterList:
+    functionThreshold: 10
+    constructorThreshold: 10
+    ignoreAnnotated: [ 'Composable' ]
+  CyclomaticComplexMethod:
+    excludes: [ '**/ui/**', '**/navigation/**' ]
+  TooManyFunctions:
+    thresholdInFiles: 20
+    thresholdInClasses: 20
+    thresholdInObjects: 20
+    ignorePrivate: true
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated: [ 'Composable' ]
+
+style:
+  MagicNumber:
+    active: false
+  WildcardImport:
+    excludeImports: [ 'androidx.compose.*' ]
+  UnusedPrivateMember:
+    ignoreAnnotated: [ 'Preview' ]
+  MaxLineLength:
+    maxLineLength: 140
+    excludes: [ '**/SampleData.kt' ]
+  ReturnCount:
+    max: 5
+    excludeGuardClauses: true
+
+exceptions:
+  TooGenericExceptionCaught:
+    exceptionNames:
+      - ArrayIndexOutOfBoundsException
+      - Error
+      - IllegalMonitorStateException
+      - NullPointerException
+      - IndexOutOfBoundsException
+      - Throwable

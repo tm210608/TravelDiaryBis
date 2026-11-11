@@ -16,7 +16,7 @@ done
 ADB="${ADB:-$LOCALAPPDATA/Android/Sdk/platform-tools/adb.exe}"
 [ -x "$ADB" ] || ADB="$(command -v adb 2>/dev/null)"
 
-./gradlew compileDebugKotlin testDebugUnitTest --console=plain -q > "$LOG" 2>&1
+./gradlew ktlintCheck detekt compileDebugKotlin testDebugUnitTest --console=plain -q > "$LOG" 2>&1
 RC=$?
 
 TOTAL=0; FAILED=0

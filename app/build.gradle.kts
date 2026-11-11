@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -23,12 +25,13 @@ android {
 
         // Read MAPS_API_KEY from local.properties (gitignored)
         val localProperties = rootProject.file("local.properties")
-        val mapsApiKey = if (localProperties.exists()) {
-            Properties().apply { localProperties.inputStream().use { load(it) } }
-                .getProperty("MAPS_API_KEY", "")
-        } else {
-            ""
-        }
+        val mapsApiKey =
+            if (localProperties.exists()) {
+                Properties().apply { localProperties.inputStream().use { load(it) } }
+                    .getProperty("MAPS_API_KEY", "")
+            } else {
+                ""
+            }
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
@@ -66,6 +69,11 @@ android {
 
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
+}
+
+detekt {
+    buildUponDefaultConfig = true
+    config.setFrom(rootProject.file("config/detekt/detekt.yml"))
 }
 
 dependencies {
