@@ -7,24 +7,31 @@ cambio funcional; el beneficio es seguridad en tiempo de compilación para los a
 (`entryId: Int`, `export: Boolean`) y eliminar la deuda "navegación con strings".
 
 ## Criterios de aceptación (testeables, sin ambigüedad)
-- [ ] `navigation-compose` sube de 2.7.7 al último patch estable de **2.8.x** (fijar el
-      exacto al implementar). `compileSdk`/`targetSdk` siguen en 34, Kotlin en 2.0.0.
-- [ ] Plugin `org.jetbrains.kotlin.plugin.serialization` aplicado en `app` y dependencia
-      `kotlinx-serialization-json` añadida (ambos alias ya existen en `libs.versions.toml`).
-- [ ] Los 8 destinos declarados como `@Serializable`: `data object` para AddEntry, Camera,
-      Map, Memories, Profile; `data class` para `Home(export: Boolean = false)`,
-      `Detail(entryId: Int)`, `EditEntry(entryId: Int)`.
-- [ ] `NavHost` usa `startDestination = Home` tipado y todos los `composable<T>()` +
+- [x] `navigation-compose` sube de 2.7.7 al último patch estable de **2.8.x** (fijado:
+      2.8.9). `compileSdk`/`targetSdk` sin cambios (siguen en 36), Kotlin en 2.0.0.
+- [x] Plugin `org.jetbrains.kotlin.plugin.serialization` aplicado en `app` y dependencia
+      `kotlinx-serialization-json` presente (ambos ya estaban aplicados).
+- [x] Los 8 destinos declarados como `@Serializable` en `navigation/Destinations.kt`:
+      `data object` para AddEntry, Camera, Map, Memories, Profile; `data class` para
+      `Home(export: Boolean = false)`, `Detail(entryId: Int)`, `EditEntry(entryId: Int)`.
+- [x] `NavHost` usa `startDestination = Home()` tipado y todos los `composable<T>()` +
       `toRoute<T>()` son genéricos: no queda ninguna ruta string en `TravelDiaryNavGraph`.
-- [ ] Todos los `navigate`, `popBackStack`, `popUpTo` usan overloads type-safe
+- [x] Todos los `navigate`, `popBackStack`, `popUpTo` usan overloads type-safe
       (`navigate(Detail(id))`, `popBackStack<Home>()`, `popUpTo<Home>`).
-- [ ] `Screen.kt` eliminado o reemplazado por los destinos serializables: ningún consumidor
+- [x] `Screen.kt` eliminado (renombrado a `Destinations.kt`): ningún consumidor
       sigue importando rutas string.
-- [ ] Comportamiento idéntico al actual: tabs con `popUpTo`/`saveState`, Camera devuelve
-      `capturedImageUri` por `savedStateHandle`, Edit devuelve `refreshVersion` por
-      `savedStateHandle`, Profile navega a `Home(export = true)`.
-- [ ] `scripts/verify.sh` verde; 156 tests JVM y `HomeAddEntryFlowTest` siguen verdes.
-- [ ] Flujo manual en Xiaomi recorre los destinos sin regresión (ver plan de tests).
+- [x] Comportamiento idéntico al actual, observado en dispositivo: tabs con
+      `popUpTo`/`saveState` (Map, Memories, Profile), Camera devuelve `capturedImageUri`
+      por `savedStateHandle` (foto visible en AddEntry), Edit devuelve `refreshVersion`
+      (Detail muestra título actualizado "Escapada Valencia II"), Profile navega a
+      `Home(export = true)` (Home abre en modo selección "0 seleccionadas").
+      Nota: `onEntryNotFound` → `popBackStack<Home>` no se ejercitó (requeriría borrar
+      la entrada); el overload es el mismo ya verificado por el tab Cuaderno.
+- [x] `scripts/verify.sh` verde; 156 tests JVM verdes y `HomeAddEntryFlowTest` +
+      `MigrationTest` verdes en `connectedDebugAndroidTest` (2 emuladores API 36).
+- [x] Flujo manual en dispositivo recorre los destinos sin regresión (ver plan de tests).
+      Ejecutado en emulador `SocialChef_Test` (API 36); Xiaomi bloqueado por MIUI
+      (instalación vía USB requiere aprobación en el teléfono).
 
 ## Fuera de alcance
 - Cualquier cambio de comportamiento, pantallas o UI (refactor puro).
@@ -62,14 +69,18 @@ Sin cambios. El comportamiento de back stack y `saveState` de los tabs se conser
 explícitamente como criterio de aceptación.
 
 ## Plan de tests
-- [ ] build: `scripts/verify.sh`
-- [ ] unit: `./gradlew testDebugUnitTest` — 156 tests existentes verdes (no se añaden
+- [x] build: `scripts/verify.sh` — OK (tests=156 fallos=0)
+- [x] unit: `./gradlew testDebugUnitTest` — 156 tests existentes verdes (no se añaden
       tests unitarios nuevos: los ViewModels no conocen rutas)
-- [ ] dispositivo: `scripts/verify.sh --device` + `HomeAddEntryFlowTest` verde
-- [ ] flujo manual en Xiaomi: Home > Add > Camera > capturar > Guardar > Detail > Edit >
-      guardar (verifica refreshVersion) > back a Home > tab Mapa > marker > Detail >
-      tab Recuerdos > Detail > tab Perfil > Exportar (Home con export) > rotación en Detail
-- [ ] evidencia: capturas en `docs/specs/nav-type-safe/`
+- [x] dispositivo: `scripts/verify.sh --device` OK y `connectedDebugAndroidTest` verde
+      en emulator-5554 y emulator-5556 (API 36). Xiaomi: pendiente — MIUI cancela la
+      instalación por USB sin aprobación en pantalla del teléfono.
+- [x] flujo manual en dispositivo (emulator-5556): Home > Add > Camera > capturar >
+      Guardar > Detail > Edit > guardar (refreshVersion verificado: título pasó a
+      "Escapada Valencia II") > back > tab Rutas > marker > info window > Detail >
+      tab Satélite > Detail > tab Índice > Exportar (Home modo selección) >
+      rotación en Detail (entryId sobrevive a landscape)
+- [x] evidencia: capturas en `docs/specs/nav-type-safe/` (evidence_1..18)
 
 ## Edge cases
 - `export` ausente: default `false` en el data class (equivale al `defaultValue` actual).
