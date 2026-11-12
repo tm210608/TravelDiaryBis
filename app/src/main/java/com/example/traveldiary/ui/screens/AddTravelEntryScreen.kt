@@ -37,11 +37,31 @@ fun AddTravelEntryScreen(
         mutableStateOf(LocationHelper.hasLocationPermissions(context))
     }
 
+    fun saveWithLocation(location: android.location.Location?) {
+        coroutineScope.launch {
+            viewModel.saveEntry(
+                latitude = location?.latitude,
+                longitude = location?.longitude,
+            )
+            snackbarHostState.showSnackbar("Entrada guardada correctamente")
+            navigateBack()
+        }
+    }
+
     val locationPermissionLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestMultiplePermissions(),
         ) { permissions ->
             hasLocationPermission = permissions.values.any { it }
+            coroutineScope.launch {
+                val location =
+                    if (hasLocationPermission) {
+                        locationHelper.getFreshLocation()
+                    } else {
+                        null
+                    }
+                saveWithLocation(location)
+            }
         }
 
     val galleryPicker =
@@ -73,27 +93,18 @@ fun AddTravelEntryScreen(
                 actions = {
                     Button(
                         onClick = {
-                            coroutineScope.launch {
-                                if (!hasLocationPermission) {
-                                    locationPermissionLauncher.launch(
-                                        arrayOf(
-                                            Manifest.permission.ACCESS_FINE_LOCATION,
-                                            Manifest.permission.ACCESS_COARSE_LOCATION,
-                                        ),
-                                    )
+                            if (LocationHelper.hasLocationPermissions(context)) {
+                                hasLocationPermission = true
+                                coroutineScope.launch {
+                                    saveWithLocation(locationHelper.getFreshLocation())
                                 }
-                                val location =
-                                    if (hasLocationPermission) {
-                                        locationHelper.getCurrentLocation()
-                                    } else {
-                                        null
-                                    }
-                                viewModel.saveEntry(
-                                    latitude = location?.latitude,
-                                    longitude = location?.longitude,
+                            } else {
+                                locationPermissionLauncher.launch(
+                                    arrayOf(
+                                        Manifest.permission.ACCESS_FINE_LOCATION,
+                                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                                    ),
                                 )
-                                snackbarHostState.showSnackbar("Entrada guardada correctamente")
-                                navigateBack()
                             }
                         },
                         enabled = uiState.isEntryValid,

@@ -64,6 +64,8 @@ fun EditTravelEntryScreen(
             }
         }
 
+    var pendingGpsSave by remember { mutableStateOf(false) }
+
     val permissionLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestMultiplePermissions(),
@@ -71,8 +73,16 @@ fun EditTravelEntryScreen(
             if (permissions.values.any { it }) {
                 coroutineScope.launch {
                     val location = locationHelper.getFreshLocation()
-                    viewModel.saveWithUpdatedLocation(location?.latitude, location?.longitude)
+                    if (pendingGpsSave) {
+                        pendingGpsSave = false
+                        viewModel.saveWithOptionalLocation(location?.latitude, location?.longitude)
+                    } else {
+                        viewModel.saveWithUpdatedLocation(location?.latitude, location?.longitude)
+                    }
                 }
+            } else if (pendingGpsSave) {
+                pendingGpsSave = false
+                viewModel.saveWithOptionalLocation(null, null)
             } else {
                 viewModel.locationUpdateFailed()
             }
@@ -126,7 +136,27 @@ fun EditTravelEntryScreen(
                 },
                 actions = {
                     Button(
-                        onClick = viewModel::onSaveClicked,
+                        onClick = {
+                            val editing = uiState as? EditEntryUiState.Editing
+                            if (editing != null && (editing.entry.latitude == null || editing.entry.longitude == null)) {
+                                if (LocationHelper.hasLocationPermissions(context)) {
+                                    coroutineScope.launch {
+                                        val location = locationHelper.getFreshLocation()
+                                        viewModel.saveWithOptionalLocation(location?.latitude, location?.longitude)
+                                    }
+                                } else {
+                                    pendingGpsSave = true
+                                    permissionLauncher.launch(
+                                        arrayOf(
+                                            Manifest.permission.ACCESS_FINE_LOCATION,
+                                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                                        ),
+                                    )
+                                }
+                            } else {
+                                viewModel.onSaveClicked()
+                            }
+                        },
                         enabled = uiState is EditEntryUiState.Editing,
                         colors =
                             ButtonDefaults.buttonColors(

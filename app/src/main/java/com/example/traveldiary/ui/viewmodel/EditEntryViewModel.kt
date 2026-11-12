@@ -164,6 +164,14 @@ class EditEntryViewModel
             save(state.entry, state.form, latitude, longitude)
         }
 
+        fun saveWithOptionalLocation(
+            latitude: Double?,
+            longitude: Double?,
+        ) {
+            val state = _uiState.value as? EditEntryUiState.Editing ?: return
+            save(state.entry, state.form, latitude, longitude)
+        }
+
         fun locationUpdateFailed() {
             val state = _uiState.value as? EditEntryUiState.UpdatingLocation ?: return
             _uiState.value =
