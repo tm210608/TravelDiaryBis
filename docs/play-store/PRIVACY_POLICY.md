@@ -65,4 +65,4 @@ personales en servidores.
 
 ## 7. Contacto
 
-Para cualquier duda sobre esta política: **[TU EMAIL DE CONTACTO]**
+Para cualquier duda sobre esta política: **juanantoniogp92@gmail.com**

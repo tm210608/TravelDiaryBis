@@ -49,8 +49,10 @@ Viajes y guías / Estilo de vida
 ## Etiquetas / palabras clave (para búsqueda)
 diario de viaje, travel journal, mapa de viajes, recuerdos de viaje, offline
 
-## Gráficos necesarios (hay que crearlos)
-- Icono de alta resolución: 512×512 PNG (exportar del ic_launcher)
-- Imagen destacada (feature graphic): 1024×500
-- Capturas de pantalla: mínimo 2, recomendado 4-8 (tomar en el móvil con
-  `adb shell screencap` o desde el emulador)
+## Gráficos necesarios
+- Icono de alta resolución: 512×512 PNG → HECHO: `icon-512.png`
+- Imagen destacada (feature graphic): 1024×500 → HECHO: `feature-graphic-1024x500.png`
+- Capturas de pantalla (en `screenshots/`): HECHAS 01 home, 02 detalle,
+  04 recuerdos, 05 perfil, 06 nueva entrada. PENDIENTE: 03 mapa (la clave
+  de Maps no autoriza `com.traveldiary.app`; repetir tras arreglar la
+  restricción en Google Cloud Console).
