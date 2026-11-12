@@ -17,6 +17,7 @@ fun TravelEntryEntity.toDomain(): TravelEntry =
         longitude = longitude,
         isFavourite = isFavourite,
         uuid = uuid,
+        photoUris = photoUris,
     )
 
 fun TravelEntry.toEntity(): TravelEntryEntity =
@@ -33,6 +34,7 @@ fun TravelEntry.toEntity(): TravelEntryEntity =
         longitude = longitude,
         isFavourite = isFavourite,
         uuid = uuid,
+        photoUris = photoUris,
     )
 
 fun List<TravelEntryEntity>.toDomainList(): List<TravelEntry> = map { it.toDomain() }

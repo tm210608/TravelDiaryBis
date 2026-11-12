@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.traveldiary.BuildConfig
 import com.example.traveldiary.domain.model.TravelEntry
+import com.example.traveldiary.domain.model.UserProfile
 import com.example.traveldiary.domain.model.WeatherReading
 import com.example.traveldiary.domain.model.hasGps
 import com.example.traveldiary.domain.model.shareMimeType
@@ -14,6 +15,7 @@ import com.example.traveldiary.domain.usecase.ExportEntriesUseCase
 import com.example.traveldiary.domain.usecase.ExportPdfUseCase
 import com.example.traveldiary.domain.usecase.FilterEntriesByChipUseCase
 import com.example.traveldiary.domain.usecase.GetEntriesUseCase
+import com.example.traveldiary.domain.usecase.GetProfileUseCase
 import com.example.traveldiary.model.filterChips
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,7 +49,12 @@ class HomeViewModel
         private val exportEntriesUseCase: ExportEntriesUseCase,
         private val exportPdfUseCase: ExportPdfUseCase,
         private val weatherRepository: WeatherRepository,
+        getProfileUseCase: GetProfileUseCase,
     ) : ViewModel() {
+        val profile: StateFlow<UserProfile> =
+            getProfileUseCase()
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UserProfile())
+
         private val _selectedChip = MutableStateFlow(FilterEntriesByChipUseCase.CHIP_TODO)
         val selectedChip: StateFlow<String> = _selectedChip
 

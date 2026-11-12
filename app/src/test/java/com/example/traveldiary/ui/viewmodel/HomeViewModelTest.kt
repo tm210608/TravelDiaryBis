@@ -7,7 +7,9 @@ import com.example.traveldiary.domain.repository.WeatherRepository
 import com.example.traveldiary.domain.usecase.ExportEntriesUseCase
 import com.example.traveldiary.domain.usecase.ExportPdfUseCase
 import com.example.traveldiary.domain.usecase.FilterEntriesByChipUseCase
+import com.example.traveldiary.domain.model.UserProfile
 import com.example.traveldiary.domain.usecase.GetEntriesUseCase
+import com.example.traveldiary.domain.usecase.GetProfileUseCase
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -35,6 +37,7 @@ class HomeViewModelTest {
     private val exportEntriesUseCase: ExportEntriesUseCase = mockk()
     private val exportPdfUseCase: ExportPdfUseCase = mockk()
     private val weatherRepository: WeatherRepository = mockk()
+    private val getProfileUseCase: GetProfileUseCase = mockk()
 
     private fun entry(
         id: Int,
@@ -51,12 +54,14 @@ class HomeViewModelTest {
 
     private fun viewModelWith(entries: List<TravelEntry>): HomeViewModel {
         every { getEntriesUseCase() } returns flowOf(entries)
+        every { getProfileUseCase() } returns flowOf(UserProfile())
         return HomeViewModel(
             getEntriesUseCase,
             filterEntriesByChipUseCase,
             exportEntriesUseCase,
             exportPdfUseCase,
             weatherRepository,
+            getProfileUseCase,
         )
     }
 

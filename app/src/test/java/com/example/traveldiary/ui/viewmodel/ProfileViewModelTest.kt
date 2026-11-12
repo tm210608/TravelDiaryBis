@@ -5,7 +5,9 @@ import com.example.traveldiary.domain.export.ImportResult
 import com.example.traveldiary.domain.model.PassportData
 import com.example.traveldiary.domain.model.TravelEntry
 import com.example.traveldiary.domain.model.TravelStats
+import com.example.traveldiary.domain.model.UserProfile
 import com.example.traveldiary.domain.usecase.GetPassportUseCase
+import com.example.traveldiary.domain.usecase.GetProfileUseCase
 import com.example.traveldiary.domain.usecase.GetTravelStatsUseCase
 import com.example.traveldiary.domain.usecase.ImportEntriesUseCase
 import io.mockk.coEvery
@@ -30,11 +32,13 @@ class ProfileViewModelTest {
     private val getTravelStatsUseCase: GetTravelStatsUseCase = mockk()
     private val getPassportUseCase: GetPassportUseCase = mockk()
     private val importEntriesUseCase: ImportEntriesUseCase = mockk()
+    private val getProfileUseCase: GetProfileUseCase = mockk()
 
     private fun viewModel(): ProfileViewModel {
         every { getTravelStatsUseCase() } returns flowOf(TravelStats(0, 0, 0, 0))
         every { getPassportUseCase() } returns flowOf(PassportData(0.0, 0, 0, emptyList()))
-        return ProfileViewModel(getTravelStatsUseCase, getPassportUseCase, importEntriesUseCase)
+        every { getProfileUseCase() } returns flowOf(UserProfile())
+        return ProfileViewModel(getTravelStatsUseCase, getPassportUseCase, importEntriesUseCase, getProfileUseCase)
     }
 
     @Test
@@ -51,8 +55,10 @@ class ProfileViewModelTest {
             val passport = PassportData(kmTotal = 1234.0, legs = 3, daysOnRoute = 5, stamps = emptyList())
             every { getTravelStatsUseCase() } returns flowOf(stats)
             every { getPassportUseCase() } returns flowOf(passport)
+            every { getProfileUseCase() } returns flowOf(UserProfile())
 
-            val viewModel = ProfileViewModel(getTravelStatsUseCase, getPassportUseCase, importEntriesUseCase)
+            val viewModel =
+                ProfileViewModel(getTravelStatsUseCase, getPassportUseCase, importEntriesUseCase, getProfileUseCase)
             backgroundScope.launch { viewModel.uiState.collect {} }
             advanceUntilIdle()
 

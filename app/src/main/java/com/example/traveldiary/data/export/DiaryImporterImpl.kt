@@ -75,6 +75,7 @@ class DiaryImporterImpl
                 longitude = longitude,
                 isFavourite = isFavourite,
                 uuid = uuid.ifEmpty { UUID.randomUUID().toString() },
+                photoUris = photoFiles.mapNotNull { savedPhotos[it] },
             )
         }
 

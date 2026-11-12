@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.traveldiary.domain.export.ImportResult
 import com.example.traveldiary.domain.model.PassportData
 import com.example.traveldiary.domain.model.TravelStats
+import com.example.traveldiary.domain.model.UserProfile
 import com.example.traveldiary.domain.usecase.GetPassportUseCase
+import com.example.traveldiary.domain.usecase.GetProfileUseCase
 import com.example.traveldiary.domain.usecase.GetTravelStatsUseCase
 import com.example.traveldiary.domain.usecase.ImportEntriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +23,11 @@ import javax.inject.Inject
 sealed interface ProfileUiState {
     data object Loading : ProfileUiState
 
-    data class Success(val stats: TravelStats, val passport: PassportData) : ProfileUiState
+    data class Success(
+        val stats: TravelStats,
+        val passport: PassportData,
+        val profile: UserProfile = UserProfile(),
+    ) : ProfileUiState
 }
 
 sealed interface ImportUiState {
@@ -41,10 +47,15 @@ class ProfileViewModel
         getTravelStatsUseCase: GetTravelStatsUseCase,
         getPassportUseCase: GetPassportUseCase,
         private val importEntriesUseCase: ImportEntriesUseCase,
+        getProfileUseCase: GetProfileUseCase,
     ) : ViewModel() {
         val uiState: StateFlow<ProfileUiState> =
-            combine(getTravelStatsUseCase(), getPassportUseCase()) { stats, passport ->
-                ProfileUiState.Success(stats, passport)
+            combine(
+                getTravelStatsUseCase(),
+                getPassportUseCase(),
+                getProfileUseCase(),
+            ) { stats, passport, profile ->
+                ProfileUiState.Success(stats, passport, profile)
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ProfileUiState.Loading)
 
         private val _importState = MutableStateFlow<ImportUiState>(ImportUiState.Idle)

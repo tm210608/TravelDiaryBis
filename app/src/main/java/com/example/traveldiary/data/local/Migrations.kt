@@ -19,3 +19,10 @@ val MIGRATION_2_3 =
             }
         }
     }
+
+val MIGRATION_3_4 =
+    object : Migration(3, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE travel_entries ADD COLUMN photoUris TEXT NOT NULL DEFAULT '[]'")
+        }
+    }

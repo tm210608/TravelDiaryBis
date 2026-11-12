@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [TravelEntryEntity::class], version = 3, exportSchema = true)
+@Database(entities = [TravelEntryEntity::class], version = 4, exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class TravelDatabase : RoomDatabase() {
     abstract fun travelDao(): TravelDao
@@ -22,7 +22,7 @@ abstract class TravelDatabase : RoomDatabase() {
                     TravelDatabase::class.java,
                     "travel_database",
                 )
-                    .addMigrations(MIGRATION_2_3)
+                    .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
                     .build()
                     .also { instance = it }
             }

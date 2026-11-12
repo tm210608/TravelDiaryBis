@@ -36,16 +36,6 @@ android {
         versionName = "1.0"
         testInstrumentationRunner = "com.example.traveldiary.TravelDiaryTestRunner"
 
-        // Read MAPS_API_KEY from local.properties (gitignored)
-        val localProperties = rootProject.file("local.properties")
-        val mapsApiKey =
-            if (localProperties.exists()) {
-                Properties().apply { localProperties.inputStream().use { load(it) } }
-                    .getProperty("MAPS_API_KEY", "")
-            } else {
-                ""
-            }
-        manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }
 
     buildTypes {
@@ -123,7 +113,8 @@ dependencies {
     implementation(libs.coil.compose)
 
     implementation(libs.play.services.location)
-    implementation(libs.maps.compose)
+    implementation(libs.osmdroid.android)
+    implementation(libs.datastore.preferences)
 
     implementation(libs.kotlinx.serialization.json)
 

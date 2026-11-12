@@ -51,4 +51,5 @@ data class ExportedEntry(
     val imageUrl: String,
     val photoFile: String?,
     val uuid: String = "",
+    val photoFiles: List<String> = emptyList(),
 )

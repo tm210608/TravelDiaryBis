@@ -54,4 +54,25 @@ class MigrationTest {
         assertTrue(uuids.all { it.isNotBlank() })
         assertNotEquals(uuids[0], uuids[1])
     }
+
+    @Test
+    fun migrate3To4_addsPhotoUrisEmptyByDefault() {
+        helper.createDatabase(testDb, 3).apply {
+            execSQL(
+                "INSERT INTO travel_entries " +
+                    "(title, location, country, date, tag, imageUrl, description, latitude, longitude, isFavourite, uuid) " +
+                    "VALUES ('Roma', 'Roma', 'Italia', 1759900000000, 'Ciudad', 'http://a/d.jpg', '', NULL, NULL, 0, 'abc')",
+            )
+            close()
+        }
+
+        val db = helper.runMigrationsAndValidate(testDb, 4, true, MIGRATION_3_4)
+
+        db.query("SELECT title, photoUris FROM travel_entries").use { cursor ->
+            assertTrue(cursor.moveToNext())
+            assertEquals("Roma", cursor.getString(0))
+            assertEquals("[]", cursor.getString(1))
+        }
+        db.close()
+    }
 }

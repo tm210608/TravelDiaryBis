@@ -2,6 +2,7 @@ package com.example.traveldiary.ui.viewmodel
 
 import com.example.traveldiary.TestDispatcherRule
 import com.example.traveldiary.domain.model.TravelEntry
+import com.example.traveldiary.domain.repository.PhotoImporter
 import com.example.traveldiary.domain.usecase.GetEntryByIdUseCase
 import com.example.traveldiary.domain.usecase.UpdateEntryUseCase
 import io.mockk.coEvery
@@ -24,8 +25,9 @@ class EditEntryViewModelTest {
 
     private val getEntryByIdUseCase: GetEntryByIdUseCase = mockk()
     private val updateEntryUseCase: UpdateEntryUseCase = mockk()
+    private val photoImporter: PhotoImporter = mockk()
 
-    private fun viewModel() = EditEntryViewModel(getEntryByIdUseCase, updateEntryUseCase)
+    private fun viewModel() = EditEntryViewModel(getEntryByIdUseCase, updateEntryUseCase, photoImporter)
 
     private fun entry(
         id: Int = 3,

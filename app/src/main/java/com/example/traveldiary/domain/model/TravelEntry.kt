@@ -27,4 +27,5 @@ data class TravelEntry(
     val longitude: Double? = null,
     val isFavourite: Boolean = false,
     val uuid: String = UUID.randomUUID().toString(),
+    val photoUris: List<String> = emptyList(),
 )

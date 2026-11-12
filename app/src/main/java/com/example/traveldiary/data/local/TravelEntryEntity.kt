@@ -19,4 +19,5 @@ data class TravelEntryEntity(
     val longitude: Double? = null,
     val isFavourite: Boolean = false,
     val uuid: String = "",
+    val photoUris: List<String> = emptyList(),
 )

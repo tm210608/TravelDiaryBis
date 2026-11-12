@@ -1,9 +1,13 @@
 package com.example.traveldiary.di
 
 import android.content.Context
+import com.example.traveldiary.data.local.PhotoImporterImpl
 import com.example.traveldiary.data.local.TravelDao
 import com.example.traveldiary.data.local.TravelDatabase
+import com.example.traveldiary.data.repository.ProfileRepositoryImpl
 import com.example.traveldiary.data.repository.TravelRepositoryImpl
+import com.example.traveldiary.domain.repository.PhotoImporter
+import com.example.traveldiary.domain.repository.ProfileRepository
 import com.example.traveldiary.domain.repository.TravelRepository
 import dagger.Module
 import dagger.Provides
@@ -27,4 +31,12 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideTravelRepository(dao: TravelDao): TravelRepository = TravelRepositoryImpl(dao)
+
+    @Provides
+    @Singleton
+    fun provideProfileRepository(impl: ProfileRepositoryImpl): ProfileRepository = impl
+
+    @Provides
+    @Singleton
+    fun providePhotoImporter(impl: PhotoImporterImpl): PhotoImporter = impl
 }

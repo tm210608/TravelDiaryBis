@@ -21,6 +21,7 @@ class TravelEntryMapperTest {
             latitude = 41.3874,
             longitude = 2.1686,
             isFavourite = true,
+            photoUris = listOf("file:///p1.jpg", "file:///p2.jpg"),
         )
 
     @Test
@@ -38,6 +39,7 @@ class TravelEntryMapperTest {
         assertEquals(entity.latitude, domain.latitude)
         assertEquals(entity.longitude, domain.longitude)
         assertEquals(entity.isFavourite, domain.isFavourite)
+        assertEquals(entity.photoUris, domain.photoUris)
     }
 
     @Test

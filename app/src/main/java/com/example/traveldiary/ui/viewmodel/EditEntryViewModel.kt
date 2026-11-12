@@ -3,6 +3,7 @@ package com.example.traveldiary.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.traveldiary.domain.model.TravelEntry
+import com.example.traveldiary.domain.repository.PhotoImporter
 import com.example.traveldiary.domain.usecase.GetEntryByIdUseCase
 import com.example.traveldiary.domain.usecase.UpdateEntryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,6 +47,7 @@ class EditEntryViewModel
     constructor(
         private val getEntryByIdUseCase: GetEntryByIdUseCase,
         private val updateEntryUseCase: UpdateEntryUseCase,
+        private val photoImporter: PhotoImporter,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow<EditEntryUiState>(EditEntryUiState.Loading)
         val uiState: StateFlow<EditEntryUiState> = _uiState.asStateFlow()
@@ -96,6 +98,30 @@ class EditEntryViewModel
 
         fun removeImage() {
             updateImageUrl("")
+        }
+
+        fun removeGalleryPhoto(uri: String) {
+            val state = _uiState.value as? EditEntryUiState.Editing ?: return
+            updateForm(state.form.copy(photoUris = state.form.photoUris - uri))
+        }
+
+        fun addGalleryPhotos(uris: List<String>) {
+            if (uris.isEmpty()) return
+            viewModelScope.launch {
+                val result = photoImporter.importPhotos(uris)
+                val state = _uiState.value as? EditEntryUiState.Editing ?: return@launch
+                val form = state.form
+                updateForm(
+                    if (form.imageUrl.isBlank() && result.imported.isNotEmpty()) {
+                        form.copy(
+                            imageUrl = result.imported.first(),
+                            photoUris = form.photoUris + result.imported.drop(1),
+                        )
+                    } else {
+                        form.copy(photoUris = form.photoUris + result.imported)
+                    },
+                )
+            }
         }
 
         fun onSaveClicked() {
@@ -195,6 +221,7 @@ fun TravelEntry.toEntryDetails() =
         tag = tag,
         description = description,
         imageUrl = imageUrl,
+        photoUris = photoUris,
         latitude = latitude,
         longitude = longitude,
         isFavourite = isFavourite,
