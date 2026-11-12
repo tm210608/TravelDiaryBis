@@ -6,6 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -86,6 +88,7 @@ fun TravelDetailScreen(
                         tag = entry.tag,
                         description = entry.description,
                         imageUrl = entry.imageUrl,
+                        photoUris = entry.photoUris,
                         latitude = entry.latitude,
                         longitude = entry.longitude,
                         isFavourite = entry.isFavourite,
@@ -174,6 +177,28 @@ private fun TravelDetailContent(
                                 color = Color.White,
                             ),
                     )
+                }
+            }
+
+            if (entry.photoUris.isNotEmpty()) {
+                LazyRow(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    items(entry.photoUris) { uri ->
+                        AsyncImage(
+                            model = uri,
+                            contentDescription = "Foto del recuerdo",
+                            contentScale = ContentScale.Crop,
+                            modifier =
+                                Modifier
+                                    .size(140.dp)
+                                    .clip(MaterialTheme.shapes.medium),
+                        )
+                    }
                 }
             }
 

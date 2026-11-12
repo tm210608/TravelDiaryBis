@@ -2,6 +2,7 @@ package com.example.traveldiary.ui.screens
 
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -42,6 +43,22 @@ fun AddTravelEntryScreen(
         ) { permissions ->
             hasLocationPermission = permissions.values.any { it }
         }
+
+    val galleryPicker =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.PickMultipleVisualMedia(),
+        ) { uris ->
+            if (uris.isNotEmpty()) {
+                viewModel.addGalleryPhotos(uris.map { it.toString() })
+            }
+        }
+
+    LaunchedEffect(uiState.failedPhotoImports) {
+        if (uiState.failedPhotoImports > 0) {
+            snackbarHostState.showSnackbar("No se pudo añadir una foto")
+            viewModel.onPhotoImportMessageConsumed()
+        }
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -107,8 +124,10 @@ fun AddTravelEntryScreen(
                 form = uiState.entryDetails,
                 onFormChange = viewModel::updateUiState,
                 onCameraClick = onCameraClick,
+                onGalleryClick = { galleryPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
                 allowPhotoRemoval = false,
                 onRemovePhoto = {},
+                onRemoveGalleryPhoto = viewModel::removeGalleryPhoto,
             )
             Spacer(Modifier.height(16.dp))
             Text(

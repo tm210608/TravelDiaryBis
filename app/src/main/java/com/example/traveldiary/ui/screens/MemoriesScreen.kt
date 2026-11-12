@@ -38,6 +38,7 @@ import com.example.traveldiary.ui.viewmodel.MemoriesViewModel
 fun MemoriesScreen(
     onEntryClick: (TravelEntry) -> Unit = {},
     onTabSelected: (Int) -> Unit = {},
+    onAddClick: () -> Unit = {},
     viewModel: MemoriesViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -123,6 +124,17 @@ fun MemoriesScreen(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,
                         )
+                        Spacer(Modifier.height(18.dp))
+                        Button(
+                            onClick = onAddClick,
+                            colors =
+                                ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                ),
+                        ) {
+                            Text("Crear tu primer viaje")
+                        }
                     }
                 }
                 is MemoriesUiState.Success -> {

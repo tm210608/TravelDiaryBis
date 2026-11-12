@@ -3,6 +3,7 @@ package com.example.traveldiary.ui.screens
 import android.Manifest
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -53,6 +54,15 @@ fun EditTravelEntryScreen(
             else -> Unit
         }
     }
+
+    val galleryPicker =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.PickMultipleVisualMedia(),
+        ) { uris ->
+            if (uris.isNotEmpty()) {
+                viewModel.addGalleryPhotos(uris.map { it.toString() })
+            }
+        }
 
     val permissionLauncher =
         rememberLauncherForActivityResult(
@@ -158,8 +168,10 @@ fun EditTravelEntryScreen(
                         form = state.form,
                         onFormChange = viewModel::updateForm,
                         onCameraClick = onCameraClick,
+                        onGalleryClick = { galleryPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
                         allowPhotoRemoval = state.form.imageUrl.isNotBlank(),
                         onRemovePhoto = viewModel::removeImage,
+                        onRemoveGalleryPhoto = viewModel::removeGalleryPhoto,
                     )
                     if (state.error != null) {
                         Spacer(Modifier.height(8.dp))

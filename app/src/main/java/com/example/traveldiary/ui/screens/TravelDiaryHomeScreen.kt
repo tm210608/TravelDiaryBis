@@ -48,6 +48,7 @@ fun TravelDiaryHomeScreen(
     onMapClick: () -> Unit = {},
     onMemoriesClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
+    onAvatarClick: () -> Unit = {},
     exportRequested: Boolean = false,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -62,6 +63,7 @@ fun TravelDiaryHomeScreen(
     val chipCounts by viewModel.chipCounts.collectAsState()
     val featuredEntries by viewModel.featuredEntries.collectAsState()
     val featuredWeather by viewModel.featuredWeather.collectAsState()
+    val profile by viewModel.profile.collectAsState()
 
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -129,18 +131,19 @@ fun TravelDiaryHomeScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         floatingActionButton = {
             if (!selectionMode) {
-                FloatingActionButton(
+                ExtendedFloatingActionButton(
                     onClick = onAddClick,
                     shape = RoundedCornerShape(24.dp),
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.size(64.dp),
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Add,
-                        contentDescription = "Nueva entrada",
-                        modifier = Modifier.size(28.dp),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
                     )
+                    Spacer(Modifier.width(8.dp))
+                    Text("Nueva entrada")
                 }
             }
         },
@@ -196,6 +199,9 @@ fun TravelDiaryHomeScreen(
                             entryCount = entriesList.size,
                             showExport = hasEntries,
                             onExportClick = { viewModel.enterSelectionMode() },
+                            profileInitials = profile.initials,
+                            profilePhotoUri = profile.photoUri,
+                            onAvatarClick = onAvatarClick,
                         )
                     }
                 }
@@ -246,6 +252,44 @@ fun TravelDiaryHomeScreen(
                         eyebrow = "HOJA DE RUTA",
                         modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
                     )
+                }
+
+                if (entriesList.isEmpty()) {
+                    item {
+                        Column(
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 32.dp, vertical = 48.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(
+                                text = "Tu diario aún está en blanco",
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                            Spacer(Modifier.height(6.dp))
+                            Text(
+                                text = "Guarda tu primera expedición y empieza la colección.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                            )
+                            Spacer(Modifier.height(18.dp))
+                            Button(
+                                onClick = onAddClick,
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                                    ),
+                            ) {
+                                Icon(Icons.Filled.Add, contentDescription = null)
+                                Spacer(Modifier.width(8.dp))
+                                Text("Crear tu primer viaje")
+                            }
+                        }
+                    }
                 }
 
                 items(entriesList, key = { it.id }) { entry ->

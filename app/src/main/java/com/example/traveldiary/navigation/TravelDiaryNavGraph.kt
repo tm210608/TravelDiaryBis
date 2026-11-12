@@ -31,7 +31,7 @@ private fun NavController.navigateTab(route: Any) =
 fun TravelDiaryNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Home(),
+        startDestination = Splash,
     ) {
         val onTabNavigate: (Int) -> Unit = { index ->
             when (index) {
@@ -40,6 +40,16 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                 2 -> navController.navigateTab(Memories)
                 else -> navController.navigateTab(Profile)
             }
+        }
+
+        composable<Splash> {
+            com.example.traveldiary.ui.screens.SplashScreen(
+                onFinished = {
+                    navController.navigate(Home()) {
+                        popUpTo<Splash> { inclusive = true }
+                    }
+                },
+            )
         }
 
         composable<Home> { backStackEntry ->
@@ -55,6 +65,13 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                 onMapClick = { onTabNavigate(1) },
                 onMemoriesClick = { onTabNavigate(2) },
                 onProfileClick = { onTabNavigate(3) },
+                onAvatarClick = { navController.navigate(EditProfile) },
+            )
+        }
+
+        composable<EditProfile> {
+            com.example.traveldiary.ui.screens.EditProfileScreen(
+                onBackClick = { navController.popBackStack() },
             )
         }
 
@@ -131,7 +148,9 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                 onEntryClick = { entryId ->
                     navController.navigate(Detail(entryId))
                 },
-                onBackClick = { navController.popBackStack() },
+                onTabSelected = onTabNavigate,
+                onAddClick = { navController.navigate(AddEntry) },
+                showBottomBar = true,
             )
         }
 
@@ -141,12 +160,14 @@ fun TravelDiaryNavGraph(navController: NavHostController) {
                     navController.navigate(Detail(entry.id))
                 },
                 onTabSelected = onTabNavigate,
+                onAddClick = { navController.navigate(AddEntry) },
             )
         }
 
         composable<Profile> {
             ProfileScreen(
                 onTabSelected = onTabNavigate,
+                onEditProfileClick = { navController.navigate(EditProfile) },
                 onExportClick = {
                     navController.navigate(Home(export = true)) {
                         popUpTo<Home> { inclusive = true }

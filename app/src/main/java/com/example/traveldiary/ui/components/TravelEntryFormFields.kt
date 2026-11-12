@@ -4,13 +4,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,11 +48,13 @@ fun TravelEntryFormFields(
     form: EntryDetails,
     onFormChange: (EntryDetails) -> Unit,
     onCameraClick: () -> Unit,
+    onGalleryClick: () -> Unit = {},
     allowPhotoRemoval: Boolean,
     onRemovePhoto: () -> Unit,
+    onRemoveGalleryPhoto: (String) -> Unit = {},
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
-    val hasPhoto = form.imageUrl.isNotBlank() && (allowPhotoRemoval || !form.imageUrl.startsWith("http"))
+    val hasPhoto = form.imageUrl.isNotBlank()
     val fieldShape = RoundedCornerShape(16.dp)
     val fieldColors =
         TextFieldDefaults.colors(
@@ -84,7 +91,7 @@ fun TravelEntryFormFields(
                             )
                         }
                     }
-                    .clickable(onClick = onCameraClick),
+                    .clickable(enabled = !hasPhoto, onClick = onCameraClick),
             contentAlignment = Alignment.Center,
         ) {
             if (hasPhoto) {
@@ -96,24 +103,59 @@ fun TravelEntryFormFields(
                 )
             } else {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Box(
-                        modifier =
-                            Modifier
-                                .size(56.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.18f)),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(
-                            Icons.Filled.CameraAlt,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(26.dp),
-                        )
+                    Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .size(56.dp)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.18f))
+                                        .clickable(onClick = onCameraClick),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Icon(
+                                    Icons.Filled.CameraAlt,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(26.dp),
+                                )
+                            }
+                            Spacer(Modifier.height(6.dp))
+                            Text(
+                                "Cámara",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Box(
+                                modifier =
+                                    Modifier
+                                        .size(56.dp)
+                                        .clip(CircleShape)
+                                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.18f))
+                                        .clickable(onClick = onGalleryClick),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                Icon(
+                                    Icons.Outlined.PhotoLibrary,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(26.dp),
+                                )
+                            }
+                            Spacer(Modifier.height(6.dp))
+                            Text(
+                                "Galería",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
                     }
                     Spacer(Modifier.height(10.dp))
                     Text(
-                        "Pulsa para tomar una foto",
+                        "Toca para añadir fotos · la primera será la portada",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -134,6 +176,59 @@ fun TravelEntryFormFields(
                         contentDescription = "Quitar foto",
                         tint = Color.White,
                     )
+                }
+            }
+        }
+
+        if (form.photoUris.isNotEmpty()) {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(form.photoUris, key = { it }) { uri ->
+                    Box(
+                        modifier =
+                            Modifier
+                                .size(72.dp)
+                                .clip(RoundedCornerShape(10.dp)),
+                    ) {
+                        AsyncImage(
+                            model = uri,
+                            contentDescription = "Foto extra del viaje",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop,
+                        )
+                        IconButton(
+                            onClick = { onRemoveGalleryPhoto(uri) },
+                            modifier =
+                                Modifier
+                                    .align(Alignment.TopEnd)
+                                    .size(22.dp)
+                                    .clip(CircleShape)
+                                    .background(Color.Black.copy(alpha = 0.55f)),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = "Quitar foto",
+                                tint = Color.White,
+                                modifier = Modifier.size(14.dp),
+                            )
+                        }
+                    }
+                }
+                item {
+                    Box(
+                        modifier =
+                            Modifier
+                                .size(72.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                                .clickable(onClick = onGalleryClick),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = "Añadir más fotos",
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                    }
                 }
             }
         }

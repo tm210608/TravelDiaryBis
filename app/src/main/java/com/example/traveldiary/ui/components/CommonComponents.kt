@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
@@ -25,16 +27,29 @@ fun TopBar(
     entryCount: Int = 0,
     showExport: Boolean = false,
     onExportClick: () -> Unit = {},
+    profileInitials: String = "V",
+    profilePhotoUri: String? = null,
+    onAvatarClick: () -> Unit = {},
 ) {
-    Row(
+    Surface(
         modifier =
             Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .padding(horizontal = 20.dp, vertical = 14.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+                .padding(horizontal = 16.dp, vertical = 10.dp),
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        tonalElevation = 2.dp,
+        shadowElevation = 3.dp,
     ) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 14.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = "BITÁCORA DE VIAJE",
@@ -75,8 +90,9 @@ fun TopBar(
             Box(
                 modifier =
                     Modifier
-                        .size(44.dp)
+                        .size(58.dp)
                         .clip(CircleShape)
+                        .clickable(onClick = onAvatarClick)
                         .background(
                             Brush.linearGradient(
                                 colors =
@@ -97,13 +113,23 @@ fun TopBar(
                             .background(MaterialTheme.colorScheme.surfaceContainerLowest),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text(
-                        text = "AL",
-                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.primary,
-                    )
+                    if (profilePhotoUri != null) {
+                        coil.compose.AsyncImage(
+                            model = profilePhotoUri,
+                            contentDescription = "Foto de perfil",
+                            modifier = Modifier.fillMaxSize().clip(CircleShape),
+                            contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                        )
+                    } else {
+                        Text(
+                            text = profileInitials,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
                 }
             }
+        }
         }
     }
 }
@@ -239,12 +265,15 @@ fun BottomNavigationBar(
     selectedTab: Int,
     onTabSelected: (Int) -> Unit,
 ) {
-    NavigationBar(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest) {
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+        tonalElevation = 2.dp,
+    ) {
         val items =
             listOf(
                 Triple("Cuaderno", Icons.Filled.Home, Icons.Outlined.Home),
                 Triple("Rutas", Icons.Filled.Map, Icons.Outlined.Map),
-                Triple("Satélite", Icons.Filled.PhotoLibrary, Icons.Outlined.PhotoLibrary),
+                Triple("Recuerdos", Icons.Filled.PhotoLibrary, Icons.Outlined.PhotoLibrary),
                 Triple("Índice", Icons.Filled.Person, Icons.Outlined.Person),
             )
         items.forEachIndexed { index, (label, filledIcon, outlinedIcon) ->

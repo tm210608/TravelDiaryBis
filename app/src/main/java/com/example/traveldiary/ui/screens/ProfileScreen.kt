@@ -4,6 +4,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -43,6 +45,7 @@ import com.example.traveldiary.ui.viewmodel.ProfileViewModel
 fun ProfileScreen(
     onTabSelected: (Int) -> Unit = {},
     onExportClick: () -> Unit = {},
+    onEditProfileClick: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -114,7 +117,11 @@ fun ProfileScreen(
                                 .verticalScroll(rememberScrollState())
                                 .padding(horizontal = 20.dp),
                     ) {
-                        PassportCover(stats = state.stats)
+                        PassportCover(
+                            stats = state.stats,
+                            profile = state.profile,
+                            onEditClick = onEditProfileClick,
+                        )
                         Spacer(Modifier.height(14.dp))
                         TelemetryStrip(passport = state.passport)
                         Spacer(Modifier.height(18.dp))
@@ -201,7 +208,11 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun PassportCover(stats: TravelStats) {
+private fun PassportCover(
+    stats: TravelStats,
+    profile: com.example.traveldiary.domain.model.UserProfile,
+    onEditClick: () -> Unit,
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(18.dp),
@@ -217,14 +228,24 @@ private fun PassportCover(stats: TravelStats) {
                     modifier =
                         Modifier
                             .size(56.dp)
-                            .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp)),
+                            .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
+                            .clickable(onClick = onEditClick),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text(
-                        text = "AL",
-                        style = MonoDisplay.copy(fontSize = MonoStubMeta.fontSize * 2.6f),
-                        color = MaterialTheme.colorScheme.primary,
-                    )
+                    if (profile.photoUri != null) {
+                        coil.compose.AsyncImage(
+                            model = profile.photoUri,
+                            contentDescription = "Foto de perfil",
+                            modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(8.dp)),
+                            contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                        )
+                    } else {
+                        Text(
+                            text = profile.initials,
+                            style = MonoDisplay.copy(fontSize = MonoStubMeta.fontSize * 2.6f),
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
                 }
                 Spacer(Modifier.width(14.dp))
                 Column(modifier = Modifier.weight(1f)) {
@@ -235,9 +256,10 @@ private fun PassportCover(stats: TravelStats) {
                     )
                     Spacer(Modifier.height(3.dp))
                     Text(
-                        text = "Diario de Viaje",
+                        text = profile.name,
                         style = MaterialTheme.typography.titleLarge,
                         color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
                     )
                     Text(
                         text = "EXPEDICIONARIO EN RUTA",
