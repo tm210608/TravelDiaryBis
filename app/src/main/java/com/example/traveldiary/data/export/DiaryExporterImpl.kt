@@ -73,23 +73,22 @@ class DiaryExporterImpl
         private fun TravelEntry.toExported(
             photoFile: String?,
             photoFiles: List<String>,
-        ) =
-            ExportedEntry(
-                id = id,
-                title = title,
-                location = location,
-                country = country,
-                date = date.toString(),
-                tag = tag,
-                description = description,
-                latitude = latitude,
-                longitude = longitude,
-                isFavourite = isFavourite,
-                imageUrl = imageUrl,
-                photoFile = photoFile,
-                uuid = uuid,
-                photoFiles = photoFiles,
-            )
+        ) = ExportedEntry(
+            id = id,
+            title = title,
+            location = location,
+            country = country,
+            date = date.toString(),
+            tag = tag,
+            description = description,
+            latitude = latitude,
+            longitude = longitude,
+            isFavourite = isFavourite,
+            imageUrl = imageUrl,
+            photoFile = photoFile,
+            uuid = uuid,
+            photoFiles = photoFiles,
+        )
 
         companion object {
             const val DIARY_JSON_ENTRY = "diary.json"

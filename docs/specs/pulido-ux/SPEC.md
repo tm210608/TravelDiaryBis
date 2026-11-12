@@ -6,38 +6,38 @@ Una pasada de pulido visual y de detalle sobre toda la app: splash de marca con 
 ## Criterios de aceptación (testeables, sin ambigüedad)
 
 ### Splash e icono
-- [ ] Al lanzar la app se muestra una pantalla de marca propia (fondo acorde al tema papel/mapa + logo/nombre del diario) con animación de entrada corta (fade/scale) y transición a Home en ≤1,5 s sin parpadeo.
-- [ ] El splash del sistema de Android sigue funcionando (windowSplashScreen con icono/fondo a juego) antes de la pantalla de marca, sin flash en negro ni en blanco.
-- [ ] El icono del launcher usa el diseño de `docs/play-store/icon-512.png` adaptado a adaptive icon (foreground + background), visible correcto en launcher circular y cuadrado.
+- [x] Al lanzar la app se muestra una pantalla de marca propia (fondo acorde al tema papel/mapa + logo/nombre del diario) con animación de entrada corta (fade/scale) y transición a Home en ≤1,5 s sin parpadeo.
+- [x] El splash del sistema de Android sigue funcionando (windowSplashScreen con icono/fondo a juego) antes de la pantalla de marca, sin flash en negro ni en blanco.
+- [x] El icono del launcher usa el diseño de `docs/play-store/icon-512.png` adaptado a adaptive icon (foreground + background), visible correcto en launcher circular y cuadrado.
 
 ### Banners y navegación inferior
-- [ ] En Home la cabecera ("Bitácora de Viaje / Mi Diario de Viaje" + metadatos) va dentro de una tarjeta/banda con color de superficie distinto al fondo cuadriculado, visualmente separada.
-- [ ] El banner inferior (BottomNavigationBar) usa el mismo lenguaje visual que el superior (misma familia de color/estilo "archivo"), coherente en las 4 pestañas.
-- [ ] La pestaña "Rutas" muestra el mapa (o su estado vacío) SIN ocultar el banner inferior; ya no navega a una pantalla completa aparte.
-- [ ] La pestaña "Satélite" se renombra a "Recuerdos" (etiqueta e icono coherentes con la pantalla que abre).
+- [x] En Home la cabecera ("Bitácora de Viaje / Mi Diario de Viaje" + metadatos) va dentro de una tarjeta/banda con color de superficie distinto al fondo cuadriculado, visualmente separada.
+- [x] El banner inferior (BottomNavigationBar) usa el mismo lenguaje visual que el superior (misma familia de color/estilo "archivo"), coherente en las 4 pestañas.
+- [x] La pestaña "Rutas" muestra el mapa (o su estado vacío) SIN ocultar el banner inferior; ya no navega a una pantalla completa aparte.
+- [x] La pestaña "Satélite" se renombra a "Recuerdos" (etiqueta e icono coherentes con la pantalla que abre).
 
 ### Mapa con OpenStreetMap (sustituye a Google Maps)
-- [ ] `MapScreen`/`Rutas` usa `osmdroid.MapView` (en `AndroidView`) en vez de `GoogleMap`: marcadores de las entradas con ubicación, zoom/pan fluido, tap en marcador → Detail (igual que hoy).
-- [ ] Atribución "© OpenStreetMap contributors" visible en el mapa (la pone osmdroid; verificar que no queda tapada).
-- [ ] Se eliminan del build: `maps-compose`, `play-services-maps` y el `manifestPlaceholders["MAPS_API_KEY"]` (manifest y CI). Sin API key ni restricciones.
-- [ ] Tiles: proveedor OSM por defecto o Carto (más limpio); el mapa sigue funcionando online; sin internet muestra el fondo vacío sin crashear.
+- [x] `MapScreen`/`Rutas` usa `osmdroid.MapView` (en `AndroidView`) en vez de `GoogleMap`: marcadores de las entradas con ubicación, zoom/pan fluido, tap en marcador → Detail (igual que hoy).
+- [x] Atribución "© OpenStreetMap contributors" visible en el mapa (la pone osmdroid; verificar que no queda tapada).
+- [x] Se eliminan del build: `maps-compose`, `play-services-maps` y el `manifestPlaceholders["MAPS_API_KEY"]` (manifest y CI). Sin API key ni restricciones.
+- [x] Tiles: proveedor OSM por defecto o Carto (más limpio); el mapa sigue funcionando online; sin internet muestra el fondo vacío sin crashear.
 
 ### Galería de fotos (portada + resto)
-- [ ] En Nuevo Recuerdo hay dos acciones: "Tomar foto" (cámara actual) y "Elegir de galería" (Photo Picker de Android, sin permiso en API 33+; en API 26-32 con READ_MEDIA_IMAGES o picker legacy).
-- [ ] Desde galería se pueden elegir VARIAS fotos; la primera (o la marcada) es la portada (`imageUrl`) y el resto se guardan en la entrada.
-- [ ] Las fotos de galería se copian a `files/photos/` de la app (no se guardan URIs efímeras del picker).
-- [ ] En Detalle se ve la portada grande + rejilla con el resto de fotos de la entrada.
-- [ ] Las entradas existentes con una sola foto siguen viéndose igual (migración sin pérdida: foto actual = portada, lista de resto vacía).
+- [x] En Nuevo Recuerdo hay dos acciones: "Tomar foto" (cámara actual) y "Elegir de galería" (Photo Picker de Android, sin permiso en API 33+; en API 26-32 con READ_MEDIA_IMAGES o picker legacy).
+- [x] Desde galería se pueden elegir VARIAS fotos; la primera (o la marcada) es la portada (`imageUrl`) y el resto se guardan en la entrada.
+- [x] Las fotos de galería se copian a `files/photos/` de la app (no se guardan URIs efímeras del picker).
+- [x] En Detalle se ve la portada grande + rejilla con el resto de fotos de la entrada.
+- [x] Las entradas existentes con una sola foto siguen viéndose igual (migración sin pérdida: foto actual = portada, lista de resto vacía).
 
 ### Avatar y perfil
-- [ ] El avatar de Home es visiblemente más grande que ahora.
-- [ ] Si el usuario no tiene foto de perfil se muestra un avatar predeterminado (iniciales o icono) en vez de "AL" fijo.
-- [ ] Tocar el avatar abre la pantalla de edición de perfil: editar nombre y foto (galería). El nombre y la foto persisten y se reflejan en Home y en Pasaporte ("VIAJERO / nombre").
+- [x] El avatar de Home es visiblemente más grande que ahora.
+- [x] Si el usuario no tiene foto de perfil se muestra un avatar predeterminado (iniciales o icono) en vez de "AL" fijo.
+- [~] Tocar el avatar abre la pantalla de edición de perfil: editar nombre y foto (galería) — verificado en dispositivo. Persistencia del nombre/foto y reflejo en Home/Pasaporte cubierta por tests unitarios (EditProfileViewModel + DataStore repo); no se ejercitó el guardado manual en dispositivo.
 
 ### Micro-retoques
-- [ ] El campo "Etiqueta" de Nuevo Recuerdo muestra solo el placeholder, sin "Trip" pre-rellenado.
-- [ ] Los estados vacíos de "Todos los Viajes", "Recuerdos" y "Rutas/Mapa" incluyen un botón/CTA "Crear tu primer viaje" que navega a AddEntry.
-- [ ] El FAB "+" de Home muestra texto "Nueva entrada" (extended FAB) o tooltip.
+- [x] El campo "Etiqueta" de Nuevo Recuerdo muestra solo el placeholder, sin "Trip" pre-rellenado.
+- [x] Los estados vacíos de "Todos los Viajes", "Recuerdos" y "Rutas/Mapa" incluyen un botón/CTA "Crear tu primer viaje" que navega a AddEntry.
+- [x] El FAB "+" de Home muestra texto "Nueva entrada" (extended FAB) o tooltip.
 
 ## Fuera de alcance
 - Reordenar fotos de la galería ni elegir portada distinta de la primera (la primera foto elegida es la portada; se puede cambiar editando).
@@ -99,14 +99,14 @@ Una pasada de pulido visual y de detalle sobre toda la app: splash de marca con 
 - Borrado de entrada: borrar también ficheros de `photoUris` (misma regla que imageUrl actual; si no existe, anotar como deuda).
 
 ## Plan de tests
-- [ ] build: `scripts/verify.sh`
-- [ ] unit:
+- [x] build: `scripts/verify.sh`
+- [x] unit:
   - Mapper/entity roundtrip con `photoUris`.
   - `AddEntryViewModel`: pick galería → URIs copiadas, portada = primera, resto en photoUris.
   - `EditProfileViewModel`: update name/photo → estado Success y reflejo en HomeViewModel.
   - ViewModels con `stateIn`: `backgroundScope.launch { collect {} }` + `advanceUntilIdle()`.
-- [ ] dispositivo: `scripts/verify.sh --device` + flujo manual: splash→home, crear entrada con 3 fotos de galería, ver detalle con portada+rejilla, editar perfil con foto, tab Rutas con bottom bar y mapa OSM cargando tiles.
-- [ ] evidencia: capturas en `docs/specs/pulido-ux/` (splash, home banner, crear con galería, detalle rejilla, editar perfil, rutas-tab con mapa OSM).
+- [x] dispositivo: `scripts/verify.sh --device` (BUILD+TESTS OK, 175 tests) + flujo manual en móvil físico: splash→home, crear entrada con 2 fotos de galería (portada+rejilla en detalle), marcador OSM→detalle, bottom bar en Rutas, atribución OSM visible. Pendiente menor: editar perfil con foto guardada en dispositivo.
+- [x] evidencia: capturas en `docs/specs/pulido-ux/` (splash, home banner, crear con galería, detalle rejilla, editar perfil, rutas-tab con mapa OSM).
 
 ## Edge cases
 - Usuario cancela el picker → formulario intacto, sin estado de error.
@@ -117,3 +117,10 @@ Una pasada de pulido visual y de detalle sobre toda la app: splash de marca con 
 - Rotación con picker abierto: Android lo gestiona; selección previa se conserva.
 - Tab Rutas sin internet → el mapa muestra cuadrícula vacía sin crash; marcadores no dependen de red (usan lat/lon locales).
 - Entrada sin lat/lon → no genera marcador; estado Empty del mapa si ninguna entrada tiene ubicación (ya existe).
+
+## Verificación (12 nov 2026)
+- `scripts/verify.sh`: BUILD+TESTS OK (175 tests, 0 fallos) tras `ktlintFormat` + fix detekt.
+- Móvil físico (2412DPC0AG): splash de marca, Home (banner en tarjeta, avatar grande "V", FAB "Nueva entrada", CTA vacío), pestaña Recuerdos, Rutas con bottom bar + tiles OSM + marcador + línea de ruta, marcador→detalle, Nuevo Recuerdo con Cámara+Galería (2 fotos: 1ª portada, 2ª en rejilla del detalle), Editar perfil. Entrada "Viaje prueba OSM" capturó GPS tras el fix de permisos.
+- Emulador: atribución "© OpenStreetMap contributors" visible sobre el bottom bar; `LAYER_TYPE_SOFTWARE` en emuladores por el bug conocido de tiles de osmdroid.
+- Hallazgos durante verificación (corregidos): GPS nunca se adjuntaba al guardar (permiso async); entradas sin coords no podían ganar GPS al editar; faltaba CopyrightOverlay de OSM.
+- Pendiente menor: guardar nombre/foto de perfil en dispositivo (cubierto por tests); icono del launcher usa el play-icon de icon-512 — valorar un diseño más propio de diario antes de Play Store.

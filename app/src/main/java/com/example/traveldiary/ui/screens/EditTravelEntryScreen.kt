@@ -198,7 +198,11 @@ fun EditTravelEntryScreen(
                         form = state.form,
                         onFormChange = viewModel::updateForm,
                         onCameraClick = onCameraClick,
-                        onGalleryClick = { galleryPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+                        onGalleryClick = {
+                            galleryPicker.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
+                            )
+                        },
                         allowPhotoRemoval = state.form.imageUrl.isNotBlank(),
                         onRemovePhoto = viewModel::removeImage,
                         onRemoveGalleryPhoto = viewModel::removeGalleryPhoto,

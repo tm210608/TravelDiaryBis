@@ -48,8 +48,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.traveldiary.domain.model.UserProfile
-import com.example.traveldiary.ui.theme.MonoEyebrow
-import com.example.traveldiary.ui.theme.MonoStubMeta
 import com.example.traveldiary.ui.viewmodel.EditProfileUiState
 import com.example.traveldiary.ui.viewmodel.EditProfileViewModel
 

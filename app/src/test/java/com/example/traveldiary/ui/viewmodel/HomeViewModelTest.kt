@@ -2,12 +2,12 @@ package com.example.traveldiary.ui.viewmodel
 
 import com.example.traveldiary.TestDispatcherRule
 import com.example.traveldiary.domain.model.TravelEntry
+import com.example.traveldiary.domain.model.UserProfile
 import com.example.traveldiary.domain.model.WeatherReading
 import com.example.traveldiary.domain.repository.WeatherRepository
 import com.example.traveldiary.domain.usecase.ExportEntriesUseCase
 import com.example.traveldiary.domain.usecase.ExportPdfUseCase
 import com.example.traveldiary.domain.usecase.FilterEntriesByChipUseCase
-import com.example.traveldiary.domain.model.UserProfile
 import com.example.traveldiary.domain.usecase.GetEntriesUseCase
 import com.example.traveldiary.domain.usecase.GetProfileUseCase
 import io.mockk.coEvery

@@ -1,10 +1,10 @@
 package com.example.traveldiary.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -50,86 +50,86 @@ fun TopBar(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = "BITÁCORA DE VIAJE",
-                style = MonoEyebrow,
-                color = MaterialTheme.colorScheme.primary,
-            )
-            Spacer(Modifier.height(2.dp))
-            Text(
-                text = "Mi Diario de Viaje",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Spacer(Modifier.height(3.dp))
-            Text(
-                text = "ARCHIVO CARTOGRÁFICO · %02d EXPEDICIONES ACTIVAS".format(entryCount),
-                style = MonoStubMeta,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
-            )
-            Text(
-                text = "ESCALA 1:24.000 · FOLIO 001",
-                style = MonoStubMeta,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-            )
-        }
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            if (showExport) {
-                IconButton(onClick = onExportClick) {
-                    Icon(
-                        imageVector = Icons.Outlined.FileUpload,
-                        contentDescription = "Exportar diario",
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
-                }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "BITÁCORA DE VIAJE",
+                    style = MonoEyebrow,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    text = "Mi Diario de Viaje",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer(Modifier.height(3.dp))
+                Text(
+                    text = "ARCHIVO CARTOGRÁFICO · %02d EXPEDICIONES ACTIVAS".format(entryCount),
+                    style = MonoStubMeta,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                )
+                Text(
+                    text = "ESCALA 1:24.000 · FOLIO 001",
+                    style = MonoStubMeta,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                )
             }
-            Box(
-                modifier =
-                    Modifier
-                        .size(58.dp)
-                        .clip(CircleShape)
-                        .clickable(onClick = onAvatarClick)
-                        .background(
-                            Brush.linearGradient(
-                                colors =
-                                    listOf(
-                                        MaterialTheme.colorScheme.primaryContainer,
-                                        MaterialTheme.colorScheme.secondary,
-                                    ),
-                            ),
-                        )
-                        .padding(2.5.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.surfaceContainerLowest),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    if (profilePhotoUri != null) {
-                        coil.compose.AsyncImage(
-                            model = profilePhotoUri,
-                            contentDescription = "Foto de perfil",
-                            modifier = Modifier.fillMaxSize().clip(CircleShape),
-                            contentScale = androidx.compose.ui.layout.ContentScale.Crop,
-                        )
-                    } else {
-                        Text(
-                            text = profileInitials,
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                            color = MaterialTheme.colorScheme.primary,
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (showExport) {
+                    IconButton(onClick = onExportClick) {
+                        Icon(
+                            imageVector = Icons.Outlined.FileUpload,
+                            contentDescription = "Exportar diario",
+                            tint = MaterialTheme.colorScheme.primary,
                         )
                     }
                 }
+                Box(
+                    modifier =
+                        Modifier
+                            .size(58.dp)
+                            .clip(CircleShape)
+                            .clickable(onClick = onAvatarClick)
+                            .background(
+                                Brush.linearGradient(
+                                    colors =
+                                        listOf(
+                                            MaterialTheme.colorScheme.primaryContainer,
+                                            MaterialTheme.colorScheme.secondary,
+                                        ),
+                                ),
+                            )
+                            .padding(2.5.dp),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.surfaceContainerLowest),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        if (profilePhotoUri != null) {
+                            coil.compose.AsyncImage(
+                                model = profilePhotoUri,
+                                contentDescription = "Foto de perfil",
+                                modifier = Modifier.fillMaxSize().clip(CircleShape),
+                                contentScale = androidx.compose.ui.layout.ContentScale.Crop,
+                            )
+                        } else {
+                            Text(
+                                text = profileInitials,
+                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
+                }
             }
-        }
         }
     }
 }

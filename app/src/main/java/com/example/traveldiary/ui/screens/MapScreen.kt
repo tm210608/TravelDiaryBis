@@ -50,6 +50,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.CopyrightOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
 
@@ -57,7 +58,6 @@ import org.osmdroid.views.overlay.Polyline
 @Composable
 fun MapScreen(
     onEntryClick: (Int) -> Unit,
-    onBackClick: () -> Unit = {},
     onTabSelected: (Int) -> Unit = {},
     onAddClick: () -> Unit = {},
     showBottomBar: Boolean = false,
@@ -195,12 +195,13 @@ private fun MapContent(
 ) {
     val context = LocalContext.current
     val routeColor = MaterialTheme.colorScheme.primary
-    val primaryArgb = android.graphics.Color.argb(
-        255,
-        (routeColor.red * 255).toInt(),
-        (routeColor.green * 255).toInt(),
-        (routeColor.blue * 255).toInt(),
-    )
+    val primaryArgb =
+        android.graphics.Color.argb(
+            255,
+            (routeColor.red * 255).toInt(),
+            (routeColor.green * 255).toInt(),
+            (routeColor.blue * 255).toInt(),
+        )
 
     val geoPoints =
         remember(entries) {
@@ -210,11 +211,16 @@ private fun MapContent(
                 .map { GeoPoint(it.latitude!!, it.longitude!!) }
         }
 
+    val copyrightOverlay = remember { CopyrightOverlay(context) }
+
     val mapView =
         remember {
             MapView(context).apply {
                 setTileSource(TileSourceFactory.MAPNIK)
                 setMultiTouchControls(true)
+                if (isProbablyEmulator()) {
+                    setLayerType(android.view.View.LAYER_TYPE_SOFTWARE, null)
+                }
             }
         }
 
@@ -243,6 +249,7 @@ private fun MapContent(
             if (map.tag == entries) return@AndroidView
             map.tag = entries
             map.overlays.clear()
+            map.overlays.add(copyrightOverlay)
 
             if (geoPoints.size >= 2) {
                 val polyline =
@@ -285,3 +292,9 @@ private fun MapContent(
         },
     )
 }
+
+private fun isProbablyEmulator(): Boolean =
+    android.os.Build.FINGERPRINT.startsWith("generic") ||
+        android.os.Build.FINGERPRINT.contains("emulator") ||
+        android.os.Build.MODEL.contains("Emulator") ||
+        android.os.Build.HARDWARE in setOf("goldfish", "ranchu", "vbox86")
