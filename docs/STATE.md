@@ -1,33 +1,31 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-11-13 | **Rama:** `feature/rediseno-postal` (NO pusheada; `main` sí al día en origin) | 167 tests JVM verdes | verify.sh OK | SPEC verificada con evidencia
+**Fecha:** 2026-11-13 | **Rama:** `feature/extension-postal` (NO pusheada; `main` al día en origin con rediseno-postal mergeado) | 167 tests JVM verdes | verify.sh OK | SPEC verificada con evidencia
 
-## Hecho el 2026-11-13 — feature "rediseno-postal" implementada y verificada
-SPEC: `docs/specs/rediseno-postal/SPEC.md` (todos los criterios `[x]`). Evidencia: `docs/specs/rediseno-postal/evidence/`.
-- **Home "postal"**: cabecera solo "Travel Diary" + avatar (icono persona o foto); selector Viajes|Favoritos; cada entrada = marco crema con foto inset (o degradado+icono), título serif y "Ciudad, País · fecha"; corazón sobre la foto que persiste `isFavourite` de verdad (antes solo cosmético).
-- **Fuera del Home**: buscador, chips continente, carrusel destacado, estadísticas, Visados, contadores "[00]", footer técnico, fondo cuadriculado.
-- **Barra inferior**: Inicio/Mapa/Fotos/Perfil en todas las pantallas. Export sigue en Perfil ("Exportar diario"); modo selección del Home conservado.
-- **Componentes borrados** (sin uso): `TopBar`, `SearchBar`, `FilterChipsRow`, `ArchiveFooter`, `FeaturedEntriesRow`, `FeaturedCard`, `EntryListCard`. `HomeViewModel` sin search/chips/featured/weather; nuevo `favouritesOnly` + `toggleFavourite`.
-- **Type.kt**: `SerifAppTitle`/`SerifCardTitle` (`FontFamily.Serif`, sin fuentes nuevas). Rejilla `LazyVerticalGrid` adaptativa (1-2 cols, landscape verificado 2 cols). Modo oscuro verificado.
-- **Bonus**: `EditProfileViewModel` guarda borrador en `SavedStateHandle` (MIUI recreaba la actividad al volver del photo picker y se perdían los cambios).
-- Commits: `6e45532` rediseño base, `2d30684` iteración feedback (nombre app, favoritos, marco premium), `93c01ff`+`cdc121e` evidencia+spec.
-- Verificado en `emulator-5560` con 8 entradas mock con fotos reales (DB inyectada vía run-as; móvil del usuario ocupado con TradeJob). El usuario ya vio una versión en su móvil y aprobó el rumbo pidiendo: nombre de app, pestaña favoritos y "toque premium".
+## Hecho el 2026-11-13 — feature "extension-postal" implementada y verificada
+SPEC: `docs/specs/extension-postal/SPEC.md` (21 criterios `[x]`). Evidencia: `docs/specs/extension-postal/evidence/` (12 capturas).
+- **Detalle**: foto hero 400dp (o degradado+icono si no hay foto), título serif, "Ciudad, País · fecha", "Ver mapa" discreto (mismo geo intent a GMaps), galería LazyRow, "La Historia" serif, tarjeta compartir. Fuera: TALÓN DE EXPEDICIÓN, GPS crudo, chip de tag, fondo cuadriculado, TicketDivider.
+- **Perfil**: `PostalHeader` ("Perfil" + avatar→editar) reutilizable en `CommonComponents.kt` (extraído del Home); tarjeta stats cálida (nombre serif + "N viajes · favoritos · países · continentes" + km/días/tramos sin mono); Visados y Sellos de Ruta **conservados** tal cual (encajan con postal); export/import igual.
+- **Recuerdos**: rejilla 2 cols de `MemoryPostalCard` (postal foto-led 1:1 + título + fecha). Borrado `FilmStrip.kt` (film strip + números de fotograma) — código muerto.
+- **Formularios** (Nueva entrada, Editar entrada, Editar perfil): títulos TopAppBar en `SerifCardTitle`; campos ya eran cálidos, sin más cambios.
+- **Type.kt**: nuevo `SerifScreenTitle` (28sp) entre `SerifAppTitle` y `SerifCardTitle`.
+- Commits: `2f264cc` spec, `4d012a8` implementación, `632e4e7` spec verificada.
+- Verificado en `emulator-5554` (Medium_Phone_API_36.1) con 8 entradas mock y fotos reales de Wikimedia inyectadas por `run-as`+base64 (ver comando en decisión). Home/Recuerdos/Perfil/Detalle/Detalle-sin-foto/Nueva-entrada/Editar-perfil capturados; oscuro y landscape en Recuerdos y formulario.
 
 ## Siguiente paso
-1. **Usuario revisa el Home en el emulador** (app abierta con datos mock). Si le gusta → decidir si extender el estilo postal a Detalle/Perfil/Recuerdos (nueva spec) o dar por buena esta iteración.
-2. **Pendiente instalación en su móvil**: instalar cuando libere el dispositivo (actualizar fuerza cierre de la app).
-3. Merge a `main`/`develop` + push SOLO con su aprobación (rama sin pushear).
-4. Play Store (sin cambios): backup keystore, cuenta dev 25 USD, GitHub Pages (`main` + `/docs` → `privacy.html`), AAB en `app/build/outputs/bundle/release/`.
+1. **Usuario revisa** el diseño completo en el emulador (app instalada en emulator-5554 con datos mock) — si le gusta: merge a `main` + push con su aprobación.
+2. **Instalar en su móvil** cuando lo libere (el build con postal-1 ya quedó instalado por accidente cuando installDebug pilló el WiFi adb).
+3. Play Store (sin cambios): backup keystore, cuenta dev 25 USD, GitHub Pages (`main` + `/docs` → `privacy.html`), AAB en `app/build/outputs/bundle/release/` (recopilar si se publica con postal).
 
 ## Decisiones vigentes
 - `applicationId`=`com.traveldiary.app`; launcher `com.example.traveldiary.MainActivity`.
-- `feature/rediseno-postal` nace de `feature/pulido-ux` (ya mergeada a `main`), contiene la spec.
-- Picsum.photos caído (522) y el emulador sin HTTPS saliente: fotos mock bajadas de Wikimedia Commons y metidas vía `adb shell run-as ... base64 -d` + DB por `cat > databases/travel_database`.
-- `screenshots-review/` en `.gitignore` (scratch de capturas).
-- adb sin `-s` falla con >1 dispositivo; el móvil vuelve a conectarse solo por WiFi (`adb disconnect` temporal).
+- Mock data en AVD: fotos → `run-as com.traveldiary.app sh -c 'base64 -d > files/x.jpg'` (stdin); DB sqlite → `cat db | run-as ... 'cat > databases/travel_database'` + borrar wal/shm; identity_hash de `TravelDatabase_Impl.kt` generado.
+- `screenshots-review/` en `.gitignore` (scripts de mock + capturas scratch; `prep.py`/`build_db.py` reutilizables).
+- adb con múltiples dispositivos: usar `-s` siempre; el móvil se reconecta solo por WiFi; `uiautomator dump` para coordenadas exactas (los taps a ciegas fallan); navegación tarda ~2s — esperar antes de screencap.
+- Emulator-5556 (Samsung) murió por RAM al tener 2 AVDs arriba; el 5554 se reinició una vez pero sobrevive.
 
 ## Deuda técnica
 - `develop`, `feature/play-store-release` sin push; `chore/lint-detekt-ktlint` sin borrar.
 - ANR en emulador-5556 (2026-11-13, arranque en frío): vigilar en físico.
-- Al abrir la app a veces parpadea la pantalla previa del task (snapshot de recents de MIUI/Android); no es defecto del diseño.
+- Detalle mantiene `geo:` intent hacia Google Maps (comportamiento heredado) — evaluar abrir el mapa interno (OSM) en el futuro.
 - `kotlinOptions.jvmTarget` deprecated (warning).
