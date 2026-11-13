@@ -1,6 +1,6 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-11-13 | **Rama:** `feature/pulido-ux` (7 commits locales, sin push; basada en `feature/play-store-release`) | 175 tests JVM verdes | verify.sh OK
+**Fecha:** 2026-11-13 | **Rama:** `main` (pusheada a origin; `feature/pulido-ux` mergeada) | 175 tests JVM verdes | verify.sh OK | AAB firmado generado | Icono tienda/launcher nuevo (brújula atlas) | `docs/privacy.html` listo para GitHub Pages
 
 ## Hecho el 2026-11-12 — feature "pulido-ux" implementada y verificada
 SPEC: `docs/specs/pulido-ux/SPEC.md` (todos los criterios `[x]` salvo 1 `[~]`). Evidencia: `docs/specs/pulido-ux/evidence/` (10 capturas).
@@ -22,8 +22,9 @@ Pasos manuales del usuario en Play Console / Google Cloud:
 3. ~~Restricción de la MAPS_API_KEY~~ — YA NO NECESARIO: el mapa es OSM, sin API key.
 4. Publicar `PRIVACY_POLICY.md` en URL pública (GitHub Pages recomendado).
 5. ~~Rehacer captura `03-mapa.png`~~ — HECHO el 2026-11-13 (mapa OSM real en emulador, commit `7c1af14`).
-**AAB ya compilado y firmado** (`app-release.aab`, 8,8 MB, `./gradlew bundleRelease` OK el 2026-11-13).
-Luego merge/push de la rama y subir AAB (`app/build/outputs/bundle/release/`) + gráficos.
+6. ~~Nuevo icono~~ — HECHO el 2026-11-13: brújula atlas (commit `6bcfe35`), regenerados `icon-512.png` + mipmaps.
+**Hecho el 2026-11-13:** merge de `feature/pulido-ux` en `main` + push a origin (privacy.html ya público en GitHub tras activar Pages).
+**Pendiente usuario:** activar GitHub Pages (Settings → Pages → `main` + `/docs`) y usar `https://tm210608.github.io/TravelDiaryBis/privacy.html` en Play Console; resto de pasos manuales abajo.
 
 ## Decisiones vigentes
 - `applicationId` = `com.traveldiary.app`; namespace `com.example.traveldiary`. Paquete en adb: `com.traveldiary.app`.
