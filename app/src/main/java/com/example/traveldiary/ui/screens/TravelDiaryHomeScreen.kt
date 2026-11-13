@@ -69,6 +69,7 @@ import com.example.traveldiary.domain.model.exportFileName
 import com.example.traveldiary.domain.model.exportPdfFileName
 import com.example.traveldiary.ui.components.BottomNavigationBar
 import com.example.traveldiary.ui.components.PostalEntryCard
+import com.example.traveldiary.ui.components.PostalHeader
 import com.example.traveldiary.ui.theme.SerifAppTitle
 import com.example.traveldiary.ui.theme.SerifCardTitle
 import com.example.traveldiary.ui.viewmodel.ExportUiState
@@ -221,8 +222,9 @@ fun TravelDiaryHomeScreen(
                     )
                 } else {
                     Column {
-                        HomeHeader(
-                            profile = profile,
+                        PostalHeader(
+                            title = "Travel Diary",
+                            photoUri = profile.photoUri,
                             onAvatarClick = onAvatarClick,
                         )
                         FavouritesToggle(
@@ -276,50 +278,6 @@ fun TravelDiaryHomeScreen(
     }
 }
 
-@Composable
-private fun HomeHeader(
-    profile: UserProfile,
-    onAvatarClick: () -> Unit,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp, bottom = 6.dp),
-    ) {
-        Text(
-            text = "Travel Diary",
-            style = SerifAppTitle,
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.weight(1f),
-        )
-        Surface(
-            onClick = onAvatarClick,
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.primaryContainer,
-            modifier = Modifier.size(46.dp),
-        ) {
-            Box(contentAlignment = Alignment.Center) {
-                if (profile.photoUri.isNullOrBlank()) {
-                    Icon(
-                        imageVector = Icons.Outlined.Person,
-                        contentDescription = "Abrir perfil",
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.size(24.dp),
-                    )
-                } else {
-                    AsyncImage(
-                        model = profile.photoUri,
-                        contentDescription = "Abrir perfil",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                }
-            }
-        }
-    }
-}
 
 @Composable
 private fun FavouritesToggle(
