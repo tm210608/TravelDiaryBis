@@ -97,12 +97,6 @@ fun PostalHeader(
     titleStyle: TextStyle = SerifAppTitle,
 ) {
     val isDark = MaterialTheme.colorScheme.background.luminance() < 0.5f
-    val bannerSurface =
-        if (isDark) {
-            MaterialTheme.colorScheme.surfaceContainerLow
-        } else {
-            MaterialTheme.colorScheme.surfaceContainerLowest
-        }
     val primaryColor = MaterialTheme.colorScheme.primary
     val stripeAccentColor =
         if (isDark) {
@@ -111,105 +105,93 @@ fun PostalHeader(
             MaterialTheme.colorScheme.tertiary
         }
 
-    Surface(
-        shape = RoundedCornerShape(20.dp),
-        color = bannerSurface,
-        shadowElevation = 2.dp,
+    Column(
         modifier =
             modifier
                 .fillMaxWidth()
-                .padding(top = 12.dp, bottom = 6.dp)
-                .border(
-                    1.dp,
-                    MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.55f),
-                    RoundedCornerShape(20.dp),
-                ),
+                .padding(top = 12.dp, bottom = 6.dp),
     ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = title,
-                            style = titleStyle,
-                            color = MaterialTheme.colorScheme.onBackground,
-                        )
-                        Spacer(Modifier.width(10.dp))
-                        PostalStampMark(primaryColor = primaryColor)
-                    }
-                    Spacer(Modifier.height(6.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier =
-                                Modifier
-                                    .width(46.dp)
-                                    .height(2.5.dp)
-                                    .clip(RoundedCornerShape(2.dp))
-                                    .background(primaryColor.copy(alpha = 0.72f)),
-                        )
-                        Spacer(Modifier.width(5.dp))
-                        Box(
-                            modifier =
-                                Modifier
-                                    .size(4.dp)
-                                    .clip(CircleShape)
-                                    .background(primaryColor.copy(alpha = 0.45f)),
-                        )
-                    }
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = title,
+                        style = titleStyle,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    PostalStampMark(primaryColor = primaryColor)
                 }
-                Spacer(Modifier.width(10.dp))
-                Surface(
-                    onClick = onAvatarClick,
-                    shape = RoundedCornerShape(14.dp),
-                    color = MaterialTheme.colorScheme.surfaceContainerLow,
-                    shadowElevation = 1.dp,
-                    modifier =
-                        Modifier
-                            .size(50.dp)
-                            .border(
-                                1.dp,
-                                MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.7f),
-                                RoundedCornerShape(14.dp),
-                            ),
-                ) {
+                Spacer(Modifier.height(6.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
-                        contentAlignment = Alignment.Center,
                         modifier =
                             Modifier
-                                .fillMaxSize()
-                                .padding(3.dp)
-                                .clip(RoundedCornerShape(11.dp))
-                                .background(MaterialTheme.colorScheme.primaryContainer),
-                    ) {
-                        if (photoUri.isNullOrBlank()) {
-                            Icon(
-                                imageVector = Icons.Outlined.Person,
-                                contentDescription = "Abrir perfil",
-                                tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                                modifier = Modifier.size(24.dp),
-                            )
-                        } else {
-                            AsyncImage(
-                                model = photoUri,
-                                contentDescription = "Abrir perfil",
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize(),
-                            )
-                        }
+                                .width(46.dp)
+                                .height(2.5.dp)
+                                .clip(RoundedCornerShape(2.dp))
+                                .background(primaryColor.copy(alpha = 0.72f)),
+                    )
+                    Spacer(Modifier.width(5.dp))
+                    Box(
+                        modifier =
+                            Modifier
+                                .size(4.dp)
+                                .clip(CircleShape)
+                                .background(primaryColor.copy(alpha = 0.45f)),
+                    )
+                }
+            }
+            Spacer(Modifier.width(10.dp))
+            Surface(
+                onClick = onAvatarClick,
+                shape = RoundedCornerShape(14.dp),
+                color = MaterialTheme.colorScheme.surfaceContainerLow,
+                shadowElevation = 1.dp,
+                modifier =
+                    Modifier
+                        .size(50.dp)
+                        .border(
+                            1.dp,
+                            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            RoundedCornerShape(14.dp),
+                        ),
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(3.dp)
+                            .clip(RoundedCornerShape(11.dp))
+                            .background(MaterialTheme.colorScheme.primaryContainer),
+                ) {
+                    if (photoUri.isNullOrBlank()) {
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
+                            contentDescription = "Abrir perfil",
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.size(24.dp),
+                        )
+                    } else {
+                        AsyncImage(
+                            model = photoUri,
+                            contentDescription = "Abrir perfil",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize(),
+                        )
                     }
                 }
             }
-            AirMailStripe(
-                primaryColor = primaryColor.copy(alpha = 0.6f),
-                secondaryColor = stripeAccentColor.copy(alpha = 0.55f),
-            )
         }
+        Spacer(Modifier.height(10.dp))
+        AirMailStripe(
+            primaryColor = primaryColor.copy(alpha = 0.55f),
+            secondaryColor = stripeAccentColor.copy(alpha = 0.5f),
+        )
     }
 }
 
@@ -337,15 +319,8 @@ fun BottomNavigationBar(
         Surface(
             shape = RoundedCornerShape(26.dp),
             color = barColor,
-            shadowElevation = 6.dp,
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .border(
-                        1.dp,
-                        MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f),
-                        RoundedCornerShape(26.dp),
-                    ),
+            shadowElevation = 4.dp,
+            modifier = Modifier.fillMaxWidth(),
         ) {
             Row(
                 modifier =

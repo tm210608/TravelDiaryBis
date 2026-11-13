@@ -27,7 +27,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Mail
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -55,22 +54,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.example.traveldiary.domain.model.TravelEntry
-import com.example.traveldiary.domain.model.UserProfile
 import com.example.traveldiary.domain.model.exportFileName
 import com.example.traveldiary.domain.model.exportPdfFileName
 import com.example.traveldiary.ui.components.BottomNavigationBar
 import com.example.traveldiary.ui.components.PostalEntryCard
 import com.example.traveldiary.ui.components.PostalHeader
-import com.example.traveldiary.ui.theme.SerifAppTitle
 import com.example.traveldiary.ui.theme.SerifCardTitle
 import com.example.traveldiary.ui.viewmodel.ExportUiState
 import com.example.traveldiary.ui.viewmodel.HomeViewModel
@@ -277,7 +272,6 @@ fun TravelDiaryHomeScreen(
         }
     }
 }
-
 
 @Composable
 private fun FavouritesToggle(
