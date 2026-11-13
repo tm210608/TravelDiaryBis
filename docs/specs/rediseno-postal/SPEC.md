@@ -1,7 +1,14 @@
 # SPEC: Rediseño "Postal" de la pantalla principal
 
-Estado: APROBADA (2026-11-13)
+Estado: VERIFICADA (2026-11-13)
 Referencia visual elegida por el usuario: `stitch-home-postal.png` (opción A, proyecto Stitch "TravelDiary — Opciones Home baja densidad").
+
+Desviaciones aprobadas por el usuario tras la primera iteración:
+- El título de cabecera es "Travel Diary" (nombre de la app) en vez de "Mi Diario".
+- El avatar sin foto muestra un icono de persona en vez de la inicial.
+- Bajo la cabecera hay un selector Viajes | Favoritos (acceso directo a favoritos pedido por el usuario).
+- La línea de lugar incluye también la fecha, y la postal lleva marco crema tipo foto montada ("toque premium" pedido por el usuario).
+- El corazón persiste `isFavourite` vía `ToggleFavouriteUseCase` (antes solo cambiaba el dibujo).
 
 ## Qué construimos
 
@@ -14,36 +21,38 @@ letra, menos información por pantalla, más calidez visual.
 
 ## Criterios de aceptación (testeables, sin ambigüedad)
 
-- [ ] La cabecera de Home muestra SOLO el título "Mi Diario" y el avatar circular
-      (foto de perfil o inicial, como ahora). No muestra subtítulos, contadores,
-      escala, folio ni el icono de exportar.
-- [ ] Cada entrada se muestra como tarjeta postal: imagen de portada
-      (`TravelEntry.imageUrl`) a todo lo ancho disponible con esquinas redondeadas,
-      y debajo únicamente el título de la entrada y la línea de lugar
-      (`location`/`country` con el formato que hoy muestra la lista).
-- [ ] Si la entrada no tiene foto, la zona de imagen muestra un degradado cálido
-      suave con un icono discreto (cámara o mapa), no un espacio vacío ni texto.
-- [ ] El corazón de favorito permanece accesible como icono pequeño sobre la foto
-      (esquina superior derecha) y sigue alternando `isFavourite` al tocarlo.
-- [ ] En Home ya NO aparecen: barra de búsqueda, chips de filtro por continente,
-      carrusel "Registro Destacado", fila de estadísticas (km/días/tramos),
-      sección "Visados y Sellos de Ruta" ni contadores "[00]".
-- [ ] El estado vacío (0 entradas) muestra un mensaje breve en español invitando a
-      crear el primer viaje más el botón de nueva entrada; sin bloques extra.
-- [ ] La barra inferior se renombra en TODAS las pantallas que la usan:
-      Inicio, Mapa, Fotos, Perfil (antes Cuaderno, Rutas, Recuerdos, Índice).
-      Los destinos de cada pestaña no cambian.
-- [ ] El FAB muestra el icono "+" con el texto "Nueva entrada" (como hoy) o solo
-      "+" si el diseño final lo prefiere — decidir en implementación y documentar.
-- [ ] El acceso a exportar/importar sigue existiendo desde la pestaña Perfil
-      (pantalla `ProfileScreen`), aunque desaparezca de la cabecera de Home.
-- [ ] El modo oscuro sigue funcionando: Home en oscuro usa la paleta oscura
-      equivalente (fondo oscuro cálido, mismas tarjetas) sin añadir texto.
-- [ ] Título largo de entrada no rompe la tarjeta: máximo 2 líneas con ellipsis.
-- [ ] En landscape la lista de postales pasa a 2 columnas o se limita el ancho de
-      tarjeta; no hay cortes ni solapamientos.
-- [ ] Tocar una postal navega al detalle; "+" navega a nueva entrada; las pestañas
-      navegan como antes. Navegación sin cambios de rutas.
+- [x] La cabecera de Home muestra SOLO el título "Travel Diary" y el avatar
+      circular. Sin subtítulos, contadores, escala, folio ni icono de exportar.
+      (Verificado en `evidence/home-viajes.png`.)
+- [x] Cada entrada se muestra como tarjeta postal: marco crema tipo foto montada,
+      imagen de portada con esquinas redondeadas, y debajo título + línea
+      "Ciudad, País · fecha". (Verificado en `evidence/home-viajes.png`.)
+- [x] Si la entrada no tiene foto, la zona de imagen muestra un degradado cálido
+      con icono de cámara. (Verificado: "Camping en el Pirineo", `evidence/home-viajes.png`.)
+- [x] El corazón de favorito permanece como icono sobre la foto (esquina superior
+      derecha), relleno en favoritas, y persiste `isFavourite` al tocarlo.
+- [x] En Home ya NO aparecen: barra de búsqueda, chips de filtro por continente,
+      carrusel "Registro Destacado", fila de estadísticas, sección "Visados y
+      Sellos de Ruta" ni contadores "[00]".
+- [x] El estado vacío muestra mensaje breve + botón de nueva entrada.
+      (Verificado en `evidence/home-vacio.png`.)
+- [x] La barra inferior muestra Inicio, Mapa, Fotos, Perfil en todas las
+      pantallas que la usan; los destinos no cambian. (Verificado en Home y Perfil.)
+- [x] El FAB muestra "+" con el texto "Nueva entrada" (se mantuvo la versión
+      con texto, igual que antes).
+- [x] El acceso a exportar/importar sigue existiendo desde Perfil
+      ("Exportar diario / ZIP con entradas y fotos", verificado en dispositivo).
+- [x] El modo oscuro funciona: paleta "Atlas Nocturno" con las mismas postales.
+      (Verificado en captura oscura del emulador.)
+- [x] Título largo no rompe la tarjeta: 1 línea con ellipsis en el título y en la
+      línea de lugar.
+- [x] En landscape la rejilla adaptativa muestra 2 columnas sin cortes.
+      (Verificado en captura landscape del emulador.)
+- [x] Tocar una postal navega al detalle (verificado: detalle de "Kioto" con
+      galería de 2 fotos); "+" navega a nueva entrada; las pestañas navegan
+      como antes. Rutas sin cambios.
+- [x] Extra (post-SPEC): selector Viajes|Favoritos filtra correctamente en
+      dispositivo (verificado: 4 favoritas en `evidence/home-favoritos.png`).
 
 ## Fuera de alcance
 
@@ -94,12 +103,15 @@ lógica de ViewModel actual).
 
 ## Plan de tests
 
-- [ ] build: `scripts/verify.sh` en verde (incluye tests JVM).
-- [ ] unit: `HomeViewModelTest` adaptado (quitar tests de búsqueda/chips si el
-      estado se elimina); los tests de favoritos/listado siguen pasando.
-- [ ] dispositivo: `installDebug` en el móvil del usuario — revisión visual del
-      Home con entradas con foto, sin foto y estado de favorito.
-- [ ] evidencia: capturas del resultado en `docs/specs/rediseno-postal/`.
+- [x] build: `scripts/verify.sh` en verde (167 tests JVM, 0 fallos).
+- [x] unit: `HomeViewModelTest` adaptado (fuera tests de búsqueda/chips/featured;
+      nuevos: filtro favoritos, toggleFavourite); `EditProfileViewModelTest` con
+      test de borrador restaurado tras recreación.
+- [x] dispositivo: verificado en emulador `emulator-5560` con 8 entradas mock con
+      fotos reales (el móvil del usuario estaba ocupado con otro proyecto).
+      Home ya visto previamente en el móvil del usuario tras `installDebug`.
+- [x] evidencia: capturas en `docs/specs/rediseno-postal/evidence/`
+      (home-viajes, home-favoritos, home-vacio, home-scroll, verify-device).
 
 ## Edge cases
 
