@@ -1,6 +1,11 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-11-13 | **Rama:** `main` al día en origin (`a469f30`) — extension-postal mergeada y pusheada | 167 tests JVM verdes | verify.sh OK | SPECs verificadas con evidencia
+**Fecha:** 2026-11-13 | **Rama:** `main` al día en origin (`9c52bb6`) — extension-postal mergeada y pusheada | 167 tests JVM verdes | verify.sh OK | SPECs verificadas con evidencia
+
+## Hecho el 2026-11-13 — banners con personalidad postal (v2, aprobada por usuario)
+- `PostalHeader` (Home + Perfil): **sin caja** — portada abierta: título serif, matasellos con avión + 3 ondas de matasellos (Canvas), subrayado editorial con punto, avatar enmarcado tipo sello (14dp, borde fino), y ribete aéreo `AirMailStripe` (rayas diagonales primario/acento) como línea divisoria. Iteración: v1 era tarjeta con borde — usuario la encontró con "bordes excesivos"; v2 elimina marco/sombra/fondo.
+- `BottomNavigationBar`: cápsula flotante (26dp, sombra 4dp, sin borde, `navigationBarsPadding`), píldora activa + etiqueta semi-negrita + mini-subrayado; `NavigationBar`/`NavigationBarItem` de M3 sustituidos por Row+Surface propios.
+- Commits: `ed65bff` (v1) + `9c52bb6` (v2 sin marco, ktlint limpio). Verificado claro+oscuro en emulator-5554; instalado en móvil físico.
 
 ## Hecho el 2026-11-13 — cabecera postal con matasellos de avión
 - `PostalHeader` ("Travel Diary" serif + matasellos circular inclinado -12° con `Icons.Outlined.FlightTakeoff` en terracota + subrayado editorial + avatar) compartido por Home y Perfil. El `HomeHeader` privado quedó eliminado — Home usa `PostalHeader` desde `2d30684`/compartido.
