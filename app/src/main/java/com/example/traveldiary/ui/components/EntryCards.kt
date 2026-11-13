@@ -1,6 +1,7 @@
 package com.example.traveldiary.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.traveldiary.domain.model.TravelEntry
+import com.example.traveldiary.domain.model.formatToDisplay
 import com.example.traveldiary.ui.theme.SerifCardTitle
 
 @Composable
@@ -39,25 +41,34 @@ fun PostalEntryCard(
     selected: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    val photoShape = RoundedCornerShape(18.dp)
-    Column(modifier = modifier.fillMaxWidth()) {
-        Surface(
-            onClick = onClick,
-            shape = photoShape,
-            shadowElevation = 6.dp,
-            color = MaterialTheme.colorScheme.surfaceContainerHigh,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
+    val photoShape = RoundedCornerShape(12.dp)
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(20.dp),
+        shadowElevation = 5.dp,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(12.dp)) {
             Box {
                 if (entry.imageUrl.isNotBlank()) {
                     AsyncImage(
                         model = entry.imageUrl,
                         contentDescription = entry.title,
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxWidth().aspectRatio(3f / 2f),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .aspectRatio(4f / 3f)
+                                .clip(photoShape)
+                                .border(
+                                    1.dp,
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+                                    photoShape,
+                                ),
                     )
                 } else {
-                    PostalPhotoPlaceholder()
+                    PostalPhotoPlaceholder(shape = photoShape)
                 }
                 if (selectionMode) {
                     Box(
@@ -65,7 +76,7 @@ fun PostalEntryCard(
                         modifier =
                             Modifier
                                 .align(Alignment.TopStart)
-                                .padding(12.dp)
+                                .padding(10.dp)
                                 .size(36.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.92f)),
@@ -79,27 +90,32 @@ fun PostalEntryCard(
                     PostalHeart(
                         isFavourite = entry.isFavourite,
                         onClick = onFavouriteClick,
-                        modifier = Modifier.align(Alignment.TopEnd).padding(12.dp),
+                        modifier = Modifier.align(Alignment.TopEnd).padding(10.dp),
                     )
                 }
             }
-        }
-        Column(Modifier.padding(horizontal = 6.dp).padding(top = 12.dp)) {
-            Text(
-                text = entry.title,
-                style = SerifCardTitle,
-                color = MaterialTheme.colorScheme.onBackground,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
-            Text(
-                text = listOf(entry.location, entry.country).filter { it.isNotBlank() }.joinToString(", "),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(top = 2.dp),
-            )
+            Column(Modifier.padding(horizontal = 4.dp).padding(top = 10.dp)) {
+                Text(
+                    text = entry.title,
+                    style = SerifCardTitle,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    text =
+                        listOf(entry.location, entry.country)
+                            .filter { it.isNotBlank() }
+                            .joinToString(", ") +
+                            " · " +
+                            entry.date.formatToDisplay(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 3.dp),
+                )
+            }
         }
     }
 }
@@ -129,13 +145,17 @@ private fun PostalHeart(
 }
 
 @Composable
-private fun PostalPhotoPlaceholder(modifier: Modifier = Modifier) {
+private fun PostalPhotoPlaceholder(
+    shape: RoundedCornerShape,
+    modifier: Modifier = Modifier,
+) {
     Box(
         contentAlignment = Alignment.Center,
         modifier =
             modifier
                 .fillMaxWidth()
-                .aspectRatio(3f / 2f)
+                .aspectRatio(4f / 3f)
+                .clip(shape)
                 .background(
                     Brush.linearGradient(
                         listOf(

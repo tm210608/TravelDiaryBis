@@ -90,6 +90,29 @@ class HomeViewModelTest {
         }
 
     @Test
+    fun `favouritesOnly filters entriesList`() =
+        runTest {
+            val entries =
+                listOf(
+                    entry(1, "Paris", "France", isFavourite = true),
+                    entry(2, "Tokyo", "Japan"),
+                )
+            val viewModel = viewModelWith(entries)
+            backgroundScope.launch { viewModel.entriesList.collect {} }
+            advanceUntilIdle()
+
+            viewModel.onFavouritesOnlyChanged(true)
+            advanceUntilIdle()
+
+            assertEquals(listOf("Paris"), viewModel.entriesList.value.map { it.title })
+
+            viewModel.onFavouritesOnlyChanged(false)
+            advanceUntilIdle()
+
+            assertEquals(2, viewModel.entriesList.value.size)
+        }
+
+    @Test
     fun `toggleFavourite calls use case`() =
         runTest {
             val viewModel = viewModelWith(emptyList())

@@ -17,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -50,12 +51,23 @@ class HomeViewModel
         private val _selectedTab = mutableIntStateOf(0)
         val selectedTab: State<Int> = _selectedTab
 
+        private val _favouritesOnly = MutableStateFlow(false)
+        val favouritesOnly: StateFlow<Boolean> = _favouritesOnly
+
         val entriesList: StateFlow<List<TravelEntry>> =
-            getEntriesUseCase()
-                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+            combine(
+                getEntriesUseCase(),
+                _favouritesOnly,
+            ) { entries, favOnly ->
+                if (favOnly) entries.filter { it.isFavourite } else entries
+            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
         fun onTabSelected(index: Int) {
             _selectedTab.value = index
+        }
+
+        fun onFavouritesOnlyChanged(favouritesOnly: Boolean) {
+            _favouritesOnly.value = favouritesOnly
         }
 
         fun toggleFavourite(

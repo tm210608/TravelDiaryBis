@@ -25,7 +25,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Mail
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -51,9 +53,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -84,6 +87,7 @@ fun TravelDiaryHomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val entriesList by viewModel.entriesList.collectAsState()
+    val favouritesOnly by viewModel.favouritesOnly.collectAsState()
     val selectedTab by viewModel.selectedTab
     val profile by viewModel.profile.collectAsState()
     val selectionMode by viewModel.selectionMode.collectAsState()
@@ -216,16 +220,38 @@ fun TravelDiaryHomeScreen(
                         onSharePdf = { viewModel.sharePdfSelected() },
                     )
                 } else {
-                    HomeHeader(
-                        profile = profile,
-                        onAvatarClick = onAvatarClick,
-                    )
+                    Column {
+                        HomeHeader(
+                            profile = profile,
+                            onAvatarClick = onAvatarClick,
+                        )
+                        FavouritesToggle(
+                            favouritesOnly = favouritesOnly,
+                            onChange = { viewModel.onFavouritesOnlyChanged(it) },
+                        )
+                    }
                 }
             }
 
             if (!selectionMode && entriesList.isEmpty()) {
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    EmptyState(onAddClick = onAddClick)
+                    if (favouritesOnly) {
+                        EmptyState(
+                            title = "Aún no hay favoritos",
+                            supporting = "Marca con el corazón los viajes que más te gusten.",
+                            icon = Icons.Outlined.FavoriteBorder,
+                            actionLabel = null,
+                            onAction = {},
+                        )
+                    } else {
+                        EmptyState(
+                            title = "Tu diario está en blanco",
+                            supporting = "Guarda tu primer viaje con fotos y lugar.",
+                            icon = Icons.Outlined.Mail,
+                            actionLabel = "Crear tu primer viaje",
+                            onAction = onAddClick,
+                        )
+                    }
                 }
             } else {
                 items(entriesList, key = { it.id }) { entry ->
@@ -263,7 +289,7 @@ private fun HomeHeader(
                 .padding(top = 20.dp, bottom = 6.dp),
     ) {
         Text(
-            text = "Mi Diario",
+            text = "Travel Diary",
             style = SerifAppTitle,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.weight(1f),
@@ -271,16 +297,16 @@ private fun HomeHeader(
         Surface(
             onClick = onAvatarClick,
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.primaryContainer,
             modifier = Modifier.size(46.dp),
         ) {
             Box(contentAlignment = Alignment.Center) {
                 if (profile.photoUri.isNullOrBlank()) {
-                    Text(
-                        text = profile.initials,
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.Bold,
+                    Icon(
+                        imageVector = Icons.Outlined.Person,
+                        contentDescription = "Abrir perfil",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(24.dp),
                     )
                 } else {
                     AsyncImage(
@@ -292,6 +318,58 @@ private fun HomeHeader(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun FavouritesToggle(
+    favouritesOnly: Boolean,
+    onChange: (Boolean) -> Unit,
+) {
+    Surface(
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        modifier = Modifier.padding(bottom = 6.dp),
+    ) {
+        Row {
+            ToggleOption(
+                text = "Viajes",
+                selected = !favouritesOnly,
+                onClick = { onChange(false) },
+            )
+            ToggleOption(
+                text = "Favoritos",
+                selected = favouritesOnly,
+                onClick = { onChange(true) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun ToggleOption(
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    Surface(
+        onClick = onClick,
+        shape = CircleShape,
+        color = if (selected) MaterialTheme.colorScheme.surfaceContainerLowest else Color.Transparent,
+        shadowElevation = if (selected) 2.dp else 0.dp,
+        modifier = Modifier.padding(4.dp),
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelLarge,
+            color =
+                if (selected) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 8.dp),
+        )
     }
 }
 
@@ -386,7 +464,13 @@ private fun SelectionTopBar(
 }
 
 @Composable
-private fun EmptyState(onAddClick: () -> Unit) {
+private fun EmptyState(
+    title: String,
+    supporting: String,
+    icon: ImageVector,
+    actionLabel: String?,
+    onAction: () -> Unit,
+) {
     Column(
         modifier =
             Modifier
@@ -401,7 +485,7 @@ private fun EmptyState(onAddClick: () -> Unit) {
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
-                    imageVector = Icons.Outlined.Mail,
+                    imageVector = icon,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(34.dp),
@@ -410,28 +494,30 @@ private fun EmptyState(onAddClick: () -> Unit) {
         }
         Spacer(Modifier.height(24.dp))
         Text(
-            text = "Tu diario está en blanco",
+            text = title,
             style = SerifCardTitle,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
         )
         Spacer(Modifier.height(10.dp))
         Text(
-            text = "Guarda tu primer viaje con fotos y lugar.",
+            text = supporting,
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
         )
-        Spacer(Modifier.height(28.dp))
-        Button(
-            onClick = onAddClick,
-            colors =
-                ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                ),
-        ) {
-            Text("Crear tu primer viaje")
+        if (actionLabel != null) {
+            Spacer(Modifier.height(28.dp))
+            Button(
+                onClick = onAction,
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                    ),
+            ) {
+                Text(actionLabel)
+            }
         }
     }
 }

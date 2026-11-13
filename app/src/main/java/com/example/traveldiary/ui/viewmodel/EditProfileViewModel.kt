@@ -1,5 +1,6 @@
 package com.example.traveldiary.ui.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.traveldiary.domain.model.UserProfile
@@ -29,6 +30,7 @@ sealed interface EditProfileUiState {
 class EditProfileViewModel
     @Inject
     constructor(
+        private val savedStateHandle: SavedStateHandle,
         private val getProfileUseCase: GetProfileUseCase,
         private val updateProfileUseCase: UpdateProfileUseCase,
         private val photoImporter: PhotoImporter,
@@ -39,33 +41,59 @@ class EditProfileViewModel
         init {
             viewModelScope.launch {
                 val profile = getProfileUseCase().first()
-                _uiState.value = EditProfileUiState.Editing(name = profile.name, photoUri = profile.photoUri)
+                _uiState.value =
+                    if (savedStateHandle.get<Boolean>(KEY_DIRTY) == true) {
+                        EditProfileUiState.Editing(
+                            name = savedStateHandle[KEY_NAME] ?: profile.name,
+                            photoUri = savedStateHandle[KEY_PHOTO],
+                        )
+                    } else {
+                        EditProfileUiState.Editing(name = profile.name, photoUri = profile.photoUri)
+                    }
             }
+        }
+
+        private fun updateDraft(state: EditProfileUiState.Editing) {
+            savedStateHandle[KEY_DIRTY] = true
+            savedStateHandle[KEY_NAME] = state.name
+            if (state.photoUri != null) {
+                savedStateHandle[KEY_PHOTO] = state.photoUri
+            } else {
+                savedStateHandle.remove<String>(KEY_PHOTO)
+            }
+            _uiState.value = state
         }
 
         fun updateName(name: String) {
             val state = _uiState.value as? EditProfileUiState.Editing ?: return
-            _uiState.value = state.copy(name = name)
+            updateDraft(state.copy(name = name))
         }
 
         fun updatePhoto(sourceUri: String) {
             viewModelScope.launch {
                 val copied = photoImporter.importPhoto(sourceUri) ?: return@launch
                 val state = _uiState.value as? EditProfileUiState.Editing ?: return@launch
-                _uiState.value = state.copy(photoUri = copied)
+                updateDraft(state.copy(photoUri = copied))
             }
         }
 
         fun removePhoto() {
             val state = _uiState.value as? EditProfileUiState.Editing ?: return
-            _uiState.value = state.copy(photoUri = null)
+            updateDraft(state.copy(photoUri = null))
         }
 
         fun save() {
             val state = _uiState.value as? EditProfileUiState.Editing ?: return
             viewModelScope.launch {
                 updateProfileUseCase(UserProfile(name = state.name.ifBlank { "Viajero" }, photoUri = state.photoUri))
+                savedStateHandle[KEY_DIRTY] = false
                 _uiState.value = EditProfileUiState.Saved
             }
+        }
+
+        companion object {
+            private const val KEY_DIRTY = "draft_dirty"
+            private const val KEY_NAME = "draft_name"
+            private const val KEY_PHOTO = "draft_photo"
         }
     }

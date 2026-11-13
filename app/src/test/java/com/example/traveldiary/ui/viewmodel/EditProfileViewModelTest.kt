@@ -1,5 +1,6 @@
 package com.example.traveldiary.ui.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import com.example.traveldiary.TestDispatcherRule
 import com.example.traveldiary.domain.model.UserProfile
 import com.example.traveldiary.domain.repository.PhotoImporter
@@ -27,9 +28,12 @@ class EditProfileViewModelTest {
     private val updateProfileUseCase: UpdateProfileUseCase = mockk()
     private val photoImporter: PhotoImporter = mockk()
 
-    private fun viewModel(profile: UserProfile = UserProfile(name = "Ana")): EditProfileViewModel {
+    private fun viewModel(
+        profile: UserProfile = UserProfile(name = "Ana"),
+        savedStateHandle: SavedStateHandle = SavedStateHandle(),
+    ): EditProfileViewModel {
         every { getProfileUseCase() } returns flowOf(profile)
-        return EditProfileViewModel(getProfileUseCase, updateProfileUseCase, photoImporter)
+        return EditProfileViewModel(savedStateHandle, getProfileUseCase, updateProfileUseCase, photoImporter)
     }
 
     @Test
@@ -85,5 +89,21 @@ class EditProfileViewModelTest {
             advanceUntilIdle()
 
             coVerify { updateProfileUseCase(UserProfile(name = "Viajero", photoUri = null)) }
+        }
+
+    @Test
+    fun `restores draft from saved state after recreation`() =
+        runTest {
+            val handle = SavedStateHandle()
+            val first = viewModel(savedStateHandle = handle)
+            advanceUntilIdle()
+
+            first.updateName("Lucia")
+
+            val second = viewModel(savedStateHandle = handle)
+            advanceUntilIdle()
+
+            val state = second.uiState.value as EditProfileUiState.Editing
+            assertEquals("Lucia", state.name)
         }
 }
