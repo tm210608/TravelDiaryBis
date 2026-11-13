@@ -121,6 +121,61 @@ fun PostalEntryCard(
 }
 
 @Composable
+fun MemoryPostalCard(
+    entry: TravelEntry,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val photoShape = RoundedCornerShape(12.dp)
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(20.dp),
+        shadowElevation = 5.dp,
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Column(Modifier.padding(10.dp)) {
+            if (entry.imageUrl.isNotBlank()) {
+                AsyncImage(
+                    model = entry.imageUrl,
+                    contentDescription = entry.title,
+                    contentScale = ContentScale.Crop,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(1f)
+                            .clip(photoShape)
+                            .border(
+                                1.dp,
+                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+                                photoShape,
+                            ),
+                )
+            } else {
+                PostalPhotoPlaceholder(shape = photoShape, aspectRatio = 1f)
+            }
+            Column(Modifier.padding(horizontal = 4.dp).padding(top = 8.dp)) {
+                Text(
+                    text = entry.title,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Text(
+                    text = entry.date.formatToDisplay(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 2.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun PostalHeart(
     isFavourite: Boolean,
     onClick: () -> Unit,
@@ -148,13 +203,14 @@ private fun PostalHeart(
 private fun PostalPhotoPlaceholder(
     shape: RoundedCornerShape,
     modifier: Modifier = Modifier,
+    aspectRatio: Float = 4f / 3f,
 ) {
     Box(
         contentAlignment = Alignment.Center,
         modifier =
             modifier
                 .fillMaxWidth()
-                .aspectRatio(4f / 3f)
+                .aspectRatio(aspectRatio)
                 .clip(shape)
                 .background(
                     Brush.linearGradient(

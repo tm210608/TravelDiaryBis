@@ -3,13 +3,12 @@ package com.example.traveldiary.ui.screens
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -17,6 +16,8 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.Map
+import androidx.compose.material.icons.outlined.PhotoCamera
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,20 +28,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.traveldiary.domain.model.formatToTicket
-import com.example.traveldiary.domain.model.toCardinalLat
-import com.example.traveldiary.domain.model.toCardinalLon
-import com.example.traveldiary.ui.components.TicketDivider
-import com.example.traveldiary.ui.components.cartographyGrid
-import com.example.traveldiary.ui.components.ticketShape
-import com.example.traveldiary.ui.theme.MonoEyebrow
-import com.example.traveldiary.ui.theme.MonoStubMeta
-import com.example.traveldiary.ui.theme.MonoTelemetry
+import com.example.traveldiary.domain.model.formatToDisplay
+import com.example.traveldiary.ui.theme.SerifCardTitle
+import com.example.traveldiary.ui.theme.SerifScreenTitle
 import com.example.traveldiary.ui.viewmodel.DetailUiState
 import com.example.traveldiary.ui.viewmodel.DetailViewModel
 
@@ -109,17 +104,12 @@ private fun TravelDetailContent(
     onFavouriteClick: () -> Unit,
 ) {
     val context = LocalContext.current
-    val gridColor =
-        MaterialTheme.colorScheme.onSurface.copy(
-            alpha = if (isSystemInDarkTheme()) 0.12f else 0.14f,
-        )
 
     Box(
         modifier =
             Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .cartographyGrid(gridColor),
+                .background(MaterialTheme.colorScheme.background),
     ) {
         Column(
             modifier =
@@ -133,70 +123,33 @@ private fun TravelDetailContent(
                         .fillMaxWidth()
                         .height(400.dp),
             ) {
-                AsyncImage(
-                    model = entry.imageUrl,
-                    contentDescription = entry.title,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize(),
-                )
-                Box(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .background(
-                                Brush.verticalGradient(
-                                    colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim.copy(alpha = 0.65f)),
-                                    startY = 600f,
-                                ),
-                            ),
-                )
-
-                Column(
-                    modifier =
-                        Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(24.dp),
-                ) {
-                    Surface(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = MaterialTheme.shapes.small,
-                    ) {
-                        Text(
-                            text = entry.tag,
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = entry.title,
-                        style =
-                            MaterialTheme.typography.headlineLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White,
-                            ),
+                if (entry.imageUrl.isNotBlank()) {
+                    AsyncImage(
+                        model = entry.imageUrl,
+                        contentDescription = entry.title,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize(),
                     )
-                }
-            }
-
-            if (entry.photoUris.isNotEmpty()) {
-                LazyRow(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    items(entry.photoUris) { uri ->
-                        AsyncImage(
-                            model = uri,
-                            contentDescription = "Foto del recuerdo",
-                            contentScale = ContentScale.Crop,
-                            modifier =
-                                Modifier
-                                    .size(140.dp)
-                                    .clip(MaterialTheme.shapes.medium),
+                } else {
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.linearGradient(
+                                        listOf(
+                                            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.35f),
+                                            MaterialTheme.colorScheme.primary.copy(alpha = 0.35f),
+                                        ),
+                                    ),
+                                ),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.PhotoCamera,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
+                            modifier = Modifier.size(56.dp),
                         )
                     }
                 }
@@ -205,123 +158,96 @@ private fun TravelDetailContent(
             Column(
                 modifier =
                     Modifier
-                        .padding(24.dp)
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 20.dp)
                         .fillMaxWidth(),
             ) {
-                val ticket = entry.date.formatToTicket()
-                Card(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .then(
-                                if (entry.latitude != null && entry.longitude != null) {
-                                    Modifier.clickable {
-                                        val gmmIntentUri =
-                                            Uri.parse(
-                                                "geo:${entry.latitude},${entry.longitude}?q=${entry.latitude},${entry.longitude}",
-                                            )
-                                        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
-                                        mapIntent.setPackage("com.google.android.apps.maps")
-                                        if (mapIntent.resolveActivity(context.packageManager) != null) {
-                                            context.startActivity(mapIntent)
-                                        }
-                                    }
-                                } else {
-                                    Modifier
-                                },
-                            ),
-                    shape = ticketShape(),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                        ),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-                ) {
-                    Row(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Column(
-                            modifier =
-                                Modifier
-                                    .weight(1f)
-                                    .padding(start = 16.dp),
-                        ) {
-                            Text(
-                                text = "TALÓN DE EXPEDICIÓN",
-                                style = MonoEyebrow,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                            Spacer(Modifier.height(6.dp))
-                            Text(
-                                text = "${ticket.day} ${ticket.month} ${ticket.year} · ${ticket.time}",
-                                style = MonoTelemetry,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                            Spacer(Modifier.height(3.dp))
-                            Text(
-                                text = "${entry.location}, ${entry.country}",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        }
-                        TicketDivider(
-                            color = MaterialTheme.colorScheme.outlineVariant,
-                            modifier = Modifier.height(52.dp),
-                        )
-                        Column(
-                            modifier = Modifier.width(92.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            if (entry.latitude != null && entry.longitude != null) {
-                                Text(
-                                    text = entry.latitude.toCardinalLat(),
-                                    style = MonoTelemetry,
-                                    color = MaterialTheme.colorScheme.tertiary,
+                Text(
+                    text = entry.title,
+                    style = SerifScreenTitle,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text =
+                        listOf(entry.location, entry.country)
+                            .filter { it.isNotBlank() }
+                            .joinToString(", ") +
+                            " · " +
+                            entry.date.formatToDisplay(),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+
+                if (entry.latitude != null && entry.longitude != null) {
+                    Spacer(Modifier.height(8.dp))
+                    TextButton(
+                        onClick = {
+                            val gmmIntentUri =
+                                Uri.parse(
+                                    "geo:${entry.latitude},${entry.longitude}?q=${entry.latitude},${entry.longitude}",
                                 )
-                                Text(
-                                    text = entry.longitude.toCardinalLon(),
-                                    style = MonoTelemetry,
-                                    color = MaterialTheme.colorScheme.tertiary,
-                                )
-                                Spacer(Modifier.height(2.dp))
-                                Text(
-                                    text = "VER MAPA",
-                                    style = MonoStubMeta,
-                                    color = MaterialTheme.colorScheme.primary,
-                                )
-                            } else {
-                                Text(
-                                    text = "SIN GPS",
-                                    style = MonoTelemetry,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                )
+                            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                            mapIntent.setPackage("com.google.android.apps.maps")
+                            if (mapIntent.resolveActivity(context.packageManager) != null) {
+                                context.startActivity(mapIntent)
                             }
+                        },
+                        contentPadding = PaddingValues(0.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Map,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(
+                            text = "Ver mapa",
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                }
+
+                if (entry.photoUris.isNotEmpty()) {
+                    Spacer(Modifier.height(8.dp))
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        items(entry.photoUris) { uri ->
+                            AsyncImage(
+                                model = uri,
+                                contentDescription = "Foto del recuerdo",
+                                contentScale = ContentScale.Crop,
+                                modifier =
+                                    Modifier
+                                        .size(140.dp)
+                                        .clip(RoundedCornerShape(12.dp)),
+                            )
                         }
                     }
                 }
 
+                if (entry.description.isNotBlank()) {
+                    Spacer(modifier = Modifier.height(28.dp))
+                    Text(
+                        text = "La Historia",
+                        style = SerifCardTitle,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = entry.description,
+                        style =
+                            MaterialTheme.typography.bodyLarge.copy(
+                                lineHeight = 28.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            ),
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(32.dp))
-
-                Text(
-                    text = "La Historia",
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = entry.description,
-                    style =
-                        MaterialTheme.typography.bodyLarge.copy(
-                            lineHeight = 28.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        ),
-                )
-
-                Spacer(modifier = Modifier.height(40.dp))
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),

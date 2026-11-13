@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.traveldiary.ui.components.TravelEntryFormFields
+import com.example.traveldiary.ui.theme.SerifCardTitle
 import com.example.traveldiary.ui.viewmodel.EditEntryUiState
 import com.example.traveldiary.ui.viewmodel.EditEntryViewModel
 import com.example.traveldiary.ui.viewmodel.toTravelEntry
@@ -125,7 +126,7 @@ fun EditTravelEntryScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text("Editar recuerdo") },
+                title = { Text("Editar recuerdo", style = SerifCardTitle) },
                 navigationIcon = {
                     IconButton(
                         onClick = ::requestBack,

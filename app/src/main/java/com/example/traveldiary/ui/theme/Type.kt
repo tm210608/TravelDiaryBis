@@ -98,6 +98,7 @@ private fun serif(
 )
 
 val SerifAppTitle = serif(34, 40, FontWeight.SemiBold, italic = true)
+val SerifScreenTitle = serif(28, 34, FontWeight.SemiBold)
 val SerifCardTitle = serif(21, 27, FontWeight.SemiBold)
 
 // Escala de docs/specs/m3-expressive-redesign/stitch/DESIGN.md

@@ -1,6 +1,6 @@
 # SPEC: Extensión del estilo "Postal" al resto de pantallas
 
-Estado: BORRADOR (pendiente de aprobación)
+Estado: APROBADA (2026-11-13)
 Continuación de `docs/specs/rediseno-postal/SPEC.md` (verificada). Misma dirección
 visual: cálida, editorial, foto-led, sin etiquetas técnicas ni densidad.
 

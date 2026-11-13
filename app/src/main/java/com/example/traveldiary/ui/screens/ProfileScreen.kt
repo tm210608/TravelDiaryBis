@@ -2,9 +2,6 @@ package com.example.traveldiary.ui.screens
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,12 +27,12 @@ import com.example.traveldiary.domain.model.TravelStats
 import com.example.traveldiary.domain.model.formatKm
 import com.example.traveldiary.ui.components.BottomNavigationBar
 import com.example.traveldiary.ui.components.PassportStamp
+import com.example.traveldiary.ui.components.PostalHeader
 import com.example.traveldiary.ui.components.SectionHeader
-import com.example.traveldiary.ui.components.TicketDivider
-import com.example.traveldiary.ui.theme.MonoDisplay
-import com.example.traveldiary.ui.theme.MonoEyebrow
 import com.example.traveldiary.ui.theme.MonoStubMeta
 import com.example.traveldiary.ui.theme.MonoTelemetry
+import com.example.traveldiary.ui.theme.SerifCardTitle
+import com.example.traveldiary.ui.theme.SerifScreenTitle
 import com.example.traveldiary.ui.viewmodel.ImportUiState
 import com.example.traveldiary.ui.viewmodel.ProfileUiState
 import com.example.traveldiary.ui.viewmodel.ProfileViewModel
@@ -89,20 +85,6 @@ fun ProfileScreen(
                     .fillMaxSize()
                     .padding(innerPadding),
         ) {
-            Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)) {
-                Text(
-                    text = "REGISTRO EXPEDICIONARIO",
-                    style = MonoEyebrow,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                Spacer(Modifier.height(2.dp))
-                Text(
-                    text = "Pasaporte de Expedición",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-
             when (val state = uiState) {
                 is ProfileUiState.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -117,13 +99,18 @@ fun ProfileScreen(
                                 .verticalScroll(rememberScrollState())
                                 .padding(horizontal = 20.dp),
                     ) {
-                        PassportCover(
-                            stats = state.stats,
-                            profile = state.profile,
-                            onEditClick = onEditProfileClick,
+                        PostalHeader(
+                            title = "Perfil",
+                            photoUri = state.profile.photoUri,
+                            onAvatarClick = onEditProfileClick,
+                            titleStyle = SerifScreenTitle,
                         )
                         Spacer(Modifier.height(14.dp))
-                        TelemetryStrip(passport = state.passport)
+                        StatsCard(
+                            stats = state.stats,
+                            passport = state.passport,
+                            name = state.profile.name,
+                        )
                         Spacer(Modifier.height(18.dp))
                         SectionHeader(
                             title = "Visados y Sellos de Ruta",
@@ -208,166 +195,73 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun PassportCover(
+private fun StatsCard(
     stats: TravelStats,
-    profile: com.example.traveldiary.domain.model.UserProfile,
-    onEditClick: () -> Unit,
+    passport: PassportData,
+    name: String,
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        border =
-            CardDefaults.outlinedCardBorder().copy(
-                brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant),
-            ),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
-        Column(modifier = Modifier.padding(18.dp)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    modifier =
-                        Modifier
-                            .size(56.dp)
-                            .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(10.dp))
-                            .clickable(onClick = onEditClick),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    if (profile.photoUri != null) {
-                        coil.compose.AsyncImage(
-                            model = profile.photoUri,
-                            contentDescription = "Foto de perfil",
-                            modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(8.dp)),
-                            contentScale = androidx.compose.ui.layout.ContentScale.Crop,
-                        )
-                    } else {
-                        Text(
-                            text = profile.initials,
-                            style = MonoDisplay.copy(fontSize = MonoStubMeta.fontSize * 2.6f),
-                            color = MaterialTheme.colorScheme.primary,
-                        )
-                    }
-                }
-                Spacer(Modifier.width(14.dp))
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = "VIAJERO",
-                        style = MonoEyebrow,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                    Spacer(Modifier.height(3.dp))
-                    Text(
-                        text = profile.name,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1,
-                    )
-                    Text(
-                        text = "EXPEDICIONARIO EN RUTA",
-                        style = MonoStubMeta,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = "EXP",
-                        style = MonoStubMeta,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Text(
-                        text = "%02d".format(stats.totalTrips),
-                        style = MonoDisplay.copy(fontSize = MonoStubMeta.fontSize * 2.6f),
-                        color = MaterialTheme.colorScheme.primary,
-                    )
-                }
-            }
-            Spacer(Modifier.height(14.dp))
-            TicketDivider(
-                color = MaterialTheme.colorScheme.outlineVariant,
-                vertical = false,
-                modifier = Modifier.fillMaxWidth(),
+        Column(modifier = Modifier.padding(20.dp)) {
+            Text(
+                text = name.ifBlank { "Viajero" },
+                style = SerifCardTitle,
+                color = MaterialTheme.colorScheme.onSurface,
             )
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(4.dp))
             Text(
                 text =
-                    "VIAJES %02d · FAV %02d · PAÍSES %02d · CONT %02d".format(
-                        stats.totalTrips,
-                        stats.favourites,
-                        stats.countries,
-                        stats.continents,
-                    ),
-                style = MonoTelemetry,
+                    "${stats.totalTrips} viajes · ${stats.favourites} favoritos · " +
+                        "${stats.countries} países · ${stats.continents} continentes",
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+            Spacer(Modifier.height(18.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                StatColumn(value = formatKm(passport.kmTotal), unit = "km", label = "recorridos")
+                StatColumn(value = "%02d".format(passport.daysOnRoute), label = "días en ruta")
+                StatColumn(value = "%02d".format(passport.legs), label = "tramos con GPS")
+            }
         }
     }
 }
 
 @Composable
-private fun TelemetryStrip(passport: PassportData) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        border =
-            CardDefaults.outlinedCardBorder().copy(
-                brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.outlineVariant),
-            ),
-    ) {
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
+private fun StatColumn(
+    value: String,
+    label: String,
+    unit: String? = null,
+) {
+    Column {
+        Row(verticalAlignment = Alignment.Bottom) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            if (unit != null) {
+                Spacer(Modifier.width(4.dp))
                 Text(
-                    text = "KM RECORRIDOS",
-                    style = MonoEyebrow,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                Spacer(Modifier.height(4.dp))
-                Row(verticalAlignment = Alignment.Bottom) {
-                    Text(
-                        text = formatKm(passport.kmTotal),
-                        style = MonoDisplay,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        text = "KM",
-                        style = MonoTelemetry,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 4.dp),
-                    )
-                }
-            }
-            Column(horizontalAlignment = Alignment.End) {
-                Text(
-                    text = "%02d".format(passport.daysOnRoute),
-                    style = MonoDisplay,
-                    color = MaterialTheme.colorScheme.tertiary,
-                )
-                Text(
-                    text = "DÍAS EN RUTA",
-                    style = MonoStubMeta,
+                    text = unit,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            Spacer(Modifier.width(22.dp))
-            Column(horizontalAlignment = Alignment.End) {
-                Text(
-                    text = "%02d".format(passport.legs),
-                    style = MonoDisplay,
-                    color = MaterialTheme.colorScheme.tertiary,
-                )
-                Text(
-                    text = "TRAMOS CON GPS",
-                    style = MonoStubMeta,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 3.dp),
                 )
             }
         }
+        Spacer(Modifier.height(2.dp))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 

@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.traveldiary.ui.components.TravelEntryFormFields
+import com.example.traveldiary.ui.theme.SerifCardTitle
 import com.example.traveldiary.ui.viewmodel.AddEntryViewModel
 import com.example.traveldiary.utils.LocationHelper
 import kotlinx.coroutines.launch
@@ -84,7 +85,7 @@ fun AddTravelEntryScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
-                title = { Text("Nuevo Recuerdo") },
+                title = { Text("Nuevo Recuerdo", style = SerifCardTitle) },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás")
