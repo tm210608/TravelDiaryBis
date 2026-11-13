@@ -1,8 +1,13 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-11-13 | **Rama:** `feature/extension-postal` (NO pusheada; `main` al día en origin con rediseno-postal mergeado) | 167 tests JVM verdes | verify.sh OK | SPEC verificada con evidencia
+**Fecha:** 2026-11-13 | **Rama:** `main` al día en origin (`a469f30`) — extension-postal mergeada y pusheada | 167 tests JVM verdes | verify.sh OK | SPECs verificadas con evidencia
 
-## Hecho el 2026-11-13 — feature "extension-postal" implementada y verificada
+## Hecho el 2026-11-13 — cabecera postal con matasellos de avión
+- `PostalHeader` ("Travel Diary" serif + matasellos circular inclinado -12° con `Icons.Outlined.FlightTakeoff` en terracota + subrayado editorial + avatar) compartido por Home y Perfil. El `HomeHeader` privado quedó eliminado — Home usa `PostalHeader` desde `2d30684`/compartido.
+- Commits en `main` pusheados: `063d3a6` (matasellos brújula) → `a469f30` (icono cambiado a avión, opción elegida por el usuario).
+- Verificado en emulator-5554 (claro y oscuro) e instalado en el móvil físico (MIUI pidió confirmación "Instalar vía USB" en pantalla; reintentar si falla con INSTALL_FAILED_USER_RESTRICTED).
+
+## Hecho el 2026-11-13 — feature "extension-postal" implementada, verificada, mergeada y pusheada
 SPEC: `docs/specs/extension-postal/SPEC.md` (21 criterios `[x]`). Evidencia: `docs/specs/extension-postal/evidence/` (12 capturas).
 - **Detalle**: foto hero 400dp (o degradado+icono si no hay foto), título serif, "Ciudad, País · fecha", "Ver mapa" discreto (mismo geo intent a GMaps), galería LazyRow, "La Historia" serif, tarjeta compartir. Fuera: TALÓN DE EXPEDICIÓN, GPS crudo, chip de tag, fondo cuadriculado, TicketDivider.
 - **Perfil**: `PostalHeader` ("Perfil" + avatar→editar) reutilizable en `CommonComponents.kt` (extraído del Home); tarjeta stats cálida (nombre serif + "N viajes · favoritos · países · continentes" + km/días/tramos sin mono); Visados y Sellos de Ruta **conservados** tal cual (encajan con postal); export/import igual.
@@ -13,9 +18,8 @@ SPEC: `docs/specs/extension-postal/SPEC.md` (21 criterios `[x]`). Evidencia: `do
 - Verificado en `emulator-5554` (Medium_Phone_API_36.1) con 8 entradas mock y fotos reales de Wikimedia inyectadas por `run-as`+base64 (ver comando en decisión). Home/Recuerdos/Perfil/Detalle/Detalle-sin-foto/Nueva-entrada/Editar-perfil capturados; oscuro y landscape en Recuerdos y formulario.
 
 ## Siguiente paso
-1. **Usuario revisa** el diseño completo en el emulador (app instalada en emulator-5554 con datos mock) — si le gusta: merge a `main` + push con su aprobación.
-2. **Instalar en su móvil** cuando lo libere (el build con postal-1 ya quedó instalado por accidente cuando installDebug pilló el WiFi adb).
-3. Play Store (sin cambios): backup keystore, cuenta dev 25 USD, GitHub Pages (`main` + `/docs` → `privacy.html`), AAB en `app/build/outputs/bundle/release/` (recopilar si se publica con postal).
+1. Usuario revisa el matasellos de avión en su móvil (instalado) — iterar icono/estilo si pide ajustes.
+2. Play Store: backup keystore, cuenta dev 25 USD, GitHub Pages (`main` + `/docs` → `privacy.html`), **regenerar el AAB firmado** (el de `app/build/outputs/bundle/release/` es anterior al rediseño postal completo).
 
 ## Decisiones vigentes
 - `applicationId`=`com.traveldiary.app`; launcher `com.example.traveldiary.MainActivity`.
