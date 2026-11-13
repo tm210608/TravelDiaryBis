@@ -1,6 +1,6 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-11-12 | **Rama:** `feature/pulido-ux` (6 commits locales, sin push; basada en `feature/play-store-release`) | 175 tests JVM verdes | verify.sh OK
+**Fecha:** 2026-11-13 | **Rama:** `feature/pulido-ux` (7 commits locales, sin push; basada en `feature/play-store-release`) | 175 tests JVM verdes | verify.sh OK
 
 ## Hecho el 2026-11-12 — feature "pulido-ux" implementada y verificada
 SPEC: `docs/specs/pulido-ux/SPEC.md` (todos los criterios `[x]` salvo 1 `[~]`). Evidencia: `docs/specs/pulido-ux/evidence/` (10 capturas).
@@ -21,7 +21,8 @@ Pasos manuales del usuario en Play Console / Google Cloud:
 2. Cuenta de dev (25 USD). Cuentas nuevas: ~12-20 testers x 14 días en prueba cerrada.
 3. ~~Restricción de la MAPS_API_KEY~~ — YA NO NECESARIO: el mapa es OSM, sin API key.
 4. Publicar `PRIVACY_POLICY.md` en URL pública (GitHub Pages recomendado).
-5. Rehacer captura `docs/play-store/screenshots/03-mapa.png` con el mapa OSM real.
+5. ~~Rehacer captura `03-mapa.png`~~ — HECHO el 2026-11-13 (mapa OSM real en emulador, commit `7c1af14`).
+**AAB ya compilado y firmado** (`app-release.aab`, 8,8 MB, `./gradlew bundleRelease` OK el 2026-11-13).
 Luego merge/push de la rama y subir AAB (`app/build/outputs/bundle/release/`) + gráficos.
 
 ## Decisiones vigentes
@@ -36,3 +37,4 @@ Luego merge/push de la rama y subir AAB (`app/build/outputs/bundle/release/`) + 
 - `kotlinOptions.jvmTarget` deprecated (warning).
 - El usuario prefiere trabajar en una app a la vez; capturas adb pueden pillar otra app suya al frente.
 - `screenshots-review/` sin commitear (material de revisión UX).
+- ANR observado en emulador-5556 (arranque en frío 2026-11-13): la app tardó >30s, salió diálogo "isn't responding" y el sistema la congeló; al relanzar respondió bien. Vigilar en móvil físico: si se reproduce ahí, revisar init en `TravelDiaryApplication`/main thread.
