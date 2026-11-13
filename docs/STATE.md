@@ -1,6 +1,12 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-11-13 | **Rama:** `main` al día en origin (`9c52bb6`) — extension-postal mergeada y pusheada | 167 tests JVM verdes | verify.sh OK | SPECs verificadas con evidencia
+**Fecha:** 2026-11-13 | **Rama:** `main` al día en origin (`962a1d0`) | 167 tests JVM verdes | verify.sh OK | **APK release instalado en el móvil del usuario** (decidió no publicar de momento, va a probarla)
+
+## Hecho el 2026-11-13 — APK release para prueba en móvil
+- `./gradlew assembleRelease` → `app/build/outputs/apk/release/app-release.apk` (5 MB, R8+shrink, firmado con `upload-keystore.jks`, v1.0 / code 1). Firma verificada con apksigner (CN=TravelDiary).
+- Instalado por WiFi adb en 192.168.31.99:46071 tras `adb uninstall` (firma release ≠ debug). App verificada corriendo: cabecera postal + barra flotante renderizan en build minificado.
+- **Hallazgo**: los datos del móvil ya estaban vacíos ANTES de esta instalación — la DB se recreó a las 22:11 (probable uninstall silencioso de MIUI al aprobar "Instalar vía USB" en instalaciones debug anteriores). 0 entradas, sin fotos. OJO: futuras instalaciones por adb pueden volver a pedir uninstall si cambia la firma.
+- Permisos (ubicación, cámara) reseteados al reinstalar — la app los volverá a pedir.
 
 ## Hecho el 2026-11-13 — banners con personalidad postal (v2, aprobada por usuario)
 - `PostalHeader` (Home + Perfil): **sin caja** — portada abierta: título serif, matasellos con avión + 3 ondas de matasellos (Canvas), subrayado editorial con punto, avatar enmarcado tipo sello (14dp, borde fino), y ribete aéreo `AirMailStripe` (rayas diagonales primario/acento) como línea divisoria. Iteración: v1 era tarjeta con borde — usuario la encontró con "bordes excesivos"; v2 elimina marco/sombra/fondo.
@@ -23,8 +29,8 @@ SPEC: `docs/specs/extension-postal/SPEC.md` (21 criterios `[x]`). Evidencia: `do
 - Verificado en `emulator-5554` (Medium_Phone_API_36.1) con 8 entradas mock y fotos reales de Wikimedia inyectadas por `run-as`+base64 (ver comando en decisión). Home/Recuerdos/Perfil/Detalle/Detalle-sin-foto/Nueva-entrada/Editar-perfil capturados; oscuro y landscape en Recuerdos y formulario.
 
 ## Siguiente paso
-1. Usuario revisa el matasellos de avión en su móvil (instalado) — iterar icono/estilo si pide ajustes.
-2. Play Store: backup keystore, cuenta dev 25 USD, GitHub Pages (`main` + `/docs` → `privacy.html`), **regenerar el AAB firmado** (el de `app/build/outputs/bundle/release/` es anterior al rediseño postal completo).
+1. Usuario prueba la app release en su móvil y decide: ajustes visuales o publicación.
+2. Si publica: backup keystore, cuenta dev 25 USD, GitHub Pages (`main` + `/docs` → `privacy.html`), **regenerar el AAB** (`./gradlew bundleRelease` — el APK release ya existe pero Play Store exige AAB).
 
 ## Decisiones vigentes
 - `applicationId`=`com.traveldiary.app`; launcher `com.example.traveldiary.MainActivity`.
