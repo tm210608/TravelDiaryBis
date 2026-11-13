@@ -34,21 +34,9 @@ backup igualmente es obligatorio de facto.
 2. Nombre: **Travel Diary** | Idioma: Español | Tipo: Aplicación | Gratuita
 3. Aceptar declaraciones (Política de contenido, leyes de exportación)
 
-## PASO 3 — Restringir la API key de Maps (seguridad)
+## ~~PASO 3 — Restringir la API key de Maps~~ (YA NO ES NECESARIO)
 
-En Google Cloud Console → Credenciales → tu `MAPS_API_KEY`:
-1. "Restricciones de aplicación" → Apps de Android → Añadir:
-   - Paquete: `com.traveldiary.app`
-   - Huella SHA-1 del certificado de SUBIDA. Para obtenerla:
-     ```
-     keytool -list -v -keystore upload-keystore.jks -alias upload
-     ```
-   - Añade TAMBIÉN la SHA-1 de la clave de firma de Google (Play App
-     Signing la muestra en Play Console → Configuración → Integridad de la
-     app → "Certificado de clave de firma de aplicación")
-   - Y la de debug (`~/.android/debug.keystore`, pass `android`) para
-     seguir desarrollando
-2. "Restricciones de API" → solo Maps SDK for Android
+El mapa se migró a **OpenStreetMap (`osmdroid`)**, por lo que no hay API key ni SDK de Google Maps. Puedes saltarte este paso.
 
 ## PASO 4 — Política de privacidad
 
