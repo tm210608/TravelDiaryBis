@@ -4,43 +4,74 @@ import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.outlined.Mail
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.example.traveldiary.domain.model.TravelEntry
+import com.example.traveldiary.domain.model.UserProfile
 import com.example.traveldiary.domain.model.exportFileName
 import com.example.traveldiary.domain.model.exportPdfFileName
-import com.example.traveldiary.model.filterChips
-import com.example.traveldiary.ui.components.ArchiveFooter
 import com.example.traveldiary.ui.components.BottomNavigationBar
-import com.example.traveldiary.ui.components.EntryListCard
-import com.example.traveldiary.ui.components.FeaturedEntriesRow
-import com.example.traveldiary.ui.components.FilterChipsRow
-import com.example.traveldiary.ui.components.SearchBar
-import com.example.traveldiary.ui.components.SectionHeader
-import com.example.traveldiary.ui.components.TopBar
-import com.example.traveldiary.ui.components.cartographyGrid
+import com.example.traveldiary.ui.components.PostalEntryCard
+import com.example.traveldiary.ui.theme.SerifAppTitle
+import com.example.traveldiary.ui.theme.SerifCardTitle
 import com.example.traveldiary.ui.viewmodel.ExportUiState
 import com.example.traveldiary.ui.viewmodel.HomeViewModel
 import java.io.File
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TravelDiaryHomeScreen(
     onEntryClick: (TravelEntry) -> Unit = {},
@@ -53,17 +84,11 @@ fun TravelDiaryHomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val entriesList by viewModel.entriesList.collectAsState()
-    val searchQuery by viewModel.searchQuery.collectAsState()
-    val selectedChip by viewModel.selectedChip.collectAsState()
     val selectedTab by viewModel.selectedTab
-    val hasEntries by viewModel.hasEntries.collectAsState()
+    val profile by viewModel.profile.collectAsState()
     val selectionMode by viewModel.selectionMode.collectAsState()
     val selectedIds by viewModel.selectedIds.collectAsState()
     val exportState by viewModel.exportState.collectAsState()
-    val chipCounts by viewModel.chipCounts.collectAsState()
-    val featuredEntries by viewModel.featuredEntries.collectAsState()
-    val featuredWeather by viewModel.featuredWeather.collectAsState()
-    val profile by viewModel.profile.collectAsState()
 
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -142,7 +167,7 @@ fun TravelDiaryHomeScreen(
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
                     )
-                    Spacer(Modifier.width(8.dp))
+                    Spacer(Modifier.size(8.dp))
                     Text("Nueva entrada")
                 }
             }
@@ -161,139 +186,50 @@ fun TravelDiaryHomeScreen(
             )
         },
     ) { innerPadding ->
-        val gridColor =
-            MaterialTheme.colorScheme.onSurface.copy(
-                alpha = if (isSystemInDarkTheme()) 0.12f else 0.14f,
-            )
-        Box(
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 300.dp),
             modifier =
                 Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .cartographyGrid(gridColor),
+                    .padding(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(18.dp),
+            verticalArrangement = Arrangement.spacedBy(22.dp),
+            contentPadding = PaddingValues(bottom = 110.dp),
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 24.dp),
-            ) {
-                item {
-                    if (selectionMode) {
-                        SelectionTopBar(
-                            count = selectedIds.size,
-                            exporting = exportState is ExportUiState.Exporting,
-                            onClose = { viewModel.exitSelectionMode() },
-                            onSelectAll = { viewModel.selectAll() },
-                            onSaveZip = {
-                                suggestedName = exportFileName()
-                                createDocument.launch(suggestedName)
-                            },
-                            onSavePdf = {
-                                suggestedName = exportPdfFileName()
-                                createPdfDocument.launch(suggestedName)
-                            },
-                            onShareZip = { viewModel.shareSelected() },
-                            onSharePdf = { viewModel.sharePdfSelected() },
-                        )
-                    } else {
-                        TopBar(
-                            entryCount = entriesList.size,
-                            showExport = hasEntries,
-                            onExportClick = { viewModel.enterSelectionMode() },
-                            profileInitials = profile.initials,
-                            profilePhotoUri = profile.photoUri,
-                            onAvatarClick = onAvatarClick,
-                        )
-                    }
-                }
-
-                item {
-                    SearchBar(
-                        query = searchQuery,
-                        onQueryChanged = { viewModel.onSearchQueryChanged(it) },
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 20.dp, vertical = 12.dp),
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                if (selectionMode) {
+                    SelectionTopBar(
+                        count = selectedIds.size,
+                        exporting = exportState is ExportUiState.Exporting,
+                        onClose = { viewModel.exitSelectionMode() },
+                        onSelectAll = { viewModel.selectAll() },
+                        onSaveZip = {
+                            suggestedName = exportFileName()
+                            createDocument.launch(suggestedName)
+                        },
+                        onSavePdf = {
+                            suggestedName = exportPdfFileName()
+                            createPdfDocument.launch(suggestedName)
+                        },
+                        onShareZip = { viewModel.shareSelected() },
+                        onSharePdf = { viewModel.sharePdfSelected() },
+                    )
+                } else {
+                    HomeHeader(
+                        profile = profile,
+                        onAvatarClick = onAvatarClick,
                     )
                 }
+            }
 
-                item {
-                    FilterChipsRow(
-                        chips = filterChips,
-                        selectedChip = selectedChip,
-                        onChipSelected = { viewModel.onChipSelected(it) },
-                        counts = chipCounts,
-                    )
+            if (!selectionMode && entriesList.isEmpty()) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    EmptyState(onAddClick = onAddClick)
                 }
-
-                if (featuredEntries.isNotEmpty()) {
-                    item {
-                        SectionHeader(
-                            title = "Registro Destacado",
-                            actionLabel = "%02d".format(featuredEntries.size),
-                            eyebrow = "EXPEDICIÓN",
-                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
-                        )
-                    }
-
-                    item {
-                        FeaturedEntriesRow(
-                            entries = featuredEntries,
-                            onEntryClick = onEntryClick,
-                            weatherByEntryId = featuredWeather,
-                        )
-                    }
-                }
-
-                item {
-                    SectionHeader(
-                        title = "Todos los Viajes",
-                        actionLabel = "%02d".format(entriesList.size),
-                        eyebrow = "HOJA DE RUTA",
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp),
-                    )
-                }
-
-                if (entriesList.isEmpty()) {
-                    item {
-                        Column(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 32.dp, vertical = 48.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            Text(
-                                text = "Tu diario aún está en blanco",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                            Spacer(Modifier.height(6.dp))
-                            Text(
-                                text = "Guarda tu primera expedición y empieza la colección.",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                            )
-                            Spacer(Modifier.height(18.dp))
-                            Button(
-                                onClick = onAddClick,
-                                colors =
-                                    ButtonDefaults.buttonColors(
-                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                                    ),
-                            ) {
-                                Icon(Icons.Filled.Add, contentDescription = null)
-                                Spacer(Modifier.width(8.dp))
-                                Text("Crear tu primer viaje")
-                            }
-                        }
-                    }
-                }
-
+            } else {
                 items(entriesList, key = { it.id }) { entry ->
-                    EntryListCard(
+                    PostalEntryCard(
                         entry = entry,
                         selectionMode = selectionMode,
                         selected = entry.id in selectedIds,
@@ -304,16 +240,55 @@ fun TravelDiaryHomeScreen(
                                 onEntryClick(entry)
                             }
                         },
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 20.dp, vertical = 5.dp)
-                                .animateItem(),
+                        onFavouriteClick = {
+                            viewModel.toggleFavourite(entry.id, entry.isFavourite)
+                        },
                     )
                 }
+            }
+        }
+    }
+}
 
-                item {
-                    ArchiveFooter(entryCount = entriesList.size)
+@Composable
+private fun HomeHeader(
+    profile: UserProfile,
+    onAvatarClick: () -> Unit,
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(top = 20.dp, bottom = 6.dp),
+    ) {
+        Text(
+            text = "Mi Diario",
+            style = SerifAppTitle,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.weight(1f),
+        )
+        Surface(
+            onClick = onAvatarClick,
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(46.dp),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                if (profile.photoUri.isNullOrBlank()) {
+                    Text(
+                        text = profile.initials,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
+                } else {
+                    AsyncImage(
+                        model = profile.photoUri,
+                        contentDescription = "Abrir perfil",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize(),
+                    )
                 }
             }
         }
@@ -406,6 +381,57 @@ private fun SelectionTopBar(
         }
         if (exporting) {
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+        }
+    }
+}
+
+@Composable
+private fun EmptyState(onAddClick: () -> Unit) {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp, vertical = 48.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Surface(
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.surfaceContainerHighest,
+            modifier = Modifier.size(72.dp),
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    imageVector = Icons.Outlined.Mail,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(34.dp),
+                )
+            }
+        }
+        Spacer(Modifier.height(24.dp))
+        Text(
+            text = "Tu diario está en blanco",
+            style = SerifCardTitle,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(10.dp))
+        Text(
+            text = "Guarda tu primer viaje con fotos y lugar.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(28.dp))
+        Button(
+            onClick = onAddClick,
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                ),
+        ) {
+            Text("Crear tu primer viaje")
         }
     }
 }

@@ -1,401 +1,155 @@
 package com.example.traveldiary.ui.components
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.outlined.PhotoCamera
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.traveldiary.domain.model.TravelEntry
-import com.example.traveldiary.domain.model.WeatherReading
-import com.example.traveldiary.domain.model.formatToCompact
-import com.example.traveldiary.domain.model.formatToTicket
-import com.example.traveldiary.domain.model.formatWeatherTelemetry
-import com.example.traveldiary.domain.model.hasGps
-import com.example.traveldiary.domain.model.telemetryLine
-import com.example.traveldiary.domain.model.toCardinalLat
-import com.example.traveldiary.domain.model.toCardinalLon
-import com.example.traveldiary.ui.theme.MonoStubDay
-import com.example.traveldiary.ui.theme.MonoStubMeta
-import com.example.traveldiary.ui.theme.MonoTelemetry
+import com.example.traveldiary.ui.theme.SerifCardTitle
 
 @Composable
-fun FeaturedEntriesRow(
-    entries: List<TravelEntry>,
-    onEntryClick: (TravelEntry) -> Unit,
-    weatherByEntryId: Map<Int, WeatherReading> = emptyMap(),
-) {
-    Row(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        entries.forEach { entry ->
-            FeaturedCard(
-                entry = entry,
-                weather = weatherByEntryId[entry.id],
-                onClick = { onEntryClick(entry) },
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
-@Composable
-fun FeaturedCard(
+fun PostalEntryCard(
     entry: TravelEntry,
     onClick: () -> Unit,
-    weather: WeatherReading? = null,
+    onFavouriteClick: () -> Unit,
+    selectionMode: Boolean,
+    selected: Boolean,
+    modifier: Modifier = Modifier,
 ) {
-    var favourite by remember { mutableStateOf(entry.isFavourite) }
-    var isPressed by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.96f else 1f,
-        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-    )
-
-    Card(
-        onClick = onClick,
-        modifier =
-            Modifier
-                .width(240.dp)
-                .height(218.dp)
-                .graphicsLayer(scaleX = scale, scaleY = scale)
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onPress = {
-                            isPressed = true
-                            tryAwaitRelease()
-                            isPressed = false
-                        },
+    val photoShape = RoundedCornerShape(18.dp)
+    Column(modifier = modifier.fillMaxWidth()) {
+        Surface(
+            onClick = onClick,
+            shape = photoShape,
+            shadowElevation = 6.dp,
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Box {
+                if (entry.imageUrl.isNotBlank()) {
+                    AsyncImage(
+                        model = entry.imageUrl,
+                        contentDescription = entry.title,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxWidth().aspectRatio(3f / 2f),
                     )
-                },
-        shape = ticketShape(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
-    ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            AsyncImage(
-                model = entry.imageUrl,
-                contentDescription = entry.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize(),
-            )
-
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                colors =
-                                    listOf(
-                                        Color.Transparent,
-                                        MaterialTheme.colorScheme.scrim.copy(alpha = 0.82f),
-                                    ),
-                                startY = 100f,
-                            ),
-                        ),
-            )
-
-            Row(
-                modifier =
-                    Modifier
-                        .align(Alignment.TopStart)
-                        .padding(10.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                Surface(
-                    color = Color.Black.copy(alpha = 0.35f),
-                    shape = RoundedCornerShape(4.dp),
-                ) {
-                    Text(
-                        text = "EXP · ${entry.tag.uppercase()}",
-                        style = MonoStubMeta,
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
-                    )
+                } else {
+                    PostalPhotoPlaceholder()
                 }
-                if (entry.hasGps) {
-                    Surface(
-                        color = Color.Black.copy(alpha = 0.35f),
-                        shape = RoundedCornerShape(4.dp),
+                if (selectionMode) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier =
+                            Modifier
+                                .align(Alignment.TopStart)
+                                .padding(12.dp)
+                                .size(36.dp)
+                                .clip(CircleShape)
+                                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.92f)),
                     ) {
-                        Text(
-                            text = "GPS LOCK",
-                            style = MonoStubMeta,
-                            color = Color.White,
-                            modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+                        Checkbox(
+                            checked = selected,
+                            onCheckedChange = { onClick() },
                         )
                     }
-                }
-            }
-
-            IconButton(
-                onClick = { favourite = !favourite },
-                modifier =
-                    Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.20f)),
-            ) {
-                Icon(
-                    imageVector = if (favourite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                    contentDescription = "Favourite",
-                    tint = if (favourite) MaterialTheme.colorScheme.error else Color.White,
-                    modifier = Modifier.size(16.dp),
-                )
-            }
-
-            Column(
-                modifier =
-                    Modifier
-                        .align(Alignment.BottomStart)
-                        .padding(14.dp),
-            ) {
-                Text(
-                    text =
-                        (weather?.formatWeatherTelemetry() ?: "") +
-                            if (entry.hasGps) {
-                                "${entry.latitude!!.toCardinalLat()} · ${entry.longitude!!.toCardinalLon()} · " +
-                                    entry.date.formatToCompact()
-                            } else {
-                                entry.date.formatToCompact()
-                            },
-                    style = MonoTelemetry,
-                    color = Color.White.copy(alpha = 0.85f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                Spacer(Modifier.height(5.dp))
-                Text(
-                    text = entry.title,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.White,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
-                if (entry.description.isNotBlank()) {
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        text = entry.description,
-                        style = MonoStubMeta,
-                        color = Color.White.copy(alpha = 0.78f),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
+                } else {
+                    PostalHeart(
+                        isFavourite = entry.isFavourite,
+                        onClick = onFavouriteClick,
+                        modifier = Modifier.align(Alignment.TopEnd).padding(12.dp),
                     )
                 }
             }
         }
+        Column(Modifier.padding(horizontal = 6.dp).padding(top = 12.dp)) {
+            Text(
+                text = entry.title,
+                style = SerifCardTitle,
+                color = MaterialTheme.colorScheme.onBackground,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            Text(
+                text = listOf(entry.location, entry.country).filter { it.isNotBlank() }.joinToString(", "),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(top = 2.dp),
+            )
+        }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun EntryListCard(
-    entry: TravelEntry,
+private fun PostalHeart(
+    isFavourite: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    selectionMode: Boolean = false,
-    selected: Boolean = false,
 ) {
-    var isPressed by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(
-        targetValue = if (isPressed) 0.98f else 1f,
-        animationSpec = MaterialTheme.motionScheme.fastSpatialSpec(),
-    )
-    val ticket = entry.date.formatToTicket()
-
-    Card(
+    Surface(
         onClick = onClick,
+        shape = CircleShape,
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.92f),
+        shadowElevation = 3.dp,
+        modifier = modifier.size(40.dp),
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Icon(
+                imageVector = if (isFavourite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                contentDescription = if (isFavourite) "Quitar de favoritos" else "Marcar como favorito",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(20.dp),
+            )
+        }
+    }
+}
+
+@Composable
+private fun PostalPhotoPlaceholder(modifier: Modifier = Modifier) {
+    Box(
+        contentAlignment = Alignment.Center,
         modifier =
             modifier
-                .graphicsLayer(scaleX = scale, scaleY = scale)
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onPress = {
-                            isPressed = true
-                            tryAwaitRelease()
-                            isPressed = false
-                        },
-                    )
-                },
-        shape = ticketShape(),
-        colors =
-            CardDefaults.cardColors(
-                containerColor =
-                    if (selected) {
-                        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.35f)
-                    } else {
-                        MaterialTheme.colorScheme.surfaceContainer
-                    },
-            ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                .fillMaxWidth()
+                .aspectRatio(3f / 2f)
+                .background(
+                    Brush.linearGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.tertiary.copy(alpha = 0.35f),
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.35f),
+                        ),
+                    ),
+                ),
     ) {
-        Row(
-            modifier = Modifier.height(106.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (selectionMode) {
-                Checkbox(
-                    checked = selected,
-                    onCheckedChange = { onClick() },
-                    modifier = Modifier.padding(start = 4.dp),
-                )
-            }
-            AsyncImage(
-                model = entry.imageUrl,
-                contentDescription = entry.title,
-                contentScale = ContentScale.Crop,
-                modifier =
-                    Modifier
-                        .padding(start = if (selectionMode) 4.dp else 14.dp)
-                        .width(72.dp)
-                        .fillMaxHeight()
-                        .padding(vertical = 10.dp)
-                        .clip(RoundedCornerShape(10.dp)),
-            )
-
-            Column(
-                modifier =
-                    Modifier
-                        .weight(1f)
-                        .fillMaxHeight()
-                        .padding(horizontal = 12.dp, vertical = 10.dp),
-                verticalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Column {
-                    Text(
-                        text =
-                            if (entry.country.isNotBlank()) {
-                                "${entry.tag.uppercase()} · ${entry.country.uppercase()}"
-                            } else {
-                                entry.tag.uppercase()
-                            },
-                        style = MonoStubMeta,
-                        color = MaterialTheme.colorScheme.primary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Spacer(Modifier.height(2.dp))
-                    Text(
-                        text = entry.title,
-                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                    Spacer(Modifier.height(3.dp))
-                    Text(
-                        text = entry.telemetryLine(),
-                        style = MonoTelemetry,
-                        color =
-                            if (entry.hasGps) {
-                                MaterialTheme.colorScheme.tertiary
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            },
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    if (entry.hasGps) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            modifier = Modifier.weight(1f, fill = false),
-                        ) {
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .size(6.dp)
-                                        .clip(CircleShape)
-                                        .background(MaterialTheme.colorScheme.primary),
-                            )
-                            Text(
-                                text = "${entry.location}, ${entry.country}",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Medium,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
-                        }
-                    } else {
-                        Spacer(Modifier.width(1.dp))
-                    }
-                    Surface(
-                        shape = CircleShape,
-                        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.30f),
-                    ) {
-                        Text(
-                            text = entry.tag,
-                            style = MonoStubMeta,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(horizontal = 9.dp, vertical = 3.dp),
-                        )
-                    }
-                }
-            }
-
-            TicketDivider(
-                color = MaterialTheme.colorScheme.outlineVariant,
-                modifier = Modifier.fillMaxHeight(),
-            )
-
-            Column(
-                modifier =
-                    Modifier
-                        .width(54.dp)
-                        .fillMaxHeight(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Text(
-                    text = ticket.day,
-                    style = MonoStubDay,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-                Text(
-                    text = "${ticket.month} ${ticket.yearShort}",
-                    style = MonoStubMeta,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Text(
-                    text = ticket.time,
-                    style = MonoStubMeta,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        }
+        Icon(
+            imageVector = Icons.Outlined.PhotoCamera,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.45f),
+            modifier = Modifier.size(44.dp),
+        )
     }
 }

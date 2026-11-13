@@ -5,6 +5,7 @@ import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.em
@@ -82,6 +83,22 @@ val MonoEyebrow = mono(10, 14, FontWeight.Bold, 0.14f)
 val MonoStubDay = mono(18, 20, FontWeight.Bold)
 val MonoStubMeta = mono(9, 11, FontWeight.Medium, 0.08f)
 val MonoDisplay = mono(30, 34, FontWeight.Bold)
+
+private fun serif(
+    size: Int,
+    line: Int,
+    weight: FontWeight,
+    italic: Boolean = false,
+) = TextStyle(
+    fontFamily = FontFamily.Serif,
+    fontSize = size.sp,
+    lineHeight = line.sp,
+    fontWeight = weight,
+    fontStyle = if (italic) FontStyle.Italic else FontStyle.Normal,
+)
+
+val SerifAppTitle = serif(34, 40, FontWeight.SemiBold, italic = true)
+val SerifCardTitle = serif(21, 27, FontWeight.SemiBold)
 
 // Escala de docs/specs/m3-expressive-redesign/stitch/DESIGN.md
 val DiaryTypography =
