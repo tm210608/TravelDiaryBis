@@ -1,41 +1,33 @@
 # Estado del proyecto (se reescribe en cada /handoff)
 
-**Fecha:** 2026-11-13 | **Rama:** `main` (pusheada a origin; `feature/pulido-ux` mergeada) | 175 tests JVM verdes | verify.sh OK | AAB firmado generado | Icono tienda/launcher nuevo (brújula atlas) | `docs/privacy.html` listo para GitHub Pages
+**Fecha:** 2026-11-13 | **Rama:** `feature/rediseno-postal` (NO pusheada; `main` sí al día en origin) | 167 tests JVM verdes | verify.sh OK | SPEC verificada con evidencia
 
-## Hecho el 2026-11-12 — feature "pulido-ux" implementada y verificada
-SPEC: `docs/specs/pulido-ux/SPEC.md` (todos los criterios `[x]` salvo 1 `[~]`). Evidencia: `docs/specs/pulido-ux/evidence/` (10 capturas).
-- **Splash de marca** (papel cuadriculado + logo + fade ~1s) tras el splash del sistema; icono launcher regenerado desde `docs/play-store/icon-512.png` (OJO: ese PNG es un play-button naranja sobre azul — valorar diseño propio antes de subir a Play).
-- **Home**: cabecera en tarjeta separada del fondo, bottom bar mismo estilo, FAB "Nueva entrada", CTA "Crear tu primer viaje" en vacíos; pestaña Satélite→**Recuerdos**; "Trip" residual quitado de Etiqueta.
-- **Galería multi-foto**: picker de Android copia a `files/photos/`; 1ª foto = portada (`imageUrl`), resto en `photoUris` (JSON, Room v3→v4 migración no destructiva); detalle muestra portada + rejilla. Export ZIP incluye photoUris (compatible con ZIPs viejos).
-- **Perfil editable**: `UserProfile` en DataStore (nombre+foto); avatar grande con inicial por defecto; tocar avatar → `EditProfileScreen`.
-- **Mapa → OpenStreetMap (osmdroid)**: `MapScreen` con `MapView`+`AndroidView` como pestaña con bottom bar; marcadores, tap→detalle, línea de ruta, `CopyrightOverlay`, `userAgentValue=packageName` en `TravelDiaryApplication`. Eliminados maps-compose, play-services-maps y `MAPS_API_KEY` del manifest/gradle. `LAYER_TYPE_SOFTWARE` solo en emuladores (bug tiles AVD).
-- **Bug real corregido**: el GPS nunca se adjuntaba (permiso pedido async y `hasLocationPermission` stale); además entradas sin coords no podían ganar GPS al editar. Ahora Guardar espera el permiso y usa `getFreshLocation()`.
-
-## Verificado en dispositivo
-Móvil físico `2412DPC0AG` por WiFi adb (`adb-MVVSE6A6S4IVQ8MJ-YvIufY...`, IP 192.168.31.99): splash, home, galería 2 fotos→portada+rejilla, marcador→detalle, GPS 39.9640°N 4.8351°W, tiles OSM cargando. Emulador-5556: atribución OSM, entrada con geo fix.
-**Pendiente menor**: guardar nombre/foto de perfil a mano en dispositivo (cubierto por unit tests).
+## Hecho el 2026-11-13 — feature "rediseno-postal" implementada y verificada
+SPEC: `docs/specs/rediseno-postal/SPEC.md` (todos los criterios `[x]`). Evidencia: `docs/specs/rediseno-postal/evidence/`.
+- **Home "postal"**: cabecera solo "Travel Diary" + avatar (icono persona o foto); selector Viajes|Favoritos; cada entrada = marco crema con foto inset (o degradado+icono), título serif y "Ciudad, País · fecha"; corazón sobre la foto que persiste `isFavourite` de verdad (antes solo cosmético).
+- **Fuera del Home**: buscador, chips continente, carrusel destacado, estadísticas, Visados, contadores "[00]", footer técnico, fondo cuadriculado.
+- **Barra inferior**: Inicio/Mapa/Fotos/Perfil en todas las pantallas. Export sigue en Perfil ("Exportar diario"); modo selección del Home conservado.
+- **Componentes borrados** (sin uso): `TopBar`, `SearchBar`, `FilterChipsRow`, `ArchiveFooter`, `FeaturedEntriesRow`, `FeaturedCard`, `EntryListCard`. `HomeViewModel` sin search/chips/featured/weather; nuevo `favouritesOnly` + `toggleFavourite`.
+- **Type.kt**: `SerifAppTitle`/`SerifCardTitle` (`FontFamily.Serif`, sin fuentes nuevas). Rejilla `LazyVerticalGrid` adaptativa (1-2 cols, landscape verificado 2 cols). Modo oscuro verificado.
+- **Bonus**: `EditProfileViewModel` guarda borrador en `SavedStateHandle` (MIUI recreaba la actividad al volver del photo picker y se perdían los cambios).
+- Commits: `6e45532` rediseño base, `2d30684` iteración feedback (nombre app, favoritos, marco premium), `93c01ff`+`cdc121e` evidencia+spec.
+- Verificado en `emulator-5560` con 8 entradas mock con fotos reales (DB inyectada vía run-as; móvil del usuario ocupado con TradeJob). El usuario ya vio una versión en su móvil y aprobó el rumbo pidiendo: nombre de app, pestaña favoritos y "toque premium".
 
 ## Siguiente paso
-Pasos manuales del usuario en Play Console / Google Cloud:
-1. Backup de `upload-keystore.jks` + `keystore.properties` (CRÍTICO).
-2. Cuenta de dev (25 USD). Cuentas nuevas: ~12-20 testers x 14 días en prueba cerrada.
-3. ~~Restricción de la MAPS_API_KEY~~ — YA NO NECESARIO: el mapa es OSM, sin API key.
-4. Publicar `PRIVACY_POLICY.md` en URL pública (GitHub Pages recomendado).
-5. ~~Rehacer captura `03-mapa.png`~~ — HECHO el 2026-11-13 (mapa OSM real en emulador, commit `7c1af14`).
-6. ~~Nuevo icono~~ — HECHO el 2026-11-13: brújula atlas (commit `6bcfe35`), regenerados `icon-512.png` + mipmaps.
-**Hecho el 2026-11-13:** merge de `feature/pulido-ux` en `main` + push a origin (privacy.html ya público en GitHub tras activar Pages).
-**Pendiente usuario:** activar GitHub Pages (Settings → Pages → `main` + `/docs`) y usar `https://tm210608.github.io/TravelDiaryBis/privacy.html` en Play Console; resto de pasos manuales abajo.
+1. **Usuario revisa el Home en el emulador** (app abierta con datos mock). Si le gusta → decidir si extender el estilo postal a Detalle/Perfil/Recuerdos (nueva spec) o dar por buena esta iteración.
+2. **Pendiente instalación en su móvil**: instalar cuando libere el dispositivo (actualizar fuerza cierre de la app).
+3. Merge a `main`/`develop` + push SOLO con su aprobación (rama sin pushear).
+4. Play Store (sin cambios): backup keystore, cuenta dev 25 USD, GitHub Pages (`main` + `/docs` → `privacy.html`), AAB en `app/build/outputs/bundle/release/`.
 
 ## Decisiones vigentes
-- `applicationId` = `com.traveldiary.app`; namespace `com.example.traveldiary`. Paquete en adb: `com.traveldiary.app`.
-- Rama `feature/pulido-ux` basada en `feature/play-store-release` (conserva release config), no en `develop`.
-- Otras apps del usuario conviven en sus dispositivos (`com.talaveracity.app` = TalaGo, `com.aistudio.socialchef`); verificar `topResumedActivity` antes de capturas adb.
-- Release APK tiene otra firma: probarlo en el móvil exige desinstalar debug = pierde datos locales.
-- Data Safety: lat/lon se envían a api.open-meteo.com; ya NO a Google Maps.
+- `applicationId`=`com.traveldiary.app`; launcher `com.example.traveldiary.MainActivity`.
+- `feature/rediseno-postal` nace de `feature/pulido-ux` (ya mergeada a `main`), contiene la spec.
+- Picsum.photos caído (522) y el emulador sin HTTPS saliente: fotos mock bajadas de Wikimedia Commons y metidas vía `adb shell run-as ... base64 -d` + DB por `cat > databases/travel_database`.
+- `screenshots-review/` en `.gitignore` (scratch de capturas).
+- adb sin `-s` falla con >1 dispositivo; el móvil vuelve a conectarse solo por WiFi (`adb disconnect` temporal).
 
 ## Deuda técnica
-- `develop`, `feature/play-store-release`, `feature/pulido-ux` sin push. `chore/lint-detekt-ktlint` sin borrar.
+- `develop`, `feature/play-store-release` sin push; `chore/lint-detekt-ktlint` sin borrar.
+- ANR en emulador-5556 (2026-11-13, arranque en frío): vigilar en físico.
+- Al abrir la app a veces parpadea la pantalla previa del task (snapshot de recents de MIUI/Android); no es defecto del diseño.
 - `kotlinOptions.jvmTarget` deprecated (warning).
-- El usuario prefiere trabajar en una app a la vez; capturas adb pueden pillar otra app suya al frente.
-- `screenshots-review/` sin commitear (material de revisión UX).
-- ANR observado en emulador-5556 (arranque en frío 2026-11-13): la app tardó >30s, salió diálogo "isn't responding" y el sistema la congeló; al relanzar respondió bien. Vigilar en móvil físico: si se reproduce ahí, revisar init en `TravelDiaryApplication`/main thread.
